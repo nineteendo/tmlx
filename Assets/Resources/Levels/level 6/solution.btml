@@ -1,0 +1,6 @@
+label 0 if White exit 0 else move Right goto 1
+label 1 if White exit 1 else move Right goto 2
+label 2 if White exit 0 else move Right goto 3
+label 3 if White exit 0 else move Right goto 4
+label 4 if White exit 0 else move Right goto 5
+label 5 if White exit 1 else move Right goto 0

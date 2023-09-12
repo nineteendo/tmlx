@@ -1,0 +1,2 @@
+label even_length if White exit 0 else move Right goto odd_length
+label odd_length if White exit 1 else move Right goto even_length
