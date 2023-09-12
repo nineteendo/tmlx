@@ -30,11 +30,11 @@ public class SaveFunctions
         
         if (!File.Exists(Path.Combine(Application.persistentDataPath, "btml.sav")))
         {
-            save.levels = new List<SaveLevel> { new SaveLevel() };
+            save.levels = new List<SaveLevel> { new() };
             return save;
         }
 
-        BinaryFormatter binaryFormatter = new BinaryFormatter();
+        BinaryFormatter binaryFormatter = new();
         FileStream fileStream = File.Open(Path.Combine(Application.persistentDataPath, "btml.sav"), FileMode.Open);
         save = (Save)binaryFormatter.Deserialize(fileStream);
         fileStream.Close();
@@ -43,7 +43,7 @@ public class SaveFunctions
 
     public static void SaveGame()
     {
-        BinaryFormatter binaryFormatter = new BinaryFormatter();
+        BinaryFormatter binaryFormatter = new();
         FileStream fileStream = File.Create(Path.Combine(Application.persistentDataPath, "btml.sav"));
         binaryFormatter.Serialize(fileStream, save);
         fileStream.Close();

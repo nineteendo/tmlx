@@ -11,9 +11,9 @@ public class BtmlRuntime : MonoBehaviour
 {
     public static readonly Color32 COLOR_CONGRATULATIONS = Color.green;
     public static readonly Color32 COLOR_PIXEL_OFF = Color.white;
-    public static readonly Color32 COLOR_PIXEL_OFF_SELECTED = new Color32(0xaa, 0xff, 0xff, 0xff);
+    public static readonly Color32 COLOR_PIXEL_OFF_SELECTED = new(0xaa, 0xff, 0xff, 0xff);
     public static readonly Color32 COLOR_PIXEL_ON = Color.cyan;
-    public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new Color32(0x55, 0xff, 0xff, 0xff);
+    public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new(0x55, 0xff, 0xff, 0xff);
 
     public const int LEVEL_COUNT = 6;
     public const float MAX_IPF = 30000000f;
@@ -204,7 +204,7 @@ public class BtmlRuntime : MonoBehaviour
             Back();
 
         queuedInstructions += targetIps * Time.unscaledDeltaTime;
-        ipf = Math.Min(queuedInstructions, MAX_IPF);
+        ipf = Mathf.Floor(Mathf.Min(queuedInstructions, maxIpf));
         int instruction = 0;
         if (!playToggle.isOn || program == null || LevelEnded(ref instruction))
             return;
@@ -246,14 +246,14 @@ public class BtmlRuntime : MonoBehaviour
 
         if (ipf > 0)
         {
+            executedInstructions += ipf;
+            queuedInstructions -= ipf;
             SelectPixel();
             canvasTexture.SetPixels32(canvasColors);
             canvasTexture.Apply();
         }
 
         elapsedTime += Time.unscaledDeltaTime;
-        executedInstructions += ipf;
-        queuedInstructions -= ipf;
         if (returnCode <= -1 && elapsedTime > UPDATE_INTERVAL && executedInstructions > 0f)
         {
             infoText.text = $"{executedInstructions / elapsedTime:F1} IPS";

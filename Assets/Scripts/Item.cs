@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Item : MonoBehaviour, ISelectHandler, IPointerEnterHandler
 {
     public Text label;
-    public UnityEvent onSelected = new UnityEvent();
+    public UnityEvent onSelected = new();
 
     public void OnPointerEnter(PointerEventData pointerEventData)
     {

@@ -96,8 +96,8 @@ public static class BtmlCompiler
         for (int precomputedInstructionIndex = 0; precomputedInstructionIndex < precomputedInstructions.Length; precomputedInstructionIndex++)
         {
             ref BtmlInstruction precomputedInstruction = ref precomputedInstructions[precomputedInstructionIndex];
-            HashSet<BtmlBranch> whiteVisitedBranches = new HashSet<BtmlBranch>(new BtmlBranchEqualityComparer());
-            HashSet<BtmlBranch> blackVisitedBranches = new HashSet<BtmlBranch>(new BtmlBranchEqualityComparer());
+            HashSet<BtmlBranch> whiteVisitedBranches = new(new BtmlBranchEqualityComparer());
+            HashSet<BtmlBranch> blackVisitedBranches = new(new BtmlBranchEqualityComparer());
             whiteVisitedBranches.Add(new BtmlBranch() { color = BtmlRuntime.COLOR_PIXEL_OFF, lineNumber = precomputedInstructionIndex });
             blackVisitedBranches.Add(new BtmlBranch() { color = BtmlRuntime.COLOR_PIXEL_ON, lineNumber = precomputedInstructionIndex });
             if (
@@ -118,8 +118,8 @@ public static class BtmlCompiler
     static List<string> Tokenize(int lineIndex, string line, ref int blockCommentStartIndex)
     {
         // Remove single-line comments (//) and block comments (/* */)
-        List<string> tokens = new List<string>();
-        StringBuilder token = new StringBuilder();
+        List<string> tokens = new();
+        StringBuilder token = new();
         string[] subLines = line.Split('\v');
         for (int subLineIndex = 0; subLineIndex < subLines.Length; subLineIndex++)
         {
@@ -292,7 +292,7 @@ public static class BtmlCompiler
             return true;
         }
 
-        BtmlBranch branch = new BtmlBranch()
+        BtmlBranch branch = new()
         {
             color = action.writeColor,
             lineNumber = action.gotoLine
@@ -315,13 +315,13 @@ public static class BtmlCompiler
 
     static bool Process(int extraReturnCodeCount, string text, out BtmlInstruction[] instructions, out Dictionary<string, int> labels, out string error)
     {
-        List<BtmlInstruction> instructionList = new List<BtmlInstruction>();
+        List<BtmlInstruction> instructionList = new();
         labels = new Dictionary<string, int>();
         int blockCommentStartIndex = -1;
         string[] lines = text.Split('\n');
         for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
         {
-            BtmlInstruction instruction = new BtmlInstruction();
+            BtmlInstruction instruction = new();
             List<string> tokens = Tokenize(lineIndex, lines[lineIndex], ref blockCommentStartIndex);
             if (tokens.Count == 0)
             {

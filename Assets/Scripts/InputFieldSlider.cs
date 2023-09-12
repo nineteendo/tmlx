@@ -6,7 +6,7 @@ public class InputFieldSlider : MonoBehaviour
 {
     public InputField inputField;
     public Slider slider;
-    public UnityEvent<float> onValueChanged = new UnityEvent<float>();
+    public UnityEvent<float> onValueChanged = new();
 
     void Start()
     {

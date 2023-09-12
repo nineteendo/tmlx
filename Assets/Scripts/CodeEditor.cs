@@ -33,7 +33,7 @@ public class CodeEditor : MonoBehaviour
 
     void UpdateLineNumbers()
     {
-        StringBuilder lineNumberBuilder = new StringBuilder();
+        StringBuilder lineNumberBuilder = new();
         string text = inputField.textComponent.text;
 
         // Update width
@@ -69,7 +69,7 @@ public class CodeEditor : MonoBehaviour
 
     void UpdateSyntaxHighlighting()
     {
-        StringBuilder highlightedTextBuilder = new StringBuilder();
+        StringBuilder highlightedTextBuilder = new();
         Dictionary<string, Color32> tokenColoringDictionary = colorTheme.GetTokenColoringDictionary();
         int offset = 0;
         string text = inputField.textComponent.text;

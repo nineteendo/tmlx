@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -67,7 +66,7 @@ public class RegexTokenIdentifier : TokenIdentifier
 public class SyntaxHighlighter : ScriptableObject
 {
     public CommentTokenIdentifier[] commentTokenIdentifiers = {
-        new CommentTokenIdentifier()
+        new()
         {
             commentDelimitersArray = new CommentDelimiters[]
             {
@@ -81,14 +80,14 @@ public class SyntaxHighlighter : ScriptableObject
             },
             tokenType = "comment.documentation"
         },
-        new CommentTokenIdentifier()
+        new()
         {
             commentDelimitersArray = new CommentDelimiters[]
             {
-                new CommentDelimiters() {
+                new() {
                     commentPrefix = "//"
                 },
-                new CommentDelimiters() {
+                new() {
                     commentPrefix = "/*",
                     commentSuffix = "*/"
                 }
@@ -98,19 +97,19 @@ public class SyntaxHighlighter : ScriptableObject
     };
 
     public RegexTokenIdentifier[] regexTokenIdentifiers = {
-        new RegexTokenIdentifier() {
+        new() {
             regex = "Black|Down|Left|Right|Up|White",
             tokenType = "identifier.constant"
         },
-        new RegexTokenIdentifier() {
+        new() {
             regex = "move|write",
             tokenType = "identifier.function"
         },
-        new RegexTokenIdentifier() {
+        new() {
             regex = "else|exit|goto|if|label|repeat",
             tokenType = "keyword.control"
         },
-        new RegexTokenIdentifier() {
+        new() {
             regex = "\\d+",
             tokenType = "literal.number"
         }
@@ -118,8 +117,8 @@ public class SyntaxHighlighter : ScriptableObject
 
     public Token[] Tokenize(string text)
     {
-        List<Token> tokens = new List<Token>();
-        List<TokenIdentifier> tokenIdentifiers = new List<TokenIdentifier>(commentTokenIdentifiers);
+        List<Token> tokens = new();
+        List<TokenIdentifier> tokenIdentifiers = new(commentTokenIdentifiers);
         tokenIdentifiers.AddRange(regexTokenIdentifiers);
         for (int offset = 0; offset < text.Length; offset++)
             foreach (TokenIdentifier tokenIdentifier in tokenIdentifiers)

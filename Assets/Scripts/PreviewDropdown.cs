@@ -12,8 +12,8 @@ public class PreviewDropdown : MonoBehaviour
     public GameObject dropdownList;
     public Item[] items;
     public Text itemText;
-    public UnityEvent<int> onValueChanged = new UnityEvent<int>();
-    public UnityEvent<int> onEndEdit = new UnityEvent<int>();
+    public UnityEvent<int> onValueChanged = new();
+    public UnityEvent<int> onEndEdit = new();
     public string[] Options
     {
         get
