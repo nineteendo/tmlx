@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
+#if !UNITY_EDITOR
 using System.IO;
+#endif
+using System.Linq;
+#if !UNITY_EDITOR
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+#endif
 
 [Serializable]
 public struct Save
@@ -15,19 +20,36 @@ public struct SaveLevel
 {
     public int starCount;
     public string autoSave;
-    public string shortSave;
+    public string bestSave;
 }
 
 public class SaveFunctions
 {
-    static Save save;
+    private static Save save;
+
+    public static void SaveGame()
+    {
+#if !UNITY_EDITOR
+        BinaryFormatter binaryFormatter = new();
+        FileStream fileStream = File.Create(Path.Combine(Application.persistentDataPath, "btml.sav"));
+        binaryFormatter.Serialize(fileStream, save);
+        fileStream.Close();
+#endif
+    }
+
 
     public static Save LoadGame()
     {
         if (save.levels != null)
+        {
             return save;
+        }
 
-        
+#if UNITY_EDITOR
+        // Unlock all levels for debugging
+        save.levels = Enumerable.Repeat(new SaveLevel(), BtmlRuntime.LEVEL_COUNT + 1).ToList();
+        return save;
+#else
         if (!File.Exists(Path.Combine(Application.persistentDataPath, "btml.sav")))
         {
             save.levels = new List<SaveLevel> { new() };
@@ -39,13 +61,6 @@ public class SaveFunctions
         save = (Save)binaryFormatter.Deserialize(fileStream);
         fileStream.Close();
         return save;
-    }
-
-    public static void SaveGame()
-    {
-        BinaryFormatter binaryFormatter = new();
-        FileStream fileStream = File.Create(Path.Combine(Application.persistentDataPath, "btml.sav"));
-        binaryFormatter.Serialize(fileStream, save);
-        fileStream.Close();
+#endif
     }
 }

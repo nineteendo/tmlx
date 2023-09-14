@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class TokenIdentifier
 {
     public string tokenType;
-    public abstract int Match(string text, int offset);
+    public abstract int Match(string text, int startIndex);
 }
 
 [Serializable]
@@ -21,28 +21,26 @@ public class CommentTokenIdentifier : TokenIdentifier
 {
     public CommentDelimiters[] commentDelimitersArray;
 
-    public override int Match(string text, int offset)
+    public override int Match(string text, int startIndex)
     {
         foreach (CommentDelimiters commentDelimiters in commentDelimitersArray)
         {
             string commentPrefix = commentDelimiters.commentPrefix;
-            if (text.Length - offset < commentPrefix.Length || text.Substring(offset, commentPrefix.Length) != commentPrefix)
+            if (text.Length - startIndex < commentPrefix.Length || text.Substring(startIndex, commentPrefix.Length) != commentPrefix)
+            {
                 continue;
+            }
 
             int commentEndIndex;
             string commentSuffix = commentDelimiters.commentSuffix;
-            if (commentSuffix != "")
-                commentEndIndex = text.IndexOf(commentSuffix, offset + commentPrefix.Length);
-            else  // Inline comment
-                commentEndIndex = text.IndexOfAny(new char[] { '\n', '\v' }, offset + commentPrefix.Length);
+            commentEndIndex = commentSuffix != ""
+                ? text.IndexOf(commentSuffix, startIndex + commentPrefix.Length)
+                : text.IndexOfAny(new char[] { '\n', '\v' }, startIndex + commentPrefix.Length);
 
-            if (commentEndIndex != -1)
-                return commentEndIndex + (commentSuffix != "" ? commentSuffix.Length : 1) - offset;
-
-            return text.Length - offset;
+            return commentEndIndex != -1 ? commentEndIndex + (commentSuffix != "" ? commentSuffix.Length : 1) - startIndex : text.Length - startIndex;
         }
 
-        return 0;
+        return -1;
     }
 }
 
@@ -51,13 +49,10 @@ public class RegexTokenIdentifier : TokenIdentifier
 {
     public string regex;
 
-    public override int Match(string text, int offset)
+    public override int Match(string text, int startIndex)
     {
-        Match match = new Regex($@"\G\b({regex})\b").Match(text, offset);
-        if (!match.Success)
-            return 0;
-
-        return match.Length;
+        Match match = new Regex($@"\G\b({regex})\b").Match(text, startIndex);
+        return !match.Success ? -1 : match.Length;
     }
 }
 
@@ -70,10 +65,10 @@ public class SyntaxHighlighter : ScriptableObject
         {
             commentDelimitersArray = new CommentDelimiters[]
             {
-                new CommentDelimiters() {
+                new() {
                     commentPrefix = "///"
                 },
-                new CommentDelimiters() {
+                new() {
                     commentPrefix = "/**",
                     commentSuffix = "*/"
                 }
@@ -120,24 +115,28 @@ public class SyntaxHighlighter : ScriptableObject
         List<Token> tokens = new();
         List<TokenIdentifier> tokenIdentifiers = new(commentTokenIdentifiers);
         tokenIdentifiers.AddRange(regexTokenIdentifiers);
-        for (int offset = 0; offset < text.Length; offset++)
+        for (int startIndex = 0; startIndex < text.Length; startIndex++)
+        {
             foreach (TokenIdentifier tokenIdentifier in tokenIdentifiers)
             {
-                int length = tokenIdentifier.Match(text, offset);
-                if (length == 0)
+                int length = tokenIdentifier.Match(text, startIndex);
+                if (length == -1)
+                {
                     continue;
+                }
 
                 tokens.Add(
                     new Token()
                     {
                         length = length,
-                        startIndex = offset,
+                        startIndex = startIndex,
                         tokenType = tokenIdentifier.tokenType
                     }
                 );
-                offset += length - 1;
+                startIndex += length - 1;
                 break;
             }
+        }
 
         return tokens.ToArray();
     }

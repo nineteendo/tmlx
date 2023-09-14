@@ -23,10 +23,11 @@ public class MainMenu : MonoBehaviour
 #endif
     }
 
-
-    void Update()
+    private void Update()
     {
         if (Input.GetButtonDown("Cancel")) // Player is tired of the application ;(
+        {
             Quit();
+        }
     }
 }

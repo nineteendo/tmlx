@@ -1,0 +1,9 @@
+label read_length_0 if White exit 0 else move Up goto read_data_0
+label read_length_1 if White exit 1 else move Up goto read_data_2
+label read_length_2 if White exit 1 else move Up goto read_data_1
+label read_data_0 if White move Down goto next_0 else move Down goto next_1
+label read_data_1 if White move Down goto next_1 else move Down goto next_2
+label read_data_2 if White move Down goto next_2 else move Down goto next_0
+label next_0 move Right goto read_length_0
+label next_1 move Right goto read_length_1
+label next_2 move Right goto read_length_2

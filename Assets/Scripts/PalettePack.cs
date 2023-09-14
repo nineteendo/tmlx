@@ -18,7 +18,7 @@ public struct PalettePacksObject
 
 public static class PaletteFunctions
 {
-    static PalettePack[] palettePacks;
+    private static PalettePack[] palettePacks;
 
     public static PalettePack[] LoadPalettePacks()
     {

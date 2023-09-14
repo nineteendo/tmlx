@@ -1,0 +1,1 @@
+/**Challenge: accept a multiple of 3.Same as last level, but with remainder 3 and when the input line is 1 you need to multiply by 2 and take the remainder.*/

@@ -1,0 +1,3 @@
+if Black move Right repeat else move Left
+move Up
+if Black exit 1

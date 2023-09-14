@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,13 +8,14 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image), typeof(RectTransform))]
 public class BtmlRuntime : MonoBehaviour
 {
-    public static readonly Color32 COLOR_CONGRATULATIONS = Color.green;
+    public static readonly Color32 COLOR_SOLUTION_NORMAL = new(0x32, 0x32, 0x32, 0xff);
+    public static readonly Color32 COLOR_SOLUTION_UNKNOWN = Color.green;
     public static readonly Color32 COLOR_PIXEL_OFF = Color.white;
     public static readonly Color32 COLOR_PIXEL_OFF_SELECTED = new(0xaa, 0xff, 0xff, 0xff);
     public static readonly Color32 COLOR_PIXEL_ON = Color.cyan;
     public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new(0x55, 0xff, 0xff, 0xff);
 
-    public const int LEVEL_COUNT = 6;
+    public const int LEVEL_COUNT = 10;
     public const float MAX_IPF = 30000000f;
     public const float NORMAL_IPS = 5f;
     public const float TURBO_MULTIPLIER = 18000000f;
@@ -23,7 +23,7 @@ public class BtmlRuntime : MonoBehaviour
 
     public Button nextButton;
     public Button[] slotButtons;
-    public GameObject levelEndedMenu;
+    public GameObject levelEndedMenuOverlay;
     public GameObject[] stars;
     public Text congratulationsText;
     public Text errorText;
@@ -34,31 +34,32 @@ public class BtmlRuntime : MonoBehaviour
     public Toggle playToggle;
     public Toggle turboToggle;
 
-    BtmlInstruction[] program;
-    BtmlLevel level;
-    BtmlTest test;
-    BtmlTest[] tests;
-    Color32[] canvasColors;
-    SaveLevel saveLevel;
-    List<SaveLevel> saveLevels;
-    Texture2D canvasTexture;
+    private BtmlInstruction[] program;
+    private BtmlLevel level;
+    private BtmlTest test;
+    private BtmlTest[] tests;
+    private Color32[] canvasColors;
+    private HashSet<int> breakpoints;
+    private List<SaveLevel> saveLevels;
+    private SaveLevel saveLevel;
+    private Texture2D canvasTexture;
 
-    float elapsedTime;
-    float executedInstructions;
-    float ipf;
-    float maxIpf;
-    float normalIps;
-    float queuedInstructions;
-    float targetIps;
-    float turboMultiplier;
-    int canvasTextureHeight;
-    int canvasTextureWidth;
-    int canvasTextureX;
-    int canvasTextureY;
-    static int levelIndex;
-    int programIndex;
-    int returnCode = -1;
-    int testIndex;
+    private float elapsedTime;
+    private float executedInstructions;
+    private float ipf;
+    private float maxIpf;
+    private float normalIps;
+    private float queuedInstructions;
+    private float targetIps;
+    private float turboMultiplier;
+    private int canvasTextureHeight;
+    private int canvasTextureWidth;
+    private int canvasTextureX;
+    private int canvasTextureY;
+    private static int levelIndex;
+    private int programIndex;
+    private int returnCode = -1;
+    private int testIndex;
 
     public void Back()
     {
@@ -73,38 +74,24 @@ public class BtmlRuntime : MonoBehaviour
 
     public void LoadSlot(int slotIndex)
     {
-        if (slotIndex == 0)
-            codeEditor.inputField.text = level.code;
-        else if (slotIndex == 1)
-            codeEditor.inputField.text = saveLevel.autoSave;
-        else if (slotIndex == 2)
-            codeEditor.inputField.text = level.solution;
-        else
-            codeEditor.inputField.text = saveLevel.shortSave;
+        codeEditor.inputField.text = slotIndex == 0 ? level.code : slotIndex == 1 ? saveLevel.autoSave : slotIndex == 2 ? level.solution : saveLevel.bestSave;
     }
 
     public void Step()
     {
+        queuedInstructions = pauseToggle.isOn ? 1f : 0f;
         pauseToggle.isOn = playToggle.isOn = true;
-        queuedInstructions = 1f;
         targetIps = 0f;
     }
 
     public void TogglePause()
     {
-        queuedInstructions = 0f;
-        if (pauseToggle.isOn)
-            targetIps = 0f;
-        else
-            targetIps = normalIps * (turboToggle.isOn ? turboMultiplier : 1f);
+        ipf = queuedInstructions = 0f;
+        targetIps = pauseToggle.isOn ? 0f : normalIps * (turboToggle.isOn ? turboMultiplier : 1f);
     }
 
     public void TogglePlay()
     {
-        slotButtons[1].interactable = true;
-        saveLevel.autoSave = codeEditor.inputField.text;
-        SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
-        SaveFunctions.SaveGame();
         testIndex = 0;
         LoadTest();
         elapsedTime = executedInstructions = queuedInstructions = 0f;
@@ -113,41 +100,52 @@ public class BtmlRuntime : MonoBehaviour
         canvasTexture.Apply();
         if (!playToggle.isOn)
         {
+            codeEditor.MarkedLineIndex = -1;
             program = null;
-            returnCode = 0;
             return;
         }
 
-        if (BtmlCompiler.Compile(level.extraReturnCodeCount, codeEditor.inputField.text, out program, out string error))
-            errorText.text = "";
-        else
+        if (!BtmlCompiler.Compile(level.extraReturnCodeCount, codeEditor.inputField.text, out program, out string error))
+        {
             errorText.text = error;
+        }
+        else
+        {
+            codeEditor.MarkedLineIndex = 0;
+            errorText.text = "";
+            slotButtons[1].interactable = true;
+            saveLevel.autoSave = codeEditor.inputField.text;
+            SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
+            SaveFunctions.SaveGame();
+        }
     }
 
     public void ToggleTurbo()
     {
         queuedInstructions = 0f;
         if (!pauseToggle.isOn)
+        {
             targetIps = normalIps * (turboToggle.isOn ? turboMultiplier : 1f);
+        }
 
         PlayerPrefs.SetInt("turbo", turboToggle.isOn ? 1 : 0);
         PlayerPrefs.Save();
     }
 
 
-    void SelectPixel()
+    private void SelectPixel()
     {
-        float canvasColorR = canvasColors[canvasTextureY * canvasTexture.width + canvasTextureX].r;
-        canvasColors[canvasTextureY * canvasTexture.width + canvasTextureX] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
+        float canvasColorR = canvasColors[(canvasTextureY * canvasTexture.width) + canvasTextureX].r;
+        canvasColors[(canvasTextureY * canvasTexture.width) + canvasTextureX] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
     }
 
-    void UnSelectPixel()
+    private void UnSelectPixel()
     {
-        float canvasColorR = canvasColors[canvasTextureY * canvasTexture.width + canvasTextureX].r;
-        canvasColors[canvasTextureY * canvasTexture.width + canvasTextureX] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
+        float canvasColorR = canvasColors[(canvasTextureY * canvasTexture.width) + canvasTextureX].r;
+        canvasColors[(canvasTextureY * canvasTexture.width) + canvasTextureX] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
     }
 
-    void LoadTest()
+    private void LoadTest()
     {
         infoText.text = "";
         test = tests[testIndex];
@@ -155,7 +153,7 @@ public class BtmlRuntime : MonoBehaviour
         canvasColors = newCanvasTexture.GetPixels32();
         canvasTextureHeight = newCanvasTexture.height;
         canvasTextureWidth = newCanvasTexture.width;
-        canvasTexture.Reinitialize(canvasTextureWidth, canvasTextureHeight);
+        _ = canvasTexture.Reinitialize(canvasTextureWidth, canvasTextureHeight);
         GetComponent<Image>().material.SetTexture("_ColorIdxs", canvasTexture);
         RectTransform rectTransform = GetComponent<RectTransform>();
         Vector3 sizeDelta = rectTransform.sizeDelta;
@@ -165,24 +163,34 @@ public class BtmlRuntime : MonoBehaviour
         rectTransform.sizeDelta = sizeDelta;
         canvasTextureX = canvasTextureY = programIndex = 0;
         returnCode = -1;
+        if (breakpoints.Contains(programIndex))
+        {
+            pauseToggle.isOn = true;
+        }
     }
 
-    void Start()
+    private void Start()
     {
+        breakpoints = codeEditor.breakpoints;
+        Save save = SaveFunctions.LoadGame();
+        saveLevels = save.levels;
+        saveLevel = saveLevels[levelIndex];
+        level = BtmlLoader.Load(levelIndex);
+        codeEditor.inputField.text = saveLevel.autoSave ?? level.code;
+        slotButtons[1].interactable = saveLevel.autoSave != null;
+#if UNITY_EDITOR
+        // Unlock author solution for debugging
+        slotButtons[2].interactable = true;
+#else
+        slotButtons[2].interactable = saveLevel.starCount == 3;
+#endif
+        slotButtons[3].interactable = saveLevel.bestSave != null;
+        tests = level.tests;
         canvasTexture = new Texture2D(2, 2, TextureFormat.R8, false)
         {
             filterMode = FilterMode.Point,
             wrapMode = TextureWrapMode.Clamp
         };
-        Save save = SaveFunctions.LoadGame();
-        saveLevels = save.levels;
-        saveLevel = saveLevels[levelIndex];
-        level = BtmlLoader.Load(levelIndex);
-        slotButtons[1].interactable = saveLevel.autoSave != null;
-        slotButtons[2].interactable = saveLevel.starCount == 3;
-        slotButtons[3].interactable = saveLevel.shortSave != null;
-        codeEditor.inputField.text = saveLevel.autoSave ?? level.code;
-        tests = level.tests;
         LoadTest();
         SelectPixel();
         canvasTexture.SetPixels32(canvasColors);
@@ -198,21 +206,25 @@ public class BtmlRuntime : MonoBehaviour
         ShaderFunctions.SetDarkFilterLevel(material, PlayerPrefs.GetFloat("darkFilterLevel", 0));
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetButtonDown("Cancel")) // Player pressed ESCAPE or BACK
+        {
             Back();
+        }
 
         queuedInstructions += targetIps * Time.unscaledDeltaTime;
         ipf = Mathf.Floor(Mathf.Min(queuedInstructions, maxIpf));
         int instruction = 0;
         if (!playToggle.isOn || program == null || LevelEnded(ref instruction))
+        {
             return;
+        }
 
         UnSelectPixel();
         for (; instruction < ipf; instruction++)
         {
-            int colorIndex = canvasTextureY * canvasTextureWidth + canvasTextureX;
+            int colorIndex = (canvasTextureY * canvasTextureWidth) + canvasTextureX;
             float canvasColorR = canvasColors[colorIndex].r;
             ref BtmlAction action = ref (canvasColorR == COLOR_PIXEL_ON.r ? ref program[programIndex].blackAction : ref program[programIndex].whiteAction);
             canvasColors[colorIndex] = action.writeColor;
@@ -220,17 +232,19 @@ public class BtmlRuntime : MonoBehaviour
             if (newProgramIndex < 0)
             {
                 returnCode = -newProgramIndex - 1;
-                infoText.text = $"RETURN CODE {returnCode}: LINE {programIndex + 1} X {canvasTextureX} Y {canvasTextureY} {(canvasColorR == COLOR_PIXEL_ON.r ? "BLACK" : "WHITE")}";
+                infoText.text = $"EXIT {returnCode}";
                 instruction++;
                 if (LevelEnded(ref instruction))
+                {
                     break;
+                }
 
                 instruction--;
                 continue;
             }
 
             MoveDirection moveDirection = action.moveDirection;
-            if (moveDirection == MoveDirection.Up || moveDirection == MoveDirection.Down)
+            if (moveDirection is MoveDirection.Up or MoveDirection.Down)
             {
                 canvasTextureY += moveDirection == MoveDirection.Down ? canvasTextureHeight - 1 : 1;
                 canvasTextureY %= canvasTextureHeight;
@@ -242,12 +256,17 @@ public class BtmlRuntime : MonoBehaviour
             }
 
             programIndex = newProgramIndex;
+            if (breakpoints.Contains(programIndex))
+            {
+                pauseToggle.isOn = true;
+            }
         }
 
-        if (ipf > 0)
+        if (instruction > 0)
         {
-            executedInstructions += ipf;
-            queuedInstructions -= ipf;
+            codeEditor.MarkedLineIndex = programIndex;
+            executedInstructions += instruction;
+            queuedInstructions -= instruction;
             SelectPixel();
             canvasTexture.SetPixels32(canvasColors);
             canvasTexture.Apply();
@@ -262,13 +281,17 @@ public class BtmlRuntime : MonoBehaviour
     }
 
 
-    bool LevelEnded(ref int instruction)
+    private bool LevelEnded(ref int instruction)
     {
         if (testIndex >= tests.Length)
+        {
             return true;
+        }
 
         if (returnCode <= -1 || instruction >= ipf)
+        {
             return false;
+        }
 
         if (returnCode == test.returnCode && ++testIndex < tests.Length)
         {
@@ -279,8 +302,7 @@ public class BtmlRuntime : MonoBehaviour
 
         int instructionCount = program.Length;
         program = null;
-        levelEndedMenu.transform.parent.gameObject.SetActive(true);
-        levelEndedMenu.SetActive(true);
+        levelEndedMenuOverlay.SetActive(true);
         EventSystem.current.SetSelectedGameObject(nextButton.gameObject);
         int starCount;
         if (testIndex < tests.Length)
@@ -293,31 +315,27 @@ public class BtmlRuntime : MonoBehaviour
         {
             levelEndedText.text = "Level Completed!";
             int targetInstructionCount = level.solution.Count(c => c == '\n') + 1;
-            if (instructionCount > targetInstructionCount * 2f)
-                starCount = 0;
-            else if (instructionCount > targetInstructionCount * 1.5f)
-                starCount = 1;
-            else if (instructionCount > targetInstructionCount)
-                starCount = 2;
-            else
-                 starCount = 3;
+            starCount = instructionCount > targetInstructionCount * 2f
+                ? 0
+                : instructionCount > targetInstructionCount * 1.5f ? 1 : instructionCount > targetInstructionCount ? 2 : 3;
 
-            if (instructionCount > targetInstructionCount)
-                congratulationsText.text = "";
-            else if (instructionCount == targetInstructionCount)
-                congratulationsText.text = "You found the shortest solution!";
-            else if (instructionCount < targetInstructionCount)
-            {
-                congratulationsText.text = "Congratulations, you found an unknown solution.";
-                congratulationsText.color = COLOR_CONGRATULATIONS;
-            }
+            congratulationsText.color = instructionCount >= targetInstructionCount ? COLOR_SOLUTION_NORMAL : COLOR_SOLUTION_UNKNOWN;
+            congratulationsText.text = instructionCount > targetInstructionCount
+                ? ""
+                : instructionCount == targetInstructionCount
+                    ? "You found the shortest solution!"
+                    : "Congratulations, you found an unknown solution.";
 
             saveLevel.starCount = Mathf.Max(saveLevel.starCount, starCount);
             if (levelIndex + 1 >= saveLevels.Count)
+            {
                 saveLevels.Add(new SaveLevel());
+            }
 
-            if (saveLevel.shortSave == null || saveLevel.autoSave.Count(c => c == '\n') < saveLevel.shortSave.Count(c => c == '\n'))
-                saveLevel.shortSave = saveLevel.autoSave;
+            if (saveLevel.bestSave == null || saveLevel.autoSave.Count(c => c == '\n') < saveLevel.bestSave.Count(c => c == '\n'))
+            {
+                saveLevel.bestSave = saveLevel.autoSave;
+            }
 
             slotButtons[2].interactable = saveLevel.starCount == 3;
             slotButtons[3].interactable = true;
@@ -325,12 +343,16 @@ public class BtmlRuntime : MonoBehaviour
             SaveFunctions.SaveGame();
         }
         for (int starIndex = 0; starIndex < stars.Length; starIndex++)
+        {
             stars[starIndex].SetActive(starIndex < starCount);
+        }
 
         nextButton.gameObject.SetActive(levelIndex + 1 < saveLevels.Count && levelIndex + 1 < LEVEL_COUNT);
         nextButton.onClick.RemoveAllListeners();
         if (nextButton.gameObject.activeSelf)
+        {
             nextButton.onClick.AddListener(() => LoadLevel(levelIndex + 1));
+        }
 
         return true;
     }

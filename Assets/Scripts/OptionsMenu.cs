@@ -39,7 +39,7 @@ public class OptionsMenu : MonoBehaviour
         PlayerPrefs.SetFloat("maxIpf", maxIpfInputFieldSlider.slider.value);
         PlayerPrefs.Save();
     }
-    
+
     public void UpdateNormalIps()
     {
         PlayerPrefs.SetFloat("normalIps", normalIpsInputFieldSlider.slider.value);
@@ -75,13 +75,13 @@ public class OptionsMenu : MonoBehaviour
     }
 
 
-    void LoadPalettePack()
+    private void LoadPalettePack()
     {
         palettePreviewDropdown.Options = PaletteFunctions.LoadPalettePacks()[palettePackPreviewDropdown.Value].paletteMapping.Where((_, index) => index % 2 == 0).ToArray();
         UpdatePack(palettePreviewDropdown.Value);
     }
 
-    void Start()
+    private void Start()
     {
         palettePackPreviewDropdown.Options = PaletteFunctions.LoadPalettePacks().Select(pack => pack.packName).ToArray();
         paletteShaderPreviewDropdown.Options = ShaderFunctions.LoadShaders().Where((_, index) => index % 2 == 0).ToArray();
@@ -98,14 +98,17 @@ public class OptionsMenu : MonoBehaviour
         UpdateDarkFilterLevel();
         UpdateShader(paletteShaderPreviewDropdown.Value);
         palettePreviewDropdown.onValueChanged.AddListener((paletteIndex) => ShaderFunctions.SetPalette(screenMaterial, palettePackPreviewDropdown.Value, paletteIndex));
+        paletteShaderPreviewDropdown.onValueChanged.AddListener((paletteShaderIndex) => ShaderFunctions.SetShader(screenMaterial, paletteShaderIndex));
         palettePackPreviewDropdown.onEndEdit.AddListener(UpdatePalettePack);
         palettePreviewDropdown.onEndEdit.AddListener(UpdatePack);
         paletteShaderPreviewDropdown.onEndEdit.AddListener(UpdateShader);
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetButtonDown("Cancel")) // Player pressed ESCAPE or BACK
+        {
             Back();
+        }
     }
 }

@@ -1,0 +1,1 @@
+/**Challenge: accept even bit parity.1. Read input line:- If 0: accept if remainder is 0.2. Read data line:- If 1: add 1, take remainder after division by 2.3. Repeat.You need one state per remainder.*/

@@ -18,6 +18,8 @@ public class LevelButton : MonoBehaviour
         levelText.gameObject.SetActive(unlocked);
         levelText.text = (levelIndex + 1).ToString();
         for (int starIndex = 0; starIndex < stars.Length; starIndex++)
+        {
             stars[starIndex].SetActive(starIndex < starCount);
+        }
     }
 }

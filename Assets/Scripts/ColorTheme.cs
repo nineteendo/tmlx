@@ -45,7 +45,9 @@ public class ColorTheme : ScriptableObject
     {
         Dictionary<string, Color32> tokenColoringDictionary = new();
         foreach (TokenColoring tokenColoring in tokenColorings)
+        {
             tokenColoringDictionary[tokenColoring.tokenType] = tokenColoring.tokenColor;
+        }
 
         return tokenColoringDictionary;
     }
