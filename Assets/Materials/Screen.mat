@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Screen
-  m_Shader: {fileID: 4800000, guid: ce45d4a01ada443f1ba81935ff2664be, type: 3}
+  m_Shader: {fileID: 4800000, guid: 04bb8de0dfe1e4fdb80e0d14246bf490, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -31,14 +31,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ColorMap:
         m_Texture: {fileID: 2800000, guid: f5df0f00dfc1a46be8037b4d3d5977d0, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _PrevFrame:
-        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []

@@ -2,8 +2,7 @@ Shader "Palette/Normal"
 {
     Properties
     {
-        [HideInInspector] _MainTex("Base (RGB) Trans (A)", 2D) = "white" {}
-        _ColorIdxs ("Base (RGB) Trans (A)", 2D) = "white" {} // NOTE - Fixes _MainTex_TexelSize not updating
+        [MainTexture] _ColorIdxs ("Base (RGB) Trans (A)", 2D) = "white" {} // NOTE - Fixes _MainTex_TexelSize not updating
         _ColorMap ("Color Map (RGB)", 2D) = "white" {}
         [Toggle(FLIP_HORIZONTAL)] _FlipHorizontal("Flip Horizontal", Float) = .0
         [Toggle(FLIP_VERTICAL)] _FlipVertical("Flip Vertical", Float) = .0
@@ -22,9 +21,10 @@ Shader "Palette/Normal"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_fog
+
             #pragma multi_compile _ FLIP_HORIZONTAL
             #pragma multi_compile _ FLIP_VERTICAL
-            #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -43,7 +43,8 @@ Shader "Palette/Normal"
 
             float _DarkFilterLevel;
             float4 _ColorIdxs_ST, _ColorMap_ST, _ColorMap_TexelSize;
-            sampler2D _ColorIdxs, _ColorMap;
+            // Enable high precision on mobile
+            sampler2D_float _ColorIdxs, _ColorMap;
 
             v2f vert (appdata v)
             {

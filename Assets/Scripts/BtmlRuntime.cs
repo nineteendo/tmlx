@@ -21,6 +21,7 @@ public class BtmlRuntime : MonoBehaviour
     public const float TURBO_MULTIPLIER = 18000000f;
     public const float UPDATE_INTERVAL = .5f;
 
+    public Button menuButton;
     public Button nextButton;
     public Button[] slotButtons;
     public GameObject levelEndedMenuOverlay;
@@ -154,7 +155,7 @@ public class BtmlRuntime : MonoBehaviour
         canvasTextureHeight = newCanvasTexture.height;
         canvasTextureWidth = newCanvasTexture.width;
         _ = canvasTexture.Reinitialize(canvasTextureWidth, canvasTextureHeight);
-        GetComponent<Image>().material.SetTexture("_ColorIdxs", canvasTexture);
+        GetComponent<Image>().material.mainTexture = canvasTexture;
         RectTransform rectTransform = GetComponent<RectTransform>();
         Vector3 sizeDelta = rectTransform.sizeDelta;
         float maxDimension = Mathf.Max(sizeDelta.x, sizeDelta.y);
@@ -303,7 +304,6 @@ public class BtmlRuntime : MonoBehaviour
         int instructionCount = program.Length;
         program = null;
         levelEndedMenuOverlay.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(nextButton.gameObject);
         int starCount;
         if (testIndex < tests.Length)
         {
@@ -354,6 +354,7 @@ public class BtmlRuntime : MonoBehaviour
             nextButton.onClick.AddListener(() => LoadLevel(levelIndex + 1));
         }
 
+        EventSystem.current.SetSelectedGameObject(nextButton.gameObject.activeSelf ? nextButton.gameObject : menuButton.gameObject);
         return true;
     }
 }
