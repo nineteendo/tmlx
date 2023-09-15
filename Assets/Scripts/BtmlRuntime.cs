@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
 [RequireComponent(typeof(Image), typeof(RectTransform))]
 public class BtmlRuntime : MonoBehaviour
 {
@@ -16,9 +17,9 @@ public class BtmlRuntime : MonoBehaviour
     public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new(0x55, 0xff, 0xff, 0xff);
 
     public const int LEVEL_COUNT = 10;
-    public const float MAX_IPF = 30000000f;
+    public const float MAX_IPF = 40000000f;
     public const float NORMAL_IPS = 5f;
-    public const float TURBO_MULTIPLIER = 18000000f;
+    public const float TURBO_MULTIPLIER = 24000000f;
     public const float UPDATE_INTERVAL = .5f;
 
     public Button menuButton;
@@ -53,6 +54,7 @@ public class BtmlRuntime : MonoBehaviour
     private float queuedInstructions;
     private float targetIps;
     private float turboMultiplier;
+    private int canvasColorIndex;
     private int canvasTextureHeight;
     private int canvasTextureWidth;
     private int canvasTextureX;
@@ -136,14 +138,14 @@ public class BtmlRuntime : MonoBehaviour
 
     private void SelectPixel()
     {
-        float canvasColorR = canvasColors[(canvasTextureY * canvasTexture.width) + canvasTextureX].r;
-        canvasColors[(canvasTextureY * canvasTexture.width) + canvasTextureX] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
+        float canvasColorR = canvasColors[canvasColorIndex].r;
+        canvasColors[canvasColorIndex] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
     }
 
     private void UnSelectPixel()
     {
-        float canvasColorR = canvasColors[(canvasTextureY * canvasTexture.width) + canvasTextureX].r;
-        canvasColors[(canvasTextureY * canvasTexture.width) + canvasTextureX] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
+        float canvasColorR = canvasColors[canvasColorIndex].r;
+        canvasColors[canvasColorIndex] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
     }
 
     private void LoadTest()
@@ -162,7 +164,7 @@ public class BtmlRuntime : MonoBehaviour
         sizeDelta.x = canvasTextureHeight <= canvasTextureWidth ? maxDimension : maxDimension * canvasTextureWidth / canvasTextureHeight;
         sizeDelta.y = canvasTextureHeight >= canvasTextureWidth ? maxDimension : maxDimension * canvasTextureHeight / canvasTextureWidth;
         rectTransform.sizeDelta = sizeDelta;
-        canvasTextureX = canvasTextureY = programIndex = 0;
+        canvasColorIndex = canvasTextureX = canvasTextureY = programIndex = 0;
         returnCode = -1;
         if (breakpoints.Contains(programIndex))
         {
@@ -225,35 +227,51 @@ public class BtmlRuntime : MonoBehaviour
         UnSelectPixel();
         for (; instruction < ipf; instruction++)
         {
-            int colorIndex = (canvasTextureY * canvasTextureWidth) + canvasTextureX;
-            float canvasColorR = canvasColors[colorIndex].r;
+            canvasColorIndex = (canvasTextureY * canvasTextureWidth) + canvasTextureX;
+            float canvasColorR = canvasColors[canvasColorIndex].r;
             ref BtmlAction action = ref (canvasColorR == COLOR_PIXEL_ON.r ? ref program[programIndex].blackAction : ref program[programIndex].whiteAction);
-            canvasColors[colorIndex] = action.writeColor;
+            canvasColors[canvasColorIndex] = action.writeColor;
             int newProgramIndex = action.gotoLine;
             if (newProgramIndex < 0)
             {
-                returnCode = -newProgramIndex - 1;
-                infoText.text = $"EXIT {returnCode}";
-                instruction++;
-                if (LevelEnded(ref instruction))
-                {
-                    break;
-                }
-
-                instruction--;
+                Exit(-newProgramIndex - 1, ref instruction);
                 continue;
             }
 
-            MoveDirection moveDirection = action.moveDirection;
-            if (moveDirection is MoveDirection.Up or MoveDirection.Down)
+            switch (action.moveDirection)
             {
-                canvasTextureY += moveDirection == MoveDirection.Down ? canvasTextureHeight - 1 : 1;
-                canvasTextureY %= canvasTextureHeight;
-            }
-            else
-            {
-                canvasTextureX += moveDirection == MoveDirection.Left ? canvasTextureWidth - 1 : 1;
-                canvasTextureX %= canvasTextureWidth;
+                case MoveDirection.Left:
+                    if (--canvasTextureX == -1)
+                    {
+                        goto default;
+                    }
+
+                    break;
+                case MoveDirection.Up:
+                    if (++canvasTextureY == canvasTextureHeight)
+                    {
+                        goto default;
+                    }
+
+                    break;
+                case MoveDirection.Right:
+                    if (++canvasTextureX == canvasTextureWidth)
+                    {
+                        goto default;
+                    }
+
+                    break;
+                case MoveDirection.Down:
+                    if (--canvasTextureY == -1)
+                    {
+                        goto default;
+                    }
+
+                    break;
+                case MoveDirection.None:
+                default:
+                    Exit(2, ref instruction);
+                    continue;
             }
 
             programIndex = newProgramIndex;
@@ -281,6 +299,14 @@ public class BtmlRuntime : MonoBehaviour
         }
     }
 
+    private void Exit(int newReturnCode, ref int instruction)
+    {
+        returnCode = newReturnCode;
+        infoText.text = $"EXIT {returnCode}";
+        instruction++;
+        _ = LevelEnded(ref instruction);
+        instruction--;
+    }
 
     private bool LevelEnded(ref int instruction)
     {
@@ -355,6 +381,7 @@ public class BtmlRuntime : MonoBehaviour
         }
 
         EventSystem.current.SetSelectedGameObject(nextButton.gameObject.activeSelf ? nextButton.gameObject : menuButton.gameObject);
+        ipf = queuedInstructions = 0f;
         return true;
     }
 }

@@ -536,7 +536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2051375893969394296, guid: 811ebad04b33f4abb9314c5076bac5f4, type: 3}
       propertyPath: m_MaxValue
-      value: 90000000
+      value: 120000000
       objectReference: {fileID: 0}
     - target: {fileID: 2051375893969394296, guid: 811ebad04b33f4abb9314c5076bac5f4, type: 3}
       propertyPath: m_MinValue
@@ -1960,7 +1960,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2051375893969394296, guid: 811ebad04b33f4abb9314c5076bac5f4, type: 3}
       propertyPath: m_MaxValue
-      value: 30000000
+      value: 40000000
       objectReference: {fileID: 0}
     - target: {fileID: 2051375893969394296, guid: 811ebad04b33f4abb9314c5076bac5f4, type: 3}
       propertyPath: m_MinValue
