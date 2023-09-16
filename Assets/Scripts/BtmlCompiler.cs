@@ -245,7 +245,7 @@ public static class BtmlCompiler
                 return false;
             }
 
-            if (action.gotoLine < 0 || action.gotoLine++ >= 2 + extraReturnCodeCount)
+            if (action.gotoLine < 0 || action.gotoLine++ >= 3 + extraReturnCodeCount)
             {
                 error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: return code '{tokens[tokenIndex]}' is not defined";
                 return false;

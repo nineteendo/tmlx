@@ -1,0 +1,10 @@
+version: "3.5"
+services:
+  jekyll:
+    build: .
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/usr/src/app
+    command: bundle exec jekyll serve --watch --port=8080 --host=0.0.0.0 --livereload --verbose --trace
+
