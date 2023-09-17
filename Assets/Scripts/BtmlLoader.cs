@@ -5,7 +5,6 @@ public struct BtmlLevel
 {
     public BtmlTest[] tests;
 
-    public int extraReturnCodeCount;
     public string code;
     public string solution;
 }
@@ -13,7 +12,6 @@ public struct BtmlLevel
 [Serializable]
 public struct BtmlLevelSettings
 {
-    public int extraReturnCodeCount;
     public int testCount;
 }
 
@@ -21,13 +19,13 @@ public struct BtmlTest
 {
     public Texture2D canvasTexture;
 
-    public int returnCode;
+    public int exitStatus;
 }
 
 [Serializable]
 public struct BtmlTestSettings
 {
-    public int returnCode;
+    public int exitStatus;
 }
 
 
@@ -37,7 +35,6 @@ public static class BtmlLoader
     {
         string levelPath = $"Levels/level {levelIndex + 1}/";
         BtmlLevelSettings levelSettings = JsonUtility.FromJson<BtmlLevelSettings>(Resources.Load<TextAsset>(levelPath + "levelSettings").text);
-        int extraReturnCodeCount = levelSettings.extraReturnCodeCount;
         string code = Resources.Load<TextAsset>(levelPath + "code").text;
         string solution = Resources.Load<TextAsset>(levelPath + "solution").text;
         BtmlTest[] tests = new BtmlTest[levelSettings.testCount];
@@ -46,11 +43,11 @@ public static class BtmlLoader
         {
             string testPath = testsPath + $"test {testIndex + 1}/";
             BtmlTestSettings testSettings = JsonUtility.FromJson<BtmlTestSettings>(Resources.Load<TextAsset>(testPath + "testSettings").text);
-            int returnCode = testSettings.returnCode;
+            int exitStatus = testSettings.exitStatus;
             Texture2D canvasTexture = Resources.Load<Texture2D>(testPath + "canvasTexture");
-            tests[testIndex] = new BtmlTest() { canvasTexture = canvasTexture, returnCode = returnCode };
+            tests[testIndex] = new BtmlTest() { canvasTexture = canvasTexture, exitStatus = exitStatus };
         }
 
-        return new BtmlLevel() { tests = tests, extraReturnCodeCount = extraReturnCodeCount, code = code, solution = solution };
+        return new BtmlLevel() { tests = tests, code = code, solution = solution };
     }
 }

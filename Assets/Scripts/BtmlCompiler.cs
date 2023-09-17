@@ -51,7 +51,7 @@ public static class BtmlCompiler
 {
     private static readonly string[] reservedWords = { "Black", "Down", "Left", "Right", "Up", "White", "else", "exit", "goto", "if", "label", "move", "repeat", "write" };
 
-    public static bool Compile(int extraReturnCodeCount, string text, out BtmlInstruction[] precomputedInstructions, out string error)
+    public static bool Compile(string text, out BtmlInstruction[] precomputedInstructions, out string error)
     {
         if (text == null)
         {
@@ -61,7 +61,7 @@ public static class BtmlCompiler
         }
 
         // Process
-        if (!Process(extraReturnCodeCount, text, out BtmlInstruction[] processedInstructions, out Dictionary<string, int> labels, out string processError))
+        if (!Process(text, out BtmlInstruction[] processedInstructions, out Dictionary<string, int> labels, out string processError))
         {
             error = processError;
             precomputedInstructions = null;
@@ -177,7 +177,7 @@ public static class BtmlCompiler
     }
 
 
-    private static bool ParseAction(int extraReturnCodeCount, string[] lines, int lineIndex, List<string> tokens, ref int tokenIndex, out BtmlAction action, out string error)
+    private static bool ParseAction(string[] lines, int lineIndex, List<string> tokens, ref int tokenIndex, out BtmlAction action, out string error)
     {
         action = new BtmlAction
         {
@@ -233,26 +233,21 @@ public static class BtmlCompiler
         }
         else if (tokenIndex < tokens.Count && tokens[tokenIndex] == "exit")
         {
-            if (++tokenIndex >= tokens.Count)
+            if (++tokenIndex >= tokens.Count || !int.TryParse(tokens[tokenIndex], out action.gotoLine))
             {
-                error = $"Line {lineIndex + 1}: return code is missing";
+                action.gotoLine = -1;
+            }
+            else if (action.gotoLine >= 0)
+            {
+                action.gotoLine *= -1;
+                action.gotoLine--;
+                tokenIndex++;
+            }
+            else
+            {
+                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: exit status '{tokens[tokenIndex]}' is not defined";
                 return false;
             }
-
-            if (!int.TryParse(tokens[tokenIndex], out action.gotoLine))
-            {
-                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' is not a valid return code";
-                return false;
-            }
-
-            if (action.gotoLine < 0 || action.gotoLine++ >= 3 + extraReturnCodeCount)
-            {
-                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: return code '{tokens[tokenIndex]}' is not defined";
-                return false;
-            }
-
-            action.gotoLine *= -1;
-            tokenIndex++;
         }
 
         error = null;
@@ -325,7 +320,7 @@ public static class BtmlCompiler
         return true;
     }
 
-    private static bool Process(int extraReturnCodeCount, string text, out BtmlInstruction[] instructions, out Dictionary<string, int> labels, out string error)
+    private static bool Process(string text, out BtmlInstruction[] instructions, out Dictionary<string, int> labels, out string error)
     {
         List<BtmlInstruction> instructionList = new();
         labels = new Dictionary<string, int>();
@@ -394,7 +389,7 @@ public static class BtmlCompiler
                 }
 
                 oldTokenIndex = tokenIndex;
-                if (!ParseAction(extraReturnCodeCount, lines, lineIndex, tokens, ref tokenIndex, out BtmlAction consequentAction, out string actionError))
+                if (!ParseAction(lines, lineIndex, tokens, ref tokenIndex, out BtmlAction consequentAction, out string actionError))
                 {
                     instructions = null;
                     error = actionError;
@@ -426,7 +421,7 @@ public static class BtmlCompiler
                 else
                 {
                     oldTokenIndex = tokenIndex;
-                    if (!ParseAction(extraReturnCodeCount, lines, lineIndex, tokens, ref tokenIndex, out alternativeAction, out actionError))
+                    if (!ParseAction(lines, lineIndex, tokens, ref tokenIndex, out alternativeAction, out actionError))
                     {
                         instructions = null;
                         error = actionError;
@@ -444,7 +439,7 @@ public static class BtmlCompiler
                 instruction.blackAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_ON) ? consequentAction : alternativeAction;
                 instruction.whiteAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? consequentAction : alternativeAction;
             }
-            else if (ParseAction(extraReturnCodeCount, lines, lineIndex, tokens, ref tokenIndex, out BtmlAction action, out string actionError))
+            else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, out BtmlAction action, out string actionError))
             {
                 instruction.blackAction = instruction.whiteAction = action;
             }

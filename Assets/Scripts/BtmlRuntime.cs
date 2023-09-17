@@ -61,7 +61,7 @@ public class BtmlRuntime : MonoBehaviour
     private int canvasTextureY;
     private static int levelIndex;
     private int programIndex;
-    private int returnCode = -1;
+    private int exitStatus = -1;
     private int testIndex;
 
     public void Back()
@@ -108,7 +108,7 @@ public class BtmlRuntime : MonoBehaviour
             return;
         }
 
-        if (!BtmlCompiler.Compile(level.extraReturnCodeCount, codeEditor.inputField.text, out program, out string error))
+        if (!BtmlCompiler.Compile(codeEditor.inputField.text, out program, out string error))
         {
             errorText.text = error;
         }
@@ -165,7 +165,7 @@ public class BtmlRuntime : MonoBehaviour
         sizeDelta.y = canvasTextureHeight >= canvasTextureWidth ? maxDimension : maxDimension * canvasTextureHeight / canvasTextureWidth;
         rectTransform.sizeDelta = sizeDelta;
         canvasColorIndex = canvasTextureX = canvasTextureY = programIndex = 0;
-        returnCode = -1;
+        exitStatus = -1;
         if (breakpoints.Contains(programIndex))
         {
             pauseToggle.isOn = true;
@@ -234,7 +234,7 @@ public class BtmlRuntime : MonoBehaviour
             int newProgramIndex = action.gotoLine;
             if (newProgramIndex < 0)
             {
-                Exit(-newProgramIndex - 1, ref instruction);
+                Exit(-(newProgramIndex + 1), ref instruction);
                 continue;
             }
 
@@ -292,17 +292,17 @@ public class BtmlRuntime : MonoBehaviour
         }
 
         elapsedTime += Time.unscaledDeltaTime;
-        if (returnCode <= -1 && elapsedTime > UPDATE_INTERVAL && executedInstructions > 0f)
+        if (exitStatus <= -1 && elapsedTime > UPDATE_INTERVAL && executedInstructions > 0f)
         {
             infoText.text = $"{executedInstructions / elapsedTime:F1} IPS";
             elapsedTime = executedInstructions = 0f;
         }
     }
 
-    private void Exit(int newReturnCode, ref int instruction)
+    private void Exit(int newExitStatus, ref int instruction)
     {
-        returnCode = newReturnCode;
-        infoText.text = $"EXIT {returnCode}";
+        exitStatus = newExitStatus;
+        infoText.text = $"EXIT {exitStatus}";
         instruction++;
         _ = LevelEnded(ref instruction);
         instruction--;
@@ -315,12 +315,12 @@ public class BtmlRuntime : MonoBehaviour
             return true;
         }
 
-        if (returnCode <= -1 || instruction >= ipf)
+        if (exitStatus <= -1 || instruction >= ipf)
         {
             return false;
         }
 
-        if (returnCode == test.returnCode && ++testIndex < tests.Length)
+        if (exitStatus == test.exitStatus && ++testIndex < tests.Length)
         {
             LoadTest();
             instruction++;
