@@ -9,10 +9,6 @@ last_modified_date: 2023-09-16 12:27
 All notable changes to this project are documented in this file.
 
 ## v0.3.0
-{: .d-inline-block }
-
-Coming soon
-{: .label .label-yellow }
 
 ### v0.3.0 - Features
 
