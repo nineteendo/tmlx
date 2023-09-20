@@ -10,7 +10,7 @@ public struct BtmlAction
     public Color32 writeColor;
     public MoveDirection moveDirection;
 
-    public int gotoLine;
+    public int gotoLineIndex;
     public string gotoLabel;
 }
 
@@ -18,13 +18,18 @@ public struct BtmlBranch
 {
     public Color32 color;
 
-    public int lineNumber;
+    public int lineIndex;
 }
 
 public struct BtmlInstruction
 {
     public BtmlAction blackAction;
     public BtmlAction whiteAction;
+
+#if UNITY_EDITOR
+    // Add coverage for debugging
+    public bool conditional;
+#endif
 }
 
 
@@ -32,7 +37,7 @@ public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
 {
     public bool Equals(BtmlBranch x, BtmlBranch y)
     {
-        return x.lineNumber == y.lineNumber && x.color.Equals(y.color);
+        return x.lineIndex == y.lineIndex && x.color.Equals(y.color);
     }
 
     public int GetHashCode(BtmlBranch obj)
@@ -40,7 +45,7 @@ public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
         unchecked  // Don't check overflow
         {
             int hash = 17;
-            hash = (hash * 23) + obj.lineNumber.GetHashCode();
+            hash = (hash * 23) + obj.lineIndex.GetHashCode();
             hash = (hash * 23) + obj.color.GetHashCode();
             return hash;
         }
@@ -75,12 +80,12 @@ public static class BtmlCompiler
             BtmlInstruction processedInstruction = processedInstructions[processedInstructionIndex];
             ref BtmlAction whiteAction = ref processedInstruction.whiteAction;
             ref BtmlAction blackAction = ref processedInstruction.blackAction;
-            if (whiteAction.writeColor.a != 0xff)
+            if (whiteAction.writeColor.a < 0xff)
             {
                 whiteAction.writeColor = BtmlRuntime.COLOR_PIXEL_OFF;
             }
 
-            if (blackAction.writeColor.a != 0xff)
+            if (blackAction.writeColor.a < 0xff)
             {
                 blackAction.writeColor = BtmlRuntime.COLOR_PIXEL_ON;
             }
@@ -102,8 +107,8 @@ public static class BtmlCompiler
             ref BtmlInstruction precomputedInstruction = ref precomputedInstructions[precomputedInstructionIndex];
             HashSet<BtmlBranch> whiteVisitedBranches = new(new BtmlBranchEqualityComparer());
             HashSet<BtmlBranch> blackVisitedBranches = new(new BtmlBranchEqualityComparer());
-            _ = whiteVisitedBranches.Add(new BtmlBranch() { color = BtmlRuntime.COLOR_PIXEL_OFF, lineNumber = precomputedInstructionIndex });
-            _ = blackVisitedBranches.Add(new BtmlBranch() { color = BtmlRuntime.COLOR_PIXEL_ON, lineNumber = precomputedInstructionIndex });
+            _ = whiteVisitedBranches.Add(new BtmlBranch() { color = BtmlRuntime.COLOR_PIXEL_OFF, lineIndex = precomputedInstructionIndex });
+            _ = blackVisitedBranches.Add(new BtmlBranch() { color = BtmlRuntime.COLOR_PIXEL_ON, lineIndex = precomputedInstructionIndex });
             if (
                 !Precompute(precomputedInstructions, whiteVisitedBranches, ref precomputedInstruction.whiteAction, out string precomputeError) ||
                 !Precompute(precomputedInstructions, blackVisitedBranches, ref precomputedInstruction.blackAction, out precomputeError)
@@ -182,7 +187,7 @@ public static class BtmlCompiler
         action = new BtmlAction
         {
             moveDirection = MoveDirection.None,
-            gotoLine = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
+            gotoLineIndex = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
         };
 
         // Parse write
@@ -219,7 +224,7 @@ public static class BtmlCompiler
         if (tokenIndex < tokens.Count && tokens[tokenIndex] == "repeat")
         {
             tokenIndex++;
-            action.gotoLine = lineIndex;
+            action.gotoLineIndex = lineIndex;
         }
         else if (tokenIndex < tokens.Count && tokens[tokenIndex] == "goto")
         {
@@ -233,14 +238,14 @@ public static class BtmlCompiler
         }
         else if (tokenIndex < tokens.Count && tokens[tokenIndex] == "exit")
         {
-            if (++tokenIndex >= tokens.Count || !int.TryParse(tokens[tokenIndex], out action.gotoLine))
+            if (++tokenIndex >= tokens.Count || !int.TryParse(tokens[tokenIndex], out action.gotoLineIndex))
             {
-                action.gotoLine = -1;
+                action.gotoLineIndex = -1;
             }
-            else if (action.gotoLine >= 0)
+            else if (action.gotoLineIndex >= 0)
             {
-                action.gotoLine *= -1;
-                action.gotoLine--;
+                action.gotoLineIndex *= -1;
+                action.gotoLineIndex--;
                 tokenIndex++;
             }
             else
@@ -290,7 +295,7 @@ public static class BtmlCompiler
             return true;
         };
 
-        if (action.gotoLine < 0)
+        if (action.gotoLineIndex < 0)
         {
             action.moveDirection = MoveDirection.Right;
             error = null;
@@ -300,16 +305,16 @@ public static class BtmlCompiler
         BtmlBranch branch = new()
         {
             color = action.writeColor,
-            lineNumber = action.gotoLine
+            lineIndex = action.gotoLineIndex
         };
         if (visitedBranches.Contains(branch))
         {
-            error = $"Line {action.gotoLine + 1}: found infinite loop without moving";
+            error = $"Line {action.gotoLineIndex + 1}: found infinite loop without moving";
             return false;
         }
 
         _ = visitedBranches.Add(branch);
-        ref BtmlInstruction precomputedInstruction = ref precomputedInstructions[action.gotoLine];
+        ref BtmlInstruction precomputedInstruction = ref precomputedInstructions[action.gotoLineIndex];
         ref BtmlAction newAction = ref (action.writeColor.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? ref precomputedInstruction.whiteAction : ref precomputedInstruction.blackAction);
         if (!Precompute(precomputedInstructions, visitedBranches, ref newAction, out error))
         {
@@ -409,7 +414,7 @@ public static class BtmlCompiler
                     alternativeAction = new BtmlAction
                     {
                         moveDirection = MoveDirection.None,
-                        gotoLine = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
+                        gotoLineIndex = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
                     };
                 }
                 else if (++tokenIndex >= tokens.Count)
@@ -438,6 +443,10 @@ public static class BtmlCompiler
 
                 instruction.blackAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_ON) ? consequentAction : alternativeAction;
                 instruction.whiteAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? consequentAction : alternativeAction;
+#if UNITY_EDITOR
+                // Add coverage for debugging
+                instruction.conditional = true;
+#endif
             }
             else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, out BtmlAction action, out string actionError))
             {
@@ -494,7 +503,7 @@ public static class BtmlCompiler
             return false;
         }
 
-        action.gotoLine = labels[action.gotoLabel];
+        action.gotoLineIndex = labels[action.gotoLabel];
         action.gotoLabel = null;
         error = null;
         return true;

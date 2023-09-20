@@ -16,7 +16,12 @@ public class LevelButton : MonoBehaviour
         button.onClick.AddListener(() => BtmlRuntime.LoadLevel(levelIndex));
         lockIcon.SetActive(!unlocked);
         levelText.gameObject.SetActive(unlocked);
+#if UNITY_EDITOR
+        // Add level 0 for debugging
+        levelText.text = levelIndex.ToString();
+#else
         levelText.text = (levelIndex + 1).ToString();
+#endif
         for (int starIndex = 0; starIndex < stars.Length; starIndex++)
         {
             stars[starIndex].SetActive(starIndex < starCount);

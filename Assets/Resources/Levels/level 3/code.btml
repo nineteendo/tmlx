@@ -1,2 +1,2 @@
-/**A canvas could have multiple pixels and the current pixel can be moved horizontally and vertically.Move statement: move direction.The program already checks if the first two pixels are black.You still need to check if the third pixel is white (input of length 2).*/if White exit 1 else move Right
+/**A canvas could have multiple pixels and the current pixel can be moved horizontally and vertically.Move statement: move [direction].The program already checks if the first 2 pixels are black.You still need to check if the 3th pixel is white (input of length 2).*/if White exit 1 else move Right
 if White exit 1 else move Right

@@ -5,7 +5,8 @@
 			"packId": "btml",
 			"link": "",
 			"paletteMapping": [
-				"BTML - Grayscale", "btml"
+				"BTML - Normal",     "btml1",
+				"BTML - Emphasised", "btml2"
 			]
 		},
 		{

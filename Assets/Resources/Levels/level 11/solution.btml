@@ -1,0 +1,4 @@
+if Black move Up else exit 2
+if Black move Up goto check_black else move Up goto check_white
+label check_black if Black exit else exit 1
+label check_white if White exit else exit 1

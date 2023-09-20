@@ -1,0 +1,9 @@
+label read_length_0 if Black move Up goto read_first else exit 1
+label read_length_1 if Black exit 1 else exit
+label read_first if Black move Up goto check_black else move Up goto check_white
+label check_black if Black move Down goto move_down_0 else exit 1
+label check_white if White move Down goto move_down_0 else move Down goto move_down_1
+label move_down_0 move Down goto next_0
+label move_down_1 move Down goto next_1
+label next_0 move Right goto read_length_0
+label next_1 move Right goto read_length_1

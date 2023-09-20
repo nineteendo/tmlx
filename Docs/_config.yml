@@ -121,7 +121,7 @@ callouts:
 kramdown:
   syntax_highlighter_opts:
     block:
-      line_numbers: false
+      line_numbers: true
 
 compress_html:
   clippings: all

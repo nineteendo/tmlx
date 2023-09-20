@@ -26,7 +26,12 @@ public class Menu : MonoBehaviour
             beforeButton.onClick.AddListener(() => LoadPage(pageIndex - 1));
         }
 
+#if UNITY_EDITOR
+        // Add level 0 for debugging
+        nextButton.gameObject.SetActive((15 * pageIndex) + 15 <= BtmlRuntime.LEVEL_COUNT && (15 * pageIndex) + 15 < save.levels.Count);
+#else
         nextButton.gameObject.SetActive((15 * pageIndex) + 15 < BtmlRuntime.LEVEL_COUNT && (15 * pageIndex) + 15 < save.levels.Count);
+#endif
         nextButton.onClick.RemoveAllListeners();
         if (nextButton.gameObject.activeSelf)
         {
@@ -37,7 +42,12 @@ public class Menu : MonoBehaviour
         {
             int levelIndex = (15 * pageIndex) + levelButtonIndex;
             LevelButton levelButton = levelButtons[levelButtonIndex];
+#if UNITY_EDITOR
+            // Add level 0 for debugging
+            levelButton.gameObject.SetActive(levelIndex <= BtmlRuntime.LEVEL_COUNT);
+#else
             levelButton.gameObject.SetActive(levelIndex < BtmlRuntime.LEVEL_COUNT);
+#endif
             levelButton.Setup(levelIndex, levelIndex < save.levels.Count ? save.levels[levelIndex].starCount : 0, levelIndex < save.levels.Count);
         }
 

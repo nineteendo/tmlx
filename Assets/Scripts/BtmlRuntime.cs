@@ -16,15 +16,18 @@ public class BtmlRuntime : MonoBehaviour
     public static readonly Color32 COLOR_PIXEL_ON = Color.cyan;
     public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new(0x55, 0xff, 0xff, 0xff);
 
-    public const int LEVEL_COUNT = 10;
-    public const float MAX_IPF = 40000000f;
+    public const int LEVEL_COUNT = 14;
+    public const float MAX_IPF = 2000000f;
     public const float NORMAL_IPS = 5f;
     public const float TURBO_MULTIPLIER = 24000000f;
     public const float UPDATE_INTERVAL = .5f;
 
     public Button menuButton;
     public Button nextButton;
-    public Button[] slotButtons;
+    public Button replayButton;
+    public Button slotAuthorButton;
+    public Button slotAutoButton;
+    public Button slotBestButton;
     public GameObject levelEndedMenuOverlay;
     public GameObject[] stars;
     public Text congratulationsText;
@@ -36,7 +39,8 @@ public class BtmlRuntime : MonoBehaviour
     public Toggle playToggle;
     public Toggle turboToggle;
 
-    private BtmlInstruction[] program;
+    private BtmlAction action;
+    private BtmlInstruction[] instructions;
     private BtmlLevel level;
     private BtmlTest test;
     private BtmlTest[] tests;
@@ -46,22 +50,26 @@ public class BtmlRuntime : MonoBehaviour
     private SaveLevel saveLevel;
     private Texture2D canvasTexture;
 
+#if UNITY_EDITOR
+    // Add coverage for debugging
+    private bool[] coveredBlackBranches;
+    private bool[] coveredWhiteBranches;
+#endif
     private float elapsedTime;
-    private float executedInstructions;
-    private float ipf;
     private float maxIpf;
     private float normalIps;
     private float queuedInstructions;
     private float targetIps;
+    private float totalInstructions;
     private float turboMultiplier;
-    private int canvasColorIndex;
-    private int canvasTextureHeight;
+    private int canvasTextureOffset;
+    private int canvasTextureOffsetMax;
     private int canvasTextureWidth;
     private int canvasTextureX;
-    private int canvasTextureY;
-    private static int levelIndex;
-    private int programIndex;
     private int exitStatus = -1;
+    private int instructionIndex;
+    private int ipf;
+    private static int levelIndex;
     private int testIndex;
 
     public void Back()
@@ -89,7 +97,8 @@ public class BtmlRuntime : MonoBehaviour
 
     public void TogglePause()
     {
-        ipf = queuedInstructions = 0f;
+        ipf = 0;
+        queuedInstructions = 0f;
         targetIps = pauseToggle.isOn ? 0f : normalIps * (turboToggle.isOn ? turboMultiplier : 1f);
     }
 
@@ -97,18 +106,18 @@ public class BtmlRuntime : MonoBehaviour
     {
         testIndex = 0;
         LoadTest();
-        elapsedTime = executedInstructions = queuedInstructions = 0f;
+        elapsedTime = totalInstructions = queuedInstructions = 0f;
         SelectPixel();
         canvasTexture.SetPixels32(canvasColors);
         canvasTexture.Apply();
         if (!playToggle.isOn)
         {
             codeEditor.MarkedLineIndex = -1;
-            program = null;
+            instructions = null;
             return;
         }
 
-        if (!BtmlCompiler.Compile(codeEditor.inputField.text, out program, out string error))
+        if (!BtmlCompiler.Compile(codeEditor.inputField.text, out instructions, out string error))
         {
             errorText.text = error;
         }
@@ -116,10 +125,15 @@ public class BtmlRuntime : MonoBehaviour
         {
             codeEditor.MarkedLineIndex = 0;
             errorText.text = "";
-            slotButtons[1].interactable = true;
+            slotAutoButton.interactable = true;
             saveLevel.autoSave = codeEditor.inputField.text;
             SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
             SaveFunctions.SaveGame();
+#if UNITY_EDITOR
+            // Add coverage for debugging
+            coveredBlackBranches = new bool[instructions.Length];
+            coveredWhiteBranches = new bool[instructions.Length];
+#endif
         }
     }
 
@@ -138,14 +152,16 @@ public class BtmlRuntime : MonoBehaviour
 
     private void SelectPixel()
     {
-        float canvasColorR = canvasColors[canvasColorIndex].r;
-        canvasColors[canvasColorIndex] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
+        int canvasColorIndex = canvasTextureOffset + canvasTextureX;
+        Color32 canvasColor = canvasColors[canvasColorIndex];
+        canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
     }
 
     private void UnSelectPixel()
     {
-        float canvasColorR = canvasColors[canvasColorIndex].r;
-        canvasColors[canvasColorIndex] = canvasColorR == COLOR_PIXEL_ON.r || canvasColorR == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
+        int canvasColorIndex = canvasTextureOffset + canvasTextureX;
+        Color32 canvasColor = canvasColors[canvasColorIndex];
+        canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
     }
 
     private void LoadTest()
@@ -154,8 +170,9 @@ public class BtmlRuntime : MonoBehaviour
         test = tests[testIndex];
         Texture2D newCanvasTexture = test.canvasTexture;
         canvasColors = newCanvasTexture.GetPixels32();
-        canvasTextureHeight = newCanvasTexture.height;
+        int canvasTextureHeight = newCanvasTexture.height;
         canvasTextureWidth = newCanvasTexture.width;
+        canvasTextureOffsetMax = canvasTextureHeight * canvasTextureWidth;
         _ = canvasTexture.Reinitialize(canvasTextureWidth, canvasTextureHeight);
         GetComponent<Image>().material.mainTexture = canvasTexture;
         RectTransform rectTransform = GetComponent<RectTransform>();
@@ -164,9 +181,9 @@ public class BtmlRuntime : MonoBehaviour
         sizeDelta.x = canvasTextureHeight <= canvasTextureWidth ? maxDimension : maxDimension * canvasTextureWidth / canvasTextureHeight;
         sizeDelta.y = canvasTextureHeight >= canvasTextureWidth ? maxDimension : maxDimension * canvasTextureHeight / canvasTextureWidth;
         rectTransform.sizeDelta = sizeDelta;
-        canvasColorIndex = canvasTextureX = canvasTextureY = programIndex = 0;
+        canvasTextureX = canvasTextureOffset = instructionIndex = 0;
         exitStatus = -1;
-        if (breakpoints.Contains(programIndex))
+        if (breakpoints.Contains(instructionIndex))
         {
             pauseToggle.isOn = true;
         }
@@ -180,14 +197,14 @@ public class BtmlRuntime : MonoBehaviour
         saveLevel = saveLevels[levelIndex];
         level = BtmlLoader.Load(levelIndex);
         codeEditor.inputField.text = saveLevel.autoSave ?? level.code;
-        slotButtons[1].interactable = saveLevel.autoSave != null;
 #if UNITY_EDITOR
         // Unlock author solution for debugging
-        slotButtons[2].interactable = true;
+        slotAuthorButton.interactable = true;
 #else
-        slotButtons[2].interactable = saveLevel.starCount == 3;
+        slotAuthorButton.interactable = saveLevel.starCount == 3;
 #endif
-        slotButtons[3].interactable = saveLevel.bestSave != null;
+        slotAutoButton.interactable = saveLevel.autoSave != null;
+        slotBestButton.interactable = saveLevel.bestSave != null;
         tests = level.tests;
         canvasTexture = new Texture2D(2, 2, TextureFormat.R8, false)
         {
@@ -217,24 +234,41 @@ public class BtmlRuntime : MonoBehaviour
         }
 
         queuedInstructions += targetIps * Time.unscaledDeltaTime;
-        ipf = Mathf.Floor(Mathf.Min(queuedInstructions, maxIpf));
-        int instruction = 0;
-        if (!playToggle.isOn || program == null || LevelEnded(ref instruction))
+        ipf = Mathf.FloorToInt(Mathf.Min(queuedInstructions, maxIpf));
+        int executedInstructions = 0;
+        if (!playToggle.isOn || instructions == null || LevelEnded(ref executedInstructions))
         {
             return;
         }
 
         UnSelectPixel();
-        for (; instruction < ipf; instruction++)
+        ref BtmlAction action = ref this.action;
+        bool hasBreakpoints = breakpoints.Count > 0;
+        for (; executedInstructions < ipf; executedInstructions++)
         {
-            canvasColorIndex = (canvasTextureY * canvasTextureWidth) + canvasTextureX;
-            float canvasColorR = canvasColors[canvasColorIndex].r;
-            ref BtmlAction action = ref (canvasColorR == COLOR_PIXEL_ON.r ? ref program[programIndex].blackAction : ref program[programIndex].whiteAction);
+            int canvasColorIndex = canvasTextureOffset + canvasTextureX;
+            Color32 canvasColor = canvasColors[canvasColorIndex];
+#if UNITY_EDITOR
+            // Add coverage for debugging
+            if (canvasColor.r == COLOR_PIXEL_ON.r)
+            {
+                action = ref instructions[instructionIndex].blackAction;
+                coveredBlackBranches[instructionIndex] = true;
+            }
+            else
+            {
+                action = ref instructions[instructionIndex].whiteAction;
+                coveredWhiteBranches[instructionIndex] = true;
+            }
+
+#else
+            action = ref (canvasColor.r == COLOR_PIXEL_ON.r ? ref instructions[instructionIndex].blackAction : ref instructions[instructionIndex].whiteAction);
+#endif
             canvasColors[canvasColorIndex] = action.writeColor;
-            int newProgramIndex = action.gotoLine;
+            int newProgramIndex = action.gotoLineIndex;
             if (newProgramIndex < 0)
             {
-                Exit(-(newProgramIndex + 1), ref instruction);
+                Exit(-(newProgramIndex + 1), ref executedInstructions);
                 continue;
             }
 
@@ -248,7 +282,8 @@ public class BtmlRuntime : MonoBehaviour
 
                     break;
                 case MoveDirection.Up:
-                    if (++canvasTextureY == canvasTextureHeight)
+                    canvasTextureOffset += canvasTextureWidth;
+                    if (canvasTextureOffset == canvasTextureOffsetMax)
                     {
                         goto default;
                     }
@@ -262,7 +297,8 @@ public class BtmlRuntime : MonoBehaviour
 
                     break;
                 case MoveDirection.Down:
-                    if (--canvasTextureY == -1)
+                    canvasTextureOffset -= canvasTextureWidth;
+                    if (canvasTextureOffset == -canvasTextureWidth)
                     {
                         goto default;
                     }
@@ -270,52 +306,52 @@ public class BtmlRuntime : MonoBehaviour
                     break;
                 case MoveDirection.None:
                 default:
-                    Exit(2, ref instruction);
+                    Exit(2, ref executedInstructions);
                     continue;
             }
 
-            programIndex = newProgramIndex;
-            if (breakpoints.Contains(programIndex))
+            instructionIndex = newProgramIndex;
+            if (hasBreakpoints && breakpoints.Contains(instructionIndex))
             {
                 pauseToggle.isOn = true;
             }
         }
 
-        if (instruction > 0)
+        if (executedInstructions > 0)
         {
-            codeEditor.MarkedLineIndex = programIndex;
-            executedInstructions += instruction;
-            queuedInstructions -= instruction;
+            codeEditor.MarkedLineIndex = instructionIndex;
+            totalInstructions += executedInstructions;
+            queuedInstructions -= executedInstructions;
             SelectPixel();
             canvasTexture.SetPixels32(canvasColors);
             canvasTexture.Apply();
         }
 
         elapsedTime += Time.unscaledDeltaTime;
-        if (exitStatus <= -1 && elapsedTime > UPDATE_INTERVAL && executedInstructions > 0f)
+        if (exitStatus <= -1 && elapsedTime > UPDATE_INTERVAL && totalInstructions > 0f)
         {
-            infoText.text = $"{executedInstructions / elapsedTime:F1} IPS";
-            elapsedTime = executedInstructions = 0f;
+            infoText.text = $"{totalInstructions / elapsedTime:F1} IPS";
+            elapsedTime = totalInstructions = 0f;
         }
     }
 
-    private void Exit(int newExitStatus, ref int instruction)
+    private void Exit(int newExitStatus, ref int executedInstructions)
     {
         exitStatus = newExitStatus;
         infoText.text = $"EXIT {exitStatus}";
-        instruction++;
-        _ = LevelEnded(ref instruction);
-        instruction--;
+        executedInstructions++;
+        _ = LevelEnded(ref executedInstructions);
+        executedInstructions--;
     }
 
-    private bool LevelEnded(ref int instruction)
+    private bool LevelEnded(ref int executedInstructions)
     {
         if (testIndex >= tests.Length)
         {
             return true;
         }
 
-        if (exitStatus <= -1 || instruction >= ipf)
+        if (exitStatus <= -1 || executedInstructions >= ipf)
         {
             return false;
         }
@@ -323,23 +359,34 @@ public class BtmlRuntime : MonoBehaviour
         if (exitStatus == test.exitStatus && ++testIndex < tests.Length)
         {
             LoadTest();
-            instruction++;
+            executedInstructions++;
             return false;
         }
 
-        int instructionCount = program.Length;
-        program = null;
+        int instructionCount = instructions.Length;
         levelEndedMenuOverlay.SetActive(true);
         int starCount;
         if (testIndex < tests.Length)
         {
-            levelEndedText.text = $"Test {testIndex + 1} Failed!";
+            levelEndedText.text = $"Unit Test {testIndex + 1} Failed!";
             congratulationsText.text = "";
             starCount = 0;
         }
         else
         {
+#if UNITY_EDITOR
+            // Add coverage for debugging
+            int coveredBranchCount = 0;
+            for (int instructionIndex = 0; instructionIndex < instructions.Length; instructionIndex++)
+            {
+                coveredBranchCount += !instructions[instructionIndex].conditional ? coveredBlackBranches[instructionIndex] || coveredWhiteBranches[instructionIndex] ? 2 : 0 : (coveredBlackBranches[instructionIndex] ? 1 : 0) + (coveredWhiteBranches[instructionIndex] ? 1 : 0);
+            }
+
+            int coveragePercentage = 100 * coveredBranchCount / (2 * instructions.Length);
+            levelEndedText.text = $"{coveragePercentage}% Coverage";
+#else
             levelEndedText.text = "Level Completed!";
+#endif
             int targetInstructionCount = level.solution.Count(c => c == '\n') + 1;
             starCount = instructionCount > targetInstructionCount * 2f
                 ? 0
@@ -363,25 +410,36 @@ public class BtmlRuntime : MonoBehaviour
                 saveLevel.bestSave = saveLevel.autoSave;
             }
 
-            slotButtons[2].interactable = saveLevel.starCount == 3;
-            slotButtons[3].interactable = true;
+            slotAuthorButton.interactable = saveLevel.starCount == 3;
+            slotBestButton.interactable = true;
             SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
             SaveFunctions.SaveGame();
         }
+
         for (int starIndex = 0; starIndex < stars.Length; starIndex++)
         {
             stars[starIndex].SetActive(starIndex < starCount);
         }
 
+#if UNITY_EDITOR
+        // Add level 0 for debugging
+        nextButton.gameObject.SetActive(levelIndex + 1 < saveLevels.Count && levelIndex + 1 <= LEVEL_COUNT);
+#else
         nextButton.gameObject.SetActive(levelIndex + 1 < saveLevels.Count && levelIndex + 1 < LEVEL_COUNT);
+#endif
         nextButton.onClick.RemoveAllListeners();
         if (nextButton.gameObject.activeSelf)
         {
             nextButton.onClick.AddListener(() => LoadLevel(levelIndex + 1));
         }
 
-        EventSystem.current.SetSelectedGameObject(nextButton.gameObject.activeSelf ? nextButton.gameObject : menuButton.gameObject);
-        ipf = queuedInstructions = 0f;
+        EventSystem.current.SetSelectedGameObject(testIndex < tests.Length
+            ? replayButton.gameObject
+            : nextButton.gameObject.activeSelf ? nextButton.gameObject : menuButton.gameObject
+        );
+        instructions = null;
+        ipf = 0;
+        queuedInstructions = 0f;
         return true;
     }
 }

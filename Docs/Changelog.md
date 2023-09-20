@@ -21,7 +21,24 @@ Coming soon
 
 ### v0.3.0 - Levels
 
-- Added levels 11-13
+- Added levels 11-14
+
+### v0.3.0 - Developer Cheats
+
+- Added level 0
+- Enabled coverage
+
+### v0.3.0 - Palette Packs
+
+- Expanded Binary Turing Machine Language Palette Pack (+1 palette)
+
+### v0.3.0 - Bugfixes
+
+- Fixed input field not being selected when clicking on replay
+- Fixed menu button not being selected when beating the last level
+- Fixed replay button not being selected when failing a level
+- Fixed selected pixel not updating properly
+- Fixed slowdown when disabling all breakpoints
 
 ## v0.2.0
 

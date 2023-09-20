@@ -1,0 +1,2 @@
+label right if White write Black move Right goto left else write White move Right goto left
+label left if White write Black move Left goto right else write White move Left goto right

@@ -39,7 +39,7 @@ action | Required. An [action](#actions).
 
 {: .example }
 > Move right until the last white pixel:
-> 
+>
 > ```btml
 > if White move Right repeat else move Left
 > ```
@@ -65,7 +65,7 @@ action | Required. An [action](#actions).
 
 {: .example }
 > Write a black pixel and move Right:
-> 
+>
 > ```btml
 > write Black move Right
 > ```

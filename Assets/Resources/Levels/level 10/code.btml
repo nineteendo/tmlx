@@ -1,1 +1,1 @@
-/**Challenge: accept a multiple of 3.Same as last level, but with remainder 3 and when the input line is 1 you need to multiply by 2 and take the remainder.*/
+/**Challenge: accept a multiple of 3.1. Read input line:- If 0: accept if remainder is 0.- If 1: multiply by 2 and take remainder after division by 3.2. Read data line:- If 1: add 1 and take remainder.3. Repeat.You need one state per remainder like in the previous level.*/

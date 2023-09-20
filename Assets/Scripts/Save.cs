@@ -47,7 +47,7 @@ public class SaveFunctions
 
 #if UNITY_EDITOR
         // Unlock all levels for debugging
-        save.levels = Enumerable.Repeat(new SaveLevel(), BtmlRuntime.LEVEL_COUNT + 1).ToList();
+        save.levels = Enumerable.Repeat(new SaveLevel(), BtmlRuntime.LEVEL_COUNT + 2).ToList();
         return save;
 #else
         if (!File.Exists(Path.Combine(Application.persistentDataPath, "btml.sav")))

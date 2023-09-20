@@ -33,7 +33,12 @@ public static class BtmlLoader
 {
     public static BtmlLevel Load(int levelIndex)
     {
+#if UNITY_EDITOR
+        // Add level 0 for debugging
+        string levelPath = $"Levels/level {levelIndex}/";
+#else
         string levelPath = $"Levels/level {levelIndex + 1}/";
+#endif
         BtmlLevelSettings levelSettings = JsonUtility.FromJson<BtmlLevelSettings>(Resources.Load<TextAsset>(levelPath + "levelSettings").text);
         string code = Resources.Load<TextAsset>(levelPath + "code").text;
         string solution = Resources.Load<TextAsset>(levelPath + "solution").text;

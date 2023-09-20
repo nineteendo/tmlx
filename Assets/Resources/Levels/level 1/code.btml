@@ -1,1 +1,1 @@
-/**Welcome to the Binary Turing Machine Language (BTML).Exit statement: exit [status].The current program exits with status 0 (accept).Can you change that to 1 (reject)?*/exit 0
+/**Welcome to the Binary Turing Machine Language (BTML).Exit statement: exit [status].The current program exits with status 0 (accept), can you change that to 1 (reject)?*/exit 0

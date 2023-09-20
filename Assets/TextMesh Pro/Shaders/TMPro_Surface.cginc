@@ -25,7 +25,7 @@ void VertShader(inout appdata_full v, out Input data)
 	data.param.y = scale;
 #endif
 
-	data.param.x = (lerp(_WeightNormal, _WeightBold, bold) / 4.0 + _FaceDilate) * _ScaleRatioA * 0.5; // 
+	data.param.x = (lerp(_WeightNormal, _WeightBold, bold) / 4.0 + _FaceDilate) * _ScaleRatioA * 0.5; //
 
 	v.texcoord1.xy = UnpackUV(v.texcoord1.x);
 	data.viewDirEnv = mul((float3x3)_EnvMatrix, WorldSpaceViewDir(v.vertex));

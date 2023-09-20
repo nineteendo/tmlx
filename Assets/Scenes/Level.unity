@@ -426,17 +426,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5151085339718586019, guid: 653f72c910689420f999fc3ca80feaec, type: 3}
   m_PrefabInstance: {fileID: 542897700}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &542897702 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5151085339718586018, guid: 653f72c910689420f999fc3ca80feaec, type: 3}
-  m_PrefabInstance: {fileID: 542897700}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &578845853
 GameObject:
   m_ObjectHideFlags: 0
@@ -3398,11 +3387,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menuButton: {fileID: 1483113157}
   nextButton: {fileID: 1754119807}
-  slotButtons:
-  - {fileID: 542897702}
-  - {fileID: 1268746554}
-  - {fileID: 1059660339}
-  - {fileID: 1001749505}
+  replayButton: {fileID: 838479180}
+  slotAutoButton: {fileID: 1268746554}
+  slotAuthorButton: {fileID: 1059660339}
+  slotBestButton: {fileID: 1001749505}
   levelEndedMenuOverlay: {fileID: 1389783913}
   stars:
   - {fileID: 900782080}
