@@ -15,7 +15,7 @@ The `exit` statement is used to terminate the program and classify the input.
 > Reject the input if the first pixel is white:
 >
 > ```btml
-> if White exit 1
+> if white exit 1
 > ```
 
 ### Exit - Definition and Usage
@@ -25,14 +25,14 @@ The `exit` function terminates the program.
 ### Exit - Syntax
 
 ```ebnf
-exit [ status ]
+exit [status]
 ```
 
 ### Exit - Fields
 
 Field | Description
 -- | --
-status | Optional. A status number used as [exit status](#exit-status), default 0.
+status | Optional. An [exit status](#exit-status), default 0.
 
 ### Exit - More Examples
 
@@ -40,8 +40,8 @@ status | Optional. A status number used as [exit status](#exit-status), default 
 > Else is not treated as an exit status:
 >
 > ```btml
-> if Black exit else move Right
-> if White exit 1
+> if black exit else move east
+> if white exit 1
 > ```
 
 ## Exit Status
@@ -54,4 +54,6 @@ Exit Status | Description
 -- | --
 0 | The input is accepted (the program finished).
 1 | The input is rejected.
-2 | The input is malformed (the program moved off the canvas).
+2 | The input is malformed (the program moved off the canvas[^1]).
+
+[^1]: This will become impossible with infinite canvases.

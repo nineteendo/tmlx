@@ -8,11 +8,24 @@ last_modified_date: 2023-09-16 12:27
 
 All notable changes to this project are documented in this file.
 
+## v0.4.0
+{: .d-inline-block }
+
+Coming soon
+{: .label .label-yellow }
+
+### v0.4.0 - Features
+
+- Shorter instructions with abbreviations
+
+### v0.4.0 - Bugfixes
+
+- Fixed syntax highlighting for `/**/`
+
 ## v0.3.0
 
 ### v0.3.0 - Features
 
-- Added documentation
 - Removed wrapping
 
 ### v0.3.0 - Levels
@@ -59,7 +72,7 @@ All notable changes to this project are documented in this file.
 
 - Fixed Ips not working properly below 60
 - Fixed max ipf
-- Fixed entering 0x03 in single line input fields
+- Fixed entering `\u0003` in single line input fields
 - Fixed palette generator
 
 ## v0.1.0
@@ -94,6 +107,7 @@ All notable changes to this project are documented in this file.
 - Added Grid Palette Shader: border around pixels
 
 ### v0.1.0 - Palette Packs
+
 - Added Binary Turing Machine Language Palette Pack (1 palette)
 - Added Game Boy Palette Pack (3 palettes)
 - Added Game Boy Color Palette Pack (12 palettes)

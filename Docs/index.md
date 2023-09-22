@@ -2,10 +2,13 @@
 title: Home
 layout: home
 nav_order: 1
-last_modified_date: 2023-09-16 11:32
+last_modified_date: 2023-09-20 18:41
 ---
 
 # Welcome to the Binary Turing Machine Language
+
+{: .warning }
+This website documents the features of the current `main` branch of Btml. See [the changelog](changelog) for a list of releases, new features, and bug fixes.
 
 The Binary Turing Machine Language (Btml) is an innovative and educational programming language seamlessly integrated into a Unity game. It provides an exceptional platform for learning and experimenting with programming principles.
 
@@ -32,7 +35,7 @@ Now, you're all set to explore BTML and unlock the exciting possibilities it off
 
 ## About the project
 
-Btml is &copy; {{ "now" | date: "%Y" }} by [Nice Zombies](https://nineteendo.github.io).
+Btml is &copy; Copyright 2023-{{ site.time | date: '%Y' }} by [Nice Zombies](https://nineteendo.github.io).
 
 ### License
 

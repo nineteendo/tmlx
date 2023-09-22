@@ -1,2 +1,2 @@
-label right if White write Black move Right goto left else write White move Right goto left
-label left if White write Black move Left goto right else write White move Left goto right
+East:	if white write black move east goto West else write white move east goto West
+West:	if white write black move west goto East else write white move west goto East

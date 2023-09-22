@@ -12,7 +12,7 @@ Comments can be used to explain code, and to make it more readable.
 
 {: .example }
 > ```btml
-> if White exit 1 // Reject the input if the first pixel is white
+> if white exit 1 // Reject the input if the first pixel is white
 > ```
 
 ### Single Line Comments - Syntax
@@ -26,7 +26,7 @@ Comments can be used to explain code, and to make it more readable.
 >
 > ```btml
 > /// Reject the input if the first pixel is white
-> if White exit 1
+> if white exit 1
 > ```
 
 ## Multi-line Comments
@@ -36,7 +36,7 @@ Comments can be used to explain code, and to make it more readable.
 > /*
 > Reject the input if the first pixel is white
 > */
-> if White exit 1
+> if white exit 1
 > ```
 
 ### Multi-line Comments - Syntax
@@ -52,5 +52,5 @@ Comments can be used to explain code, and to make it more readable.
 > /**
 > Reject the input if the first pixel is white
 > */
-> if White exit 1
+> if white exit 1
 > ```

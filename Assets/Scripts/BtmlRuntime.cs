@@ -274,14 +274,7 @@ public class BtmlRuntime : MonoBehaviour
 
             switch (action.moveDirection)
             {
-                case MoveDirection.Left:
-                    if (--canvasTextureX == -1)
-                    {
-                        goto default;
-                    }
-
-                    break;
-                case MoveDirection.Up:
+                case BtmlDirection.north:
                     canvasTextureOffset += canvasTextureWidth;
                     if (canvasTextureOffset == canvasTextureOffsetMax)
                     {
@@ -289,14 +282,14 @@ public class BtmlRuntime : MonoBehaviour
                     }
 
                     break;
-                case MoveDirection.Right:
+                case BtmlDirection.east:
                     if (++canvasTextureX == canvasTextureWidth)
                     {
                         goto default;
                     }
 
                     break;
-                case MoveDirection.Down:
+                case BtmlDirection.south:
                     canvasTextureOffset -= canvasTextureWidth;
                     if (canvasTextureOffset == -canvasTextureWidth)
                     {
@@ -304,7 +297,14 @@ public class BtmlRuntime : MonoBehaviour
                     }
 
                     break;
-                case MoveDirection.None:
+                case BtmlDirection.west:
+                    if (--canvasTextureX == -1)
+                    {
+                        goto default;
+                    }
+
+                    break;
+                case BtmlDirection.none:
                 default:
                     Exit(2, ref executedInstructions);
                     continue;

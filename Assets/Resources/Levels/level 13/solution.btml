@@ -1,6 +1,6 @@
-label read_length if Black move Up else exit 1
-if Black move Up goto check_black else move Up goto check_white
-label check_black if Black move Down goto move_down else exit 1
-label check_white if White move Down goto move_down else exit
-label move_down move Down
-move Right goto read_length
+read_length:	if black move north else exit 1
+		if black move north goto check_1 else move north goto check_0
+check_1:	if 1 move south goto move_south else exit 1
+check_0:	if 0 move south goto move_south else exit
+move_south:	move south
+		move east goto read_length

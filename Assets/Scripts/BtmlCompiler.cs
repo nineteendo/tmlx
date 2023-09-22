@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public struct BtmlAction
 {
     public Color32 writeColor;
-    public MoveDirection moveDirection;
+    public BtmlDirection moveDirection;
 
     public int gotoLineIndex;
     public string gotoLabel;
@@ -19,6 +18,15 @@ public struct BtmlBranch
     public Color32 color;
 
     public int lineIndex;
+}
+
+public enum BtmlDirection
+{
+    N, north = 0,
+    E, east = 1,
+    S, south = 2,
+    W, west = 3,
+    none
 }
 
 public struct BtmlInstruction
@@ -54,7 +62,7 @@ public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
 
 public static class BtmlCompiler
 {
-    private static readonly string[] reservedWords = { "Black", "Down", "Left", "Right", "Up", "White", "else", "exit", "goto", "if", "label", "move", "repeat", "write" };
+    private static readonly string[] reservedWords = { ":", "E", "N", "S", "W", "black", "east", "else", "exit", "goto", "if", "move", "north", "repeat", "south", "west", "white", "write" };
 
     public static bool Compile(string text, out BtmlInstruction[] precomputedInstructions, out string error)
     {
@@ -135,22 +143,22 @@ public static class BtmlCompiler
             string subLine = subLines[subLineIndex];
             for (int charIndex = 0; charIndex < subLine.Length; charIndex++)
             {
-                if (charIndex < subLine.Length - 1 && blockCommentStartIndex <= -1 && subLine[charIndex] == '/' && subLine[charIndex + 1] == '/')
+                if (charIndex + 1 < subLine.Length && blockCommentStartIndex <= -1 && subLine[charIndex] == '/' && subLine[charIndex + 1] == '/')
                 {
                     break;  // Re-use token line break token splitter
                 }
 
-                if (charIndex < subLine.Length - 1 && blockCommentStartIndex <= -1 && subLine[charIndex] == '/' && subLine[charIndex + 1] == '*')
+                if (charIndex + 1 < subLine.Length && blockCommentStartIndex <= -1 && subLine[charIndex] == '/' && subLine[charIndex + 1] == '*')
                 {
                     charIndex++; // Skip the '*' character
                     blockCommentStartIndex = lineIndex;
                 }
-                else if (charIndex < subLine.Length - 1 && blockCommentStartIndex > -1 && subLine[charIndex] == '*' && subLine[charIndex + 1] == '/')
+                else if (charIndex + 1 < subLine.Length && blockCommentStartIndex > -1 && subLine[charIndex] == '*' && subLine[charIndex + 1] == '/')
                 {
                     if (token.Length > 0)
                     {
                         tokens.Add(token.ToString());
-                        token = new StringBuilder();
+                        _ = token.Clear();
                     }
 
                     charIndex++; // Skip the '/' character
@@ -160,6 +168,16 @@ public static class BtmlCompiler
                 {
                     continue;
                 }
+                else if (subLine[charIndex] == ':')
+                {
+                    if (token.Length > 0)
+                    {
+                        tokens.Add(token.ToString());
+                        _ = token.Clear();
+                    }
+
+                    tokens.Add(subLine[charIndex++].ToString());
+                }
                 else if (subLine[charIndex] is not ' ' and not '\t')
                 {
                     _ = token.Append(subLine[charIndex]);
@@ -167,14 +185,14 @@ public static class BtmlCompiler
                 else if (token.Length > 0)
                 {
                     tokens.Add(token.ToString());
-                    token = new StringBuilder();
+                    _ = token.Clear();
                 }
             }
 
             if (token.Length > 0)
             {
                 tokens.Add(token.ToString());
-                token = new StringBuilder();
+                _ = token.Clear();
             }
         }
 
@@ -186,7 +204,7 @@ public static class BtmlCompiler
     {
         action = new BtmlAction
         {
-            moveDirection = MoveDirection.None,
+            moveDirection = BtmlDirection.none,
             gotoLineIndex = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
         };
 
@@ -211,7 +229,7 @@ public static class BtmlCompiler
                 return false;
             }
 
-            if (!Enum.TryParse(tokens[tokenIndex], out action.moveDirection) || action.moveDirection == MoveDirection.None)  // None is for internal use only
+            if (!Enum.TryParse(tokens[tokenIndex], out action.moveDirection) || action.moveDirection == BtmlDirection.none)  // None is for internal use only
             {
                 error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' is not a valid direction";
                 return false;
@@ -268,14 +286,15 @@ public static class BtmlCompiler
             return false;
         }
 
-        if (tokens[tokenIndex] == "White")
+        bool number = int.TryParse(tokens[tokenIndex], out int bit);
+        if (number ? bit == 0 : tokens[tokenIndex] == "white")
         {
             color = BtmlRuntime.COLOR_PIXEL_OFF;
             error = null;
             return true;
         }
 
-        if (tokens[tokenIndex] == "Black")
+        if (number ? bit == 1 : tokens[tokenIndex] == "black")
         {
             color = BtmlRuntime.COLOR_PIXEL_ON;
             error = null;
@@ -289,7 +308,7 @@ public static class BtmlCompiler
 
     private static bool Precompute(BtmlInstruction[] precomputedInstructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action, out string error)
     {
-        if (action.moveDirection != MoveDirection.None)
+        if (action.moveDirection != BtmlDirection.none)
         {
             error = null;
             return true;
@@ -297,7 +316,7 @@ public static class BtmlCompiler
 
         if (action.gotoLineIndex < 0)
         {
-            action.moveDirection = MoveDirection.Right;
+            action.moveDirection = BtmlDirection.east;
             error = null;
             return true;
         }
@@ -343,16 +362,16 @@ public static class BtmlCompiler
             }
 
             int tokenIndex = 0;
-            if (tokenIndex < tokens.Count && tokens[tokenIndex] == "label")
+            if (tokenIndex < tokens.Count && tokens[tokenIndex] == ":")
             {
-                if (++tokenIndex >= tokens.Count)
-                {
-                    instructions = null;
-                    error = $"Line {lineIndex + 1}: label is missing";
-                    return false;
-                }
+                instructions = null;
+                error = $"Line {lineIndex + 1}: label is missing before colon";
+                return false;
+            }
 
-                string label = tokens[tokenIndex];
+            if (tokenIndex + 1 < tokens.Count && tokens[tokenIndex + 1] == ":")
+            {
+                string label = tokens[tokenIndex++];
                 if (reservedWords.Contains(label))
                 {
                     instructions = null;
@@ -413,7 +432,7 @@ public static class BtmlCompiler
                 {
                     alternativeAction = new BtmlAction
                     {
-                        moveDirection = MoveDirection.None,
+                        moveDirection = BtmlDirection.none,
                         gotoLineIndex = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
                     };
                 }

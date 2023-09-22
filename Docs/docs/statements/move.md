@@ -8,10 +8,10 @@ last_modified_date: 2023-09-16 15:38
 # Move
 
 {: .example }
-> Move right until the first white pixel:
+> Move east until the first white pixel:
 >
 > ```btml
-> if Black move Right repeat
+> if black move east repeat
 > ```
 
 ## Move - Definition and Usage
@@ -28,4 +28,13 @@ move direction
 
 Field | Description
 -- | --
-direction | Required. `Down`, `Left`, `Right` or `Up`.
+direction | Required. `N`/`north`, `E`/`east`, `S`/`south`, `W`/`west`.
+
+## Move - More Examples
+
+{: .example }
+> Abbreviated:
+>
+> ```btml
+> if black move E repeat
+> ```

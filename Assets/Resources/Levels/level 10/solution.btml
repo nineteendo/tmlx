@@ -1,9 +1,9 @@
-label read_length_0 if White exit else move Up goto read_data_0
-label read_length_1 if White exit 1 else move Up goto read_data_2
-label read_length_2 if White exit 1 else move Up goto read_data_1
-label read_data_0 if White move Down goto next_0 else move Down goto next_1
-label read_data_1 if White move Down goto next_1 else move Down goto next_2
-label read_data_2 if White move Down goto next_2 else move Down goto next_0
-label next_0 move Right goto read_length_0
-label next_1 move Right goto read_length_1
-label next_2 move Right goto read_length_2
+read_length_0:	if white exit else move north goto read_data_0
+read_length_1:	if white exit 1 else move north goto read_data_2
+read_length_2:	if white exit 1 else move north goto read_data_1
+read_data_0:	if 0 move south goto next_0 else move south goto next_1
+read_data_1:	if 0 move south goto next_1 else move south goto next_2
+read_data_2:	if 0 move south goto next_2 else move south goto next_0
+next_0:		move east goto read_length_0
+next_1:		move east goto read_length_1
+next_2:		move east goto read_length_2

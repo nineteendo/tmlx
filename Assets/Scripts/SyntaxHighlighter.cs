@@ -12,8 +12,8 @@ public abstract class TokenIdentifier
 [Serializable]
 public struct CommentDelimiters
 {
-    public string commentPrefix;
-    public string commentSuffix;
+    public string prefixRegex;
+    public string suffixRegex;
 }
 
 [Serializable]
@@ -25,19 +25,14 @@ public class CommentTokenIdentifier : TokenIdentifier
     {
         foreach (CommentDelimiters commentDelimiters in commentDelimitersArray)
         {
-            string commentPrefix = commentDelimiters.commentPrefix;
-            if (text.Length - startIndex < commentPrefix.Length || text.Substring(startIndex, commentPrefix.Length) != commentPrefix)
+            Match match = new Regex($@"\G({commentDelimiters.prefixRegex})").Match(text, startIndex);
+            if (!match.Success)
             {
                 continue;
             }
 
-            int commentEndIndex;
-            string commentSuffix = commentDelimiters.commentSuffix;
-            commentEndIndex = commentSuffix != ""
-                ? text.IndexOf(commentSuffix, startIndex + commentPrefix.Length)
-                : text.IndexOfAny(new char[] { '\n', '\v' }, startIndex + commentPrefix.Length);
-
-            return commentEndIndex != -1 ? commentEndIndex + (commentSuffix != "" ? commentSuffix.Length : 1) - startIndex : text.Length - startIndex;
+            match = new Regex(commentDelimiters.suffixRegex).Match(text, startIndex + match.Length);
+            return (!match.Success ? text.Length : match.Index + match.Length) - startIndex;
         }
 
         return -1;
@@ -66,11 +61,12 @@ public class SyntaxHighlighter : ScriptableObject
             commentDelimitersArray = new CommentDelimiters[]
             {
                 new() {
-                    commentPrefix = "///"
+                    prefixRegex = @"\/\/\/",
+                    suffixRegex = @"\n|\v"
                 },
                 new() {
-                    commentPrefix = "/**",
-                    commentSuffix = "*/"
+                    prefixRegex = @"\/\*\*(?!/)",
+                    suffixRegex = @"\*\/"
                 }
             },
             tokenType = "comment.documentation"
@@ -80,11 +76,12 @@ public class SyntaxHighlighter : ScriptableObject
             commentDelimitersArray = new CommentDelimiters[]
             {
                 new() {
-                    commentPrefix = "//"
+                    prefixRegex = @"\/\/",
+                    suffixRegex = @"\n|\v"
                 },
                 new() {
-                    commentPrefix = "/*",
-                    commentSuffix = "*/"
+                    prefixRegex = @"\/\*",
+                    suffixRegex = @"\*\/"
                 }
             },
             tokenType = "comment.normal"
@@ -93,19 +90,19 @@ public class SyntaxHighlighter : ScriptableObject
 
     public RegexTokenIdentifier[] regexTokenIdentifiers = {
         new() {
-            regex = "Black|Down|Left|Right|Up|White",
+            regex = @"E|N|S|W|black|south|west|east|north|white",
             tokenType = "identifier.constant"
         },
         new() {
-            regex = "move|write",
+            regex = @"move|write",
             tokenType = "identifier.function"
         },
         new() {
-            regex = "else|exit|goto|if|label|repeat",
+            regex = @"else|exit|goto|if|repeat",
             tokenType = "keyword.control"
         },
         new() {
-            regex = "\\d+",
+            regex = @"\d+",
             tokenType = "literal.number"
         }
     };

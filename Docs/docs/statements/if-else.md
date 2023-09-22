@@ -12,10 +12,10 @@ Conditional statements are used to perform different actions for white and black
 ## If
 
 {: .example }
-> Move right until the first white pixel:
+> Move east until the first white pixel:
 >
 > ```btml
-> if Black move Right repeat
+> if black move east repeat
 > ```
 
 ### If - Definition and Usage
@@ -32,16 +32,25 @@ if color action
 
 Field | Description
 -- | --
-color | Required. `Black` or `White`.
+color | Required. `0`/`white` or `1`/`black`.
 action | Required. An [action](#actions).
+
+### If - More Examples
+
+{: .example }
+> Emphasize binary:
+>
+> ```btml
+> if 1 move east repeat
+> ```
 
 ## Else
 
 {: .example }
-> Move right until the last white pixel:
+> Move east until the last white pixel:
 >
 > ```btml
-> if White move Right repeat else move Left
+> if white move east repeat else move west
 > ```
 
 ### Else - Definition and Usage
@@ -58,21 +67,17 @@ if color action else action
 
 Field | Description
 -- | --
-color | Required. `Black` or `White`.
+color | Required. `0`/`white` or `1`/`black`.
 action | Required. An [action](#actions).
 
 ## Actions
 
 {: .example }
-> Write a black pixel and move Right:
+> Write a black pixel and move east:
 >
 > ```btml
-> write Black move Right
+> write Black move east
 > ```
-
-### Actions - Definition and Usage
-
-An action consists out of at least one statement.
 
 ### Actions - Syntax
 
@@ -84,8 +89,9 @@ An action consists out of at least one statement.
 
 Field | Description
 -- | --
-write | Optional. A [write statement](write), default write read color.
-move | Optional. A [move statement](move), default precompute action.
-exit | Optional. An [exit statement](exit).
-goto | Optional. A [goto statement](goto#goto), default go to next line.
-repeat | Optional. A [repeat statement](goto#repeat).
+write | Optional. A [write](write) statement, default write read color.
+move | Optional. A [move](move) statement, default precompute action.
+exit, goto or repeat | Optional. An [exit](exit#exit), [goto](goto#goto) or [repeat](goto#repeat) statement, default go to next line.
+
+{: .note }
+> An action consists out of at least one statement.

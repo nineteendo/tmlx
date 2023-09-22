@@ -1,2 +1,2 @@
-/**Label statement: label label instruction.Goto statement: goto label.This program is supposed to reject all input of odd length.But it does not compile, could you fix the error?*/if White exit else move Right goto odd_length
-label odd_length if White exit 1 else move Right goto even_length
+/**Label statement: label label instruction.Goto statement: goto label.This program is supposed to reject all input of odd length.But it does not compile, could you fix the error?*/		if white exit else move east goto odd_length
+odd_length:	if white exit 1 else move east goto even_length

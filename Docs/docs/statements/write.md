@@ -28,4 +28,13 @@ write color
 
 Field | Description
 -- | --
-color | Required. `Black` or `White`.
+color | Required. `0`/`white` or `1`/`black`.
+
+## Write - More Examples
+
+{: .example }
+> Emphasize binary:
+>
+> ```btml
+> write 1
+> ```
