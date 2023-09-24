@@ -16,11 +16,15 @@ Coming soon
 
 ### v0.4.0 - Features
 
+- Added coverage
 - Shorter instructions with abbreviations
 
 ### v0.4.0 - Bugfixes
 
+- Fixed all author solutions unlock cheat when beating a level with less than 3 stars
 - Fixed syntax highlighting for `/**/`
+- Fixed replay button not being selected when beating a level with less than 3 stars
+- Fixed selecting pixel out of bounds when moving off the canvas
 
 ## v0.3.0
 

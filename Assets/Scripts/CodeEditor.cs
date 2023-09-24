@@ -17,12 +17,21 @@ public struct Token
 public class CodeEditor : MonoBehaviour
 {
     public ColorTheme colorTheme;
+    public Color32[] MarkedLines
+    {
+        get => markedLines == null ? null : (Color32[])markedLines.Clone();
+        set
+        {
+            update = true;
+            markedLines = value == null ? value : (Color32[])value.Clone();
+        }
+    }
     public HashSet<int> breakpoints = new();
-    public Toggle breakpointTogglePrebab;
     public SyntaxHighlighter syntaxHighlighter;
+    public Toggle breakpointTogglePrebab;
     public TMP_BetterInputField inputField;
-    public TMP_Text lineNumbersText;
     public TMP_Text highlightedText;
+    public TMP_Text lineNumbersText;
 
     public int MarkedLineIndex
     {
@@ -34,46 +43,21 @@ public class CodeEditor : MonoBehaviour
         }
     }
 
+    private Color32[] markedLines;
     private readonly List<Toggle> breakpointToggles = new();
 
+    private bool fullUpdate = true;
     private bool update = true;
     private float heightPerChar;
     private float widthPerChar;
-    private int markedEndIndex = -1;
     private int markedLineIndex = -1;
-    private int markedStartIndex = -1;
+    private string[] lines;
 
     public void ToggleBreakpoint(int breakpointToggleIndex)
     {
         _ = breakpointToggles[breakpointToggleIndex].isOn
             ? breakpoints.Add(breakpointToggleIndex)
             : breakpoints.Remove(breakpointToggleIndex);
-    }
-
-
-    private void UpdateMarkedIndices(string text)
-    {
-        if (markedLineIndex < 0)
-        {
-            markedEndIndex = markedStartIndex = -1;
-            return;
-        }
-
-        markedStartIndex = 0;
-        for (int lineNumber = 0; lineNumber < markedLineIndex; lineNumber++)
-        {
-            int newMarkedStartIndex = text.IndexOf('\n', markedStartIndex);
-            if (newMarkedStartIndex == -1)
-            {
-                markedEndIndex = markedStartIndex = -1;
-                return;
-            }
-
-            markedStartIndex = newMarkedStartIndex + 1;
-        }
-
-        int newMarkedEndIndex = text.IndexOf('\n', markedStartIndex);
-        markedEndIndex = newMarkedEndIndex == -1 ? text.Length - 1 : newMarkedEndIndex;
     }
 
     private void SetBreakpointPosition(int breakpointToggleIndex, int lineIndex)
@@ -105,11 +89,16 @@ public class CodeEditor : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (update)
+        if (fullUpdate)
         {
             UpdateLineNumbers();
-            UpdateSyntaxHighlighting();
-            update = false;
+            UpdateLines();
+        }
+
+        if (fullUpdate || update)
+        {
+            UpdateMarkedText();
+            fullUpdate = update = false;
         }
     }
 
@@ -159,13 +148,12 @@ public class CodeEditor : MonoBehaviour
         }
     }
 
-    private void UpdateSyntaxHighlighting()
+    private void UpdateLines()
     {
-        StringBuilder highlightedTextBuilder = new();
+        StringBuilder coloredTextBuilder = new();
         Dictionary<string, Color32> tokenColoringDictionary = colorTheme.GetTokenColoringDictionary();
         int startIndex = 0;
         string text = inputField.textComponent.text;
-        UpdateMarkedIndices(text);
         foreach (Token token in syntaxHighlighter.Tokenize(text))
         {
             if (!tokenColoringDictionary.ContainsKey(token.tokenType))
@@ -173,40 +161,44 @@ public class CodeEditor : MonoBehaviour
                 continue;
             }
 
-            _ = highlightedTextBuilder.Append(HighlightSubString(text, startIndex, token.startIndex));
-            _ = highlightedTextBuilder.Append($"<#{ColorUtility.ToHtmlStringRGB(tokenColoringDictionary[token.tokenType])}>");
-            _ = highlightedTextBuilder.Append(HighlightSubString(text, token.startIndex, token.startIndex + token.length));
-            _ = highlightedTextBuilder.Append($"</color>");
+            _ = coloredTextBuilder.Append(text[startIndex..token.startIndex]);
+            _ = coloredTextBuilder.Append($"<#{ColorUtility.ToHtmlStringRGB(tokenColoringDictionary[token.tokenType])}>");
+            _ = coloredTextBuilder.Append(text.Substring(token.startIndex, token.length));
+            _ = coloredTextBuilder.Append($"</color>");
             startIndex = token.startIndex + token.length;
         }
 
-        _ = highlightedTextBuilder.Append(HighlightSubString(text, startIndex, text.Length));
-        highlightedText.text = highlightedTextBuilder.ToString();
+        _ = coloredTextBuilder.Append(text[startIndex..]);
+        lines = coloredTextBuilder.ToString().Split('\n');
+    }
+
+    private void UpdateMarkedText()
+    {
+        List<string> markedTextList = new();
+        for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+        {
+            string line = lines[lineIndex];
+            if (markedLines != null && lineIndex < markedLines.Length)
+            {
+                markedTextList.Add($"<mark=#{ColorUtility.ToHtmlStringRGBA(markedLines[lineIndex])}>{line}</mark>");
+            }
+            else if (lineIndex != markedLineIndex)
+            {
+                markedTextList.Add(line);
+            }
+            else
+            {
+                markedTextList.Add($"<mark=#ffff0033>{line}</mark>");
+            }
+        }
+
+        highlightedText.text = string.Join('\n', markedTextList);
     }
 
     private void Start()
     {
-        inputField.onValueChanged.AddListener((_) => update = true);
+        inputField.onValueChanged.AddListener((_) => fullUpdate = true);
         widthPerChar = inputField.textComponent.GetPreferredValues("0").x;
         heightPerChar = inputField.textComponent.GetPreferredValues("0").y;
-    }
-
-
-    private string HighlightSubString(string text, int startIndex, int endIndex)
-    {
-        string result;
-        if (startIndex > markedStartIndex || markedStartIndex >= endIndex)
-        {
-            result = "";
-        }
-        else
-        {
-            result = text[startIndex..markedStartIndex] + "<mark=#ffff0033>";
-            startIndex = markedStartIndex;
-        }
-
-        return startIndex > markedEndIndex || markedEndIndex >= endIndex
-            ? result + text[startIndex..endIndex]
-            : result + text[startIndex..markedEndIndex] + "</mark>" + text[markedEndIndex..endIndex];
     }
 }

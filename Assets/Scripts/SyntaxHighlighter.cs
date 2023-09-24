@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
+// TODO - Speed up syntax highlighter
+
 public abstract class TokenIdentifier
 {
     public string tokenType;
@@ -12,8 +14,30 @@ public abstract class TokenIdentifier
 [Serializable]
 public struct CommentDelimiters
 {
-    public string prefixRegex;
-    public string suffixRegex;
+    public string PrefixPattern
+    {
+        readonly get => prefixPattern;
+        set
+        {
+            prefixRegex = new Regex($@"\G({value})", RegexOptions.Compiled);
+            prefixPattern = value;
+        }
+    }
+    public string SuffixPattern
+    {
+        readonly get => suffixPattern;
+        set
+        {
+            suffixRegex = new Regex(value, RegexOptions.Compiled);
+            suffixPattern = value;
+        }
+    }
+
+    public Regex prefixRegex;
+    public Regex suffixRegex;
+
+    [SerializeField] private string prefixPattern;
+    [SerializeField] private string suffixPattern;
 }
 
 [Serializable]
@@ -25,13 +49,13 @@ public class CommentTokenIdentifier : TokenIdentifier
     {
         foreach (CommentDelimiters commentDelimiters in commentDelimitersArray)
         {
-            Match match = new Regex($@"\G({commentDelimiters.prefixRegex})").Match(text, startIndex);
+            Match match = commentDelimiters.prefixRegex.Match(text, startIndex);
             if (!match.Success)
             {
                 continue;
             }
 
-            match = new Regex(commentDelimiters.suffixRegex).Match(text, startIndex + match.Length);
+            match = commentDelimiters.suffixRegex.Match(text, startIndex + match.Length);
             return (!match.Success ? text.Length : match.Index + match.Length) - startIndex;
         }
 
@@ -42,11 +66,23 @@ public class CommentTokenIdentifier : TokenIdentifier
 [Serializable]
 public class RegexTokenIdentifier : TokenIdentifier
 {
-    public string regex;
+    public string Pattern
+    {
+        get => pattern;
+        set
+        {
+            regex = new Regex($@"\G\b({value})\b", RegexOptions.Compiled);
+            pattern = value;
+        }
+    }
+
+    public Regex regex;
+
+    [SerializeField] private string pattern;
 
     public override int Match(string text, int startIndex)
     {
-        Match match = new Regex($@"\G\b({regex})\b").Match(text, startIndex);
+        Match match = regex.Match(text, startIndex);
         return !match.Success ? -1 : match.Length;
     }
 }
@@ -61,12 +97,12 @@ public class SyntaxHighlighter : ScriptableObject
             commentDelimitersArray = new CommentDelimiters[]
             {
                 new() {
-                    prefixRegex = @"\/\/\/",
-                    suffixRegex = @"\n|\v"
+                    PrefixPattern = @"\/\/\/",
+                    SuffixPattern = @"\n|\v"
                 },
                 new() {
-                    prefixRegex = @"\/\*\*(?!/)",
-                    suffixRegex = @"\*\/"
+                    PrefixPattern = @"\/\*\*(?!/)",
+                    SuffixPattern = @"\*\/"
                 }
             },
             tokenType = "comment.documentation"
@@ -76,12 +112,12 @@ public class SyntaxHighlighter : ScriptableObject
             commentDelimitersArray = new CommentDelimiters[]
             {
                 new() {
-                    prefixRegex = @"\/\/",
-                    suffixRegex = @"\n|\v"
+                    PrefixPattern = @"\/\/",
+                    SuffixPattern = @"\n|\v"
                 },
                 new() {
-                    prefixRegex = @"\/\*",
-                    suffixRegex = @"\*\/"
+                    PrefixPattern = @"\/\*",
+                    SuffixPattern = @"\*\/"
                 }
             },
             tokenType = "comment.normal"
@@ -90,19 +126,19 @@ public class SyntaxHighlighter : ScriptableObject
 
     public RegexTokenIdentifier[] regexTokenIdentifiers = {
         new() {
-            regex = @"E|N|S|W|black|south|west|east|north|white",
+            Pattern = @"E|N|S|W|black|south|west|east|north|white",
             tokenType = "identifier.constant"
         },
         new() {
-            regex = @"move|write",
+            Pattern = @"move|write",
             tokenType = "identifier.function"
         },
         new() {
-            regex = @"else|exit|goto|if|repeat",
+            Pattern = @"else|exit|goto|if|repeat",
             tokenType = "keyword.control"
         },
         new() {
-            regex = @"\d+",
+            Pattern = @"\d+",
             tokenType = "literal.number"
         }
     };

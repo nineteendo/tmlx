@@ -5,7 +5,7 @@ parent: Statements
 last_modified_date: 2023-09-16 15:30
 ---
 
-# If, else and actions
+# If, Else and Actions
 
 Conditional statements are used to perform different actions for white and black pixels.
 

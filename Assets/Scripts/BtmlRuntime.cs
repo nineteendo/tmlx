@@ -9,6 +9,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image), typeof(RectTransform))]
 public class BtmlRuntime : MonoBehaviour
 {
+    public static readonly Color32 COLOR_COVERED_ENTIRELY = new(0x00, 0xff, 0x00, 0x33);
+    public static readonly Color32 COLOR_COVERED_HALF = new(0xff, 0xa5, 0x00, 0x33);
+    public static readonly Color32 COLOR_COVERED_NEVER = new(0xff, 0x00, 0x00, 0x33);
     public static readonly Color32 COLOR_SOLUTION_NORMAL = new(0x32, 0x32, 0x32, 0xff);
     public static readonly Color32 COLOR_SOLUTION_UNKNOWN = Color.green;
     public static readonly Color32 COLOR_PIXEL_OFF = Color.white;
@@ -17,9 +20,9 @@ public class BtmlRuntime : MonoBehaviour
     public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new(0x55, 0xff, 0xff, 0xff);
 
     public const int LEVEL_COUNT = 14;
-    public const float MAX_IPF = 2000000f;
+    public const float MAX_IPF = 3000000f;
     public const float NORMAL_IPS = 5f;
-    public const float TURBO_MULTIPLIER = 24000000f;
+    public const float TURBO_MULTIPLIER = 36000000f;
     public const float UPDATE_INTERVAL = .5f;
 
     public Button menuButton;
@@ -50,11 +53,8 @@ public class BtmlRuntime : MonoBehaviour
     private SaveLevel saveLevel;
     private Texture2D canvasTexture;
 
-#if UNITY_EDITOR
-    // Add coverage for debugging
     private bool[] coveredBlackBranches;
     private bool[] coveredWhiteBranches;
-#endif
     private float elapsedTime;
     private float maxIpf;
     private float normalIps;
@@ -104,6 +104,7 @@ public class BtmlRuntime : MonoBehaviour
 
     public void TogglePlay()
     {
+        codeEditor.MarkedLines = null;
         testIndex = 0;
         LoadTest();
         elapsedTime = totalInstructions = queuedInstructions = 0f;
@@ -129,11 +130,8 @@ public class BtmlRuntime : MonoBehaviour
             saveLevel.autoSave = codeEditor.inputField.text;
             SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
             SaveFunctions.SaveGame();
-#if UNITY_EDITOR
-            // Add coverage for debugging
             coveredBlackBranches = new bool[instructions.Length];
             coveredWhiteBranches = new bool[instructions.Length];
-#endif
         }
     }
 
@@ -153,15 +151,21 @@ public class BtmlRuntime : MonoBehaviour
     private void SelectPixel()
     {
         int canvasColorIndex = canvasTextureOffset + canvasTextureX;
-        Color32 canvasColor = canvasColors[canvasColorIndex];
-        canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
+        if (canvasColorIndex < canvasColors.Length)
+        {
+            Color32 canvasColor = canvasColors[canvasColorIndex];
+            canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
+        }
     }
 
     private void UnSelectPixel()
     {
         int canvasColorIndex = canvasTextureOffset + canvasTextureX;
-        Color32 canvasColor = canvasColors[canvasColorIndex];
-        canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
+        if (canvasColorIndex < canvasColors.Length)
+        {
+            Color32 canvasColor = canvasColors[canvasColorIndex];
+            canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
+        }
     }
 
     private void LoadTest()
@@ -247,10 +251,7 @@ public class BtmlRuntime : MonoBehaviour
         for (; executedInstructions < ipf; executedInstructions++)
         {
             int canvasColorIndex = canvasTextureOffset + canvasTextureX;
-            Color32 canvasColor = canvasColors[canvasColorIndex];
-#if UNITY_EDITOR
-            // Add coverage for debugging
-            if (canvasColor.r == COLOR_PIXEL_ON.r)
+            if (canvasColors[canvasColorIndex].r == COLOR_PIXEL_ON.r)
             {
                 action = ref instructions[instructionIndex].blackAction;
                 coveredBlackBranches[instructionIndex] = true;
@@ -261,9 +262,6 @@ public class BtmlRuntime : MonoBehaviour
                 coveredWhiteBranches[instructionIndex] = true;
             }
 
-#else
-            action = ref (canvasColor.r == COLOR_PIXEL_ON.r ? ref instructions[instructionIndex].blackAction : ref instructions[instructionIndex].whiteAction);
-#endif
             canvasColors[canvasColorIndex] = action.writeColor;
             int newProgramIndex = action.gotoLineIndex;
             if (newProgramIndex < 0)
@@ -374,19 +372,18 @@ public class BtmlRuntime : MonoBehaviour
         }
         else
         {
-#if UNITY_EDITOR
-            // Add coverage for debugging
-            int coveredBranchCount = 0;
+            int totalCoveredBranchesCount = 0;
+            Color32[] markedLines = new Color32[instructions.Length];
             for (int instructionIndex = 0; instructionIndex < instructions.Length; instructionIndex++)
             {
-                coveredBranchCount += !instructions[instructionIndex].conditional ? coveredBlackBranches[instructionIndex] || coveredWhiteBranches[instructionIndex] ? 2 : 0 : (coveredBlackBranches[instructionIndex] ? 1 : 0) + (coveredWhiteBranches[instructionIndex] ? 1 : 0);
+                int coveredBranchesCount = !instructions[instructionIndex].conditional ? coveredBlackBranches[instructionIndex] || coveredWhiteBranches[instructionIndex] ? 2 : 0 : (coveredBlackBranches[instructionIndex] ? 1 : 0) + (coveredWhiteBranches[instructionIndex] ? 1 : 0);
+                totalCoveredBranchesCount += coveredBranchesCount;
+                markedLines[instructionIndex] = coveredBranchesCount == 0 ? COLOR_COVERED_NEVER : coveredBranchesCount == 1 ? COLOR_COVERED_HALF : COLOR_COVERED_ENTIRELY;
             }
 
-            int coveragePercentage = 100 * coveredBranchCount / (2 * instructions.Length);
+            int coveragePercentage = 100 * totalCoveredBranchesCount / (2 * instructions.Length);
             levelEndedText.text = $"{coveragePercentage}% Coverage";
-#else
-            levelEndedText.text = "Level Completed!";
-#endif
+            codeEditor.MarkedLines = markedLines;
             int targetInstructionCount = level.solution.Count(c => c == '\n') + 1;
             starCount = instructionCount > targetInstructionCount * 2f
                 ? 0
@@ -410,7 +407,9 @@ public class BtmlRuntime : MonoBehaviour
                 saveLevel.bestSave = saveLevel.autoSave;
             }
 
+#if !UNITY_EDITOR
             slotAuthorButton.interactable = saveLevel.starCount == 3;
+#endif
             slotBestButton.interactable = true;
             SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
             SaveFunctions.SaveGame();
@@ -433,7 +432,7 @@ public class BtmlRuntime : MonoBehaviour
             nextButton.onClick.AddListener(() => LoadLevel(levelIndex + 1));
         }
 
-        EventSystem.current.SetSelectedGameObject(testIndex < tests.Length
+        EventSystem.current.SetSelectedGameObject(testIndex < tests.Length || starCount < 3
             ? replayButton.gameObject
             : nextButton.gameObject.activeSelf ? nextButton.gameObject : menuButton.gameObject
         );

@@ -15,18 +15,22 @@ MonoBehaviour:
   commentTokenIdentifiers:
   - tokenType: comment.documentation
     commentDelimitersArray:
-    - commentPrefix: ///
-      commentSuffix: 
-    - commentPrefix: /**
-      commentSuffix: '*/'
+    - prefixPattern: \/\/\/
+      suffixPattern: \n|\v
+    - prefixPattern: \/\*\*(?!/)
+      suffixPattern: \*\/
   - tokenType: comment.normal
     commentDelimitersArray:
-    - commentPrefix: //
-      commentSuffix: 
-    - commentPrefix: /*
-      commentSuffix: '*/'
-  identifierTokenIdentifiers:
+    - prefixPattern: \/\/
+      suffixPattern: \n|\v
+    - prefixPattern: \/\*
+      suffixPattern: \*\/
+  regexTokenIdentifiers:
   - tokenType: identifier.constant
-    identifiersRegex: Black|Down|Left|Right|Up|White
+    pattern: E|N|S|W|black|south|west|east|north|white
   - tokenType: identifier.function
-    identifiersRegex: move|write
+    pattern: move|write
+  - tokenType: keyword.control
+    pattern: else|exit|goto|if|repeat
+  - tokenType: literal.number
+    pattern: \d+

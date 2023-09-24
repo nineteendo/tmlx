@@ -34,10 +34,7 @@ public struct BtmlInstruction
     public BtmlAction blackAction;
     public BtmlAction whiteAction;
 
-#if UNITY_EDITOR
-    // Add coverage for debugging
     public bool conditional;
-#endif
 }
 
 
@@ -62,7 +59,7 @@ public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
 
 public static class BtmlCompiler
 {
-    private static readonly string[] reservedWords = { ":", "E", "N", "S", "W", "black", "east", "else", "exit", "goto", "if", "move", "north", "repeat", "south", "west", "white", "write" };
+    private static readonly string[] reservedWords = { ":", "E", "N", "NE", "NW", "S", "SE", "SW", "W", "black", "east", "else", "exit", "goto", "if", "move", "north", "north_east", "north_west", "repeat", "south", "south_east", "south_west", "west", "while", "white", "write" };
 
     public static bool Compile(string text, out BtmlInstruction[] precomputedInstructions, out string error)
     {
@@ -176,7 +173,7 @@ public static class BtmlCompiler
                         _ = token.Clear();
                     }
 
-                    tokens.Add(subLine[charIndex++].ToString());
+                    tokens.Add(subLine[charIndex].ToString());
                 }
                 else if (subLine[charIndex] is not ' ' and not '\t')
                 {
@@ -252,6 +249,12 @@ public static class BtmlCompiler
                 return false;
             }
 
+            if (reservedWords.Contains(tokens[tokenIndex]))
+            {
+                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' is reserved from use as a label";
+                return false;
+            }
+
             action.gotoLabel = tokens[tokenIndex++];
         }
         else if (tokenIndex < tokens.Count && tokens[tokenIndex] == "exit")
@@ -268,7 +271,7 @@ public static class BtmlCompiler
             }
             else
             {
-                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: exit status '{tokens[tokenIndex]}' is not defined";
+                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' is not a valid exit status";
                 return false;
             }
         }
@@ -371,22 +374,21 @@ public static class BtmlCompiler
 
             if (tokenIndex + 1 < tokens.Count && tokens[tokenIndex + 1] == ":")
             {
-                string label = tokens[tokenIndex++];
-                if (reservedWords.Contains(label))
+                if (reservedWords.Contains(tokens[tokenIndex]))
                 {
                     instructions = null;
                     error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' is reserved from use as a label";
                     return false;
                 }
 
-                if (labels.ContainsKey(label))
+                if (labels.ContainsKey(tokens[tokenIndex]))
                 {
                     instructions = null;
-                    error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: label '{tokens[tokenIndex]}' is already defined on line {labels[label] + 1}";
+                    error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: label '{tokens[tokenIndex]}' is already defined on line {labels[tokens[tokenIndex]] + 1}";
                     return false;
                 }
 
-                labels.Add(label, lineIndex);
+                labels.Add(tokens[tokenIndex++], lineIndex);
                 if (++tokenIndex >= tokens.Count)
                 {
                     instructions = null;
@@ -408,7 +410,7 @@ public static class BtmlCompiler
                 if (++tokenIndex >= tokens.Count)
                 {
                     instructions = null;
-                    error = $"Line {lineIndex + 1}: 'if' branch is missing";
+                    error = $"Line {lineIndex + 1}: 'if' action is missing";
                     return false;
                 }
 
@@ -423,7 +425,7 @@ public static class BtmlCompiler
                 if (tokenIndex == oldTokenIndex)
                 {
                     instructions = null;
-                    error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: found '{tokens[tokenIndex]}' before 'if' branch";
+                    error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: found '{tokens[tokenIndex]}' before 'if' action";
                     return false;
                 }
 
@@ -439,7 +441,7 @@ public static class BtmlCompiler
                 else if (++tokenIndex >= tokens.Count)
                 {
                     instructions = null;
-                    error = $"Line {lineIndex + 1}: 'else' branch is missing";
+                    error = $"Line {lineIndex + 1}: 'else' action is missing";
                     return false;
                 }
                 else
@@ -455,17 +457,14 @@ public static class BtmlCompiler
                     if (tokenIndex == oldTokenIndex)
                     {
                         instructions = null;
-                        error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: found '{tokens[tokenIndex]}' before 'else' branch";
+                        error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: found '{tokens[tokenIndex]}' before 'else' action";
                         return false;
                     }
                 }
 
                 instruction.blackAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_ON) ? consequentAction : alternativeAction;
                 instruction.whiteAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? consequentAction : alternativeAction;
-#if UNITY_EDITOR
-                // Add coverage for debugging
                 instruction.conditional = true;
-#endif
             }
             else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, out BtmlAction action, out string actionError))
             {

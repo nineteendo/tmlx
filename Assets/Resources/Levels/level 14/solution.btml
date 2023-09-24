@@ -1,8 +1,8 @@
 read_length_0:	if black move north goto read_first else exit 1
 read_length_1:	if black exit 1 else exit
-read_first:	if black move north goto check_1 else move north goto check_0
-check_1:	if 1 move south goto move_south_0 else exit 1
-check_0:	if 0 move south goto move_south_0 else move south goto move_south_1
+read_first:	if 1 move north goto read_second_1 else move north goto read_second_0
+read_second_0:	if 0 move south goto move_south_0 else move south goto move_south_1
+read_second_1:	if 1 move south goto move_south_0 else exit 1
 move_south_0:	move south goto next_0
 move_south_1:	move south goto next_1
 next_0:		move east goto read_length_0

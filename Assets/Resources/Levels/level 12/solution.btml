@@ -1,6 +1,6 @@
 read_length:	if black move north else exit
-		if black move north goto check_1 else move north goto check_0
-check_1:	if 1 move south goto move_south else exit 1
-check_0:	if 0 move south goto move_south else exit 1
+		if 1 move north goto read_second_1 else move north goto read_second_0
+read_second_0:	if 0 move south goto move_south else exit 1
+read_second_1:	if 1 move south goto move_south else exit 1
 move_south:	move south
 		move east goto read_length

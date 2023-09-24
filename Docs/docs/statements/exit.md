@@ -5,7 +5,7 @@ parent: Statements
 last_modified_date: 2023-09-16 16:58
 ---
 
-# Exit and exit status
+# Exit and Exit Status
 
 The `exit` statement is used to terminate the program and classify the input.
 

@@ -1,6 +1,1 @@
-/**This program is supposed to accept even bit parity, but it contains a bug.Click left of line 3 to add a breakpoint, activate turbo and press play.The program will be paused on line 3 and a black pixel will be selected.Step forward and verify we are on line 6. Unpause to get to the white pixel.Step forward and notice we are not on line 5. Why would that be?When you have corrected the error, remove the breakpoint and deactivate turbo.*/read_length_0:	if white exit else move north goto read_data_0
-read_length_1:	if white exit 1 else move north goto read_data_1
-read_data_0:	if 0 move south goto next_1 else move south goto next_1
-read_data_1:	if 0 move south goto next_1 else move south goto next_0
-next_0:		move east goto read_length_0
-next_1:		move east goto read_length_1
+/**Challenge: accept even bit parity.1. Read length line:- If 0: accept if remainder is 0.2. Read input line:- If 1: add 1, take remainder after division by 2.3. Repeat.You need one state per remainder.*/
