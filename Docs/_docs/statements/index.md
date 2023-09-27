@@ -2,12 +2,12 @@
 title: Statements
 layout: default
 has_children: true
-last_modified_date: 2023-09-16 12:27
+permalink: /docs/statements
 ---
 
 # Statements
 
-Here is a visual representation of all possible statements. Click on a word for more information.
+<span>New (v0.4.0)</span>{: .label .label-green } Here is a visual representation of all possible statements. Click on a word for more information.
 
 <style type="text/css">
     table {

@@ -2,10 +2,13 @@
 title: Home
 layout: home
 nav_order: 1
-last_modified_date: 2023-09-20 18:41
+permalink: /
 ---
 
 # Welcome to the Binary Turing Machine Language
+
+[Get started now](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[View it on GitHub](https://github.com/nineteendo/btml){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 {: .warning }
 This website documents the features of the current `main` branch of Btml. See [the changelog](changelog) for a list of releases, new features, and bug fixes.
@@ -39,4 +42,4 @@ Btml is &copy; Copyright 2023-{{ site.time | date: '%Y' }} by [Nice Zombies](htt
 
 ### License
 
-Btml is distributed by a [GPL-3.0 license](https://github.com/Nineteendo/Btml/blob/main/LICENSE).
+Btml is distributed by a [GPL-3.0 license](https://github.com/nineteendo/btml/blob/main/LICENSE).

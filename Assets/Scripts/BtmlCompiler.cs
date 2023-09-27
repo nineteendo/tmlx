@@ -59,7 +59,7 @@ public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
 
 public static class BtmlCompiler
 {
-    private static readonly string[] reservedWords = { ":", "E", "N", "NE", "NW", "S", "SE", "SW", "W", "black", "east", "else", "exit", "goto", "if", "move", "north", "north_east", "north_west", "repeat", "south", "south_east", "south_west", "west", "while", "white", "write" };
+    private static readonly string[] reservedWords = { ":", "E", "N", "S", "W", "black", "down", "east", "else", "exit", "goto", "if", "left", "move", "north", "repeat", "right", "south", "up", "west", "while", "white", "write" };
 
     public static bool Compile(string text, out BtmlInstruction[] precomputedInstructions, out string error)
     {

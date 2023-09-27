@@ -2,7 +2,6 @@
 title: Write
 layout: default
 parent: Statements
-last_modified_date: 2023-09-16 15:38
 ---
 
 # Write

@@ -2,10 +2,13 @@
 title: Move
 layout: default
 parent: Statements
-last_modified_date: 2023-09-16 15:38
 ---
 
 # Move
+{: .d-inline-block }
+
+Deprecated
+{: .label .label-red }
 
 {: .example }
 > Move east until the first white pixel:

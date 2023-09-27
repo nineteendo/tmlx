@@ -1,12 +1,19 @@
 ---
 title: Comments
 layout: default
-last_modified_date: 2023-09-16 17:26
 ---
 
 # Comments
+{: .no_toc }
 
 Comments can be used to explain code, and to make it more readable.
+{: .fs-6 .fw-300 }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 ## Single Line Comments
 
@@ -42,7 +49,7 @@ Comments can be used to explain code, and to make it more readable.
 ### Multi-line Comments - Syntax
 
 ```ebnf
-/* {text \n} text */
+/* {text \v} text */
 ```
 
 {: .note }

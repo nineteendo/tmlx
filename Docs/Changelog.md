@@ -1,12 +1,12 @@
 ---
 title: Changelog
 layout: default
-last_modified_date: 2023-09-16 12:27
 ---
 
 # Changelog
 
 All notable changes to this project are documented in this file.
+{: .fs-6 .fw-300 }
 
 ## v0.4.0
 {: .d-inline-block }
@@ -16,106 +16,126 @@ Coming soon
 
 ### v0.4.0 - Features
 
-- Added coverage
-- Shorter instructions with abbreviations
+- [Implemented coverage](https://github.com/nineteendo/btml/issues/60)
+- [Improved syntax](https://github.com/nineteendo/btml/issues/54)
+
+### v0.4.0 - Levels
+
+- [Added levels 15-16](https://github.com/nineteendo/btml/issues/53)
+
+### v0.4.0 - Documentation
+
+- [Add statements overview](https://github.com/nineteendo/btml/issues/63)
+- [Create issues for all changes](https://github.com/nineteendo/btml/issues/61)
+- [Document new syntax](https://github.com/nineteendo/btml/issues/62)
 
 ### v0.4.0 - Bugfixes
 
-- Fixed all author solutions unlock cheat when beating a level with less than 3 stars
-- Fixed syntax highlighting for `/**/`
-- Fixed replay button not being selected when beating a level with less than 3 stars
-- Fixed selecting pixel out of bounds when moving off the canvas
+- [Fixed all author solutions unlock cheat when beating a level with less than 3 stars](https://github.com/nineteendo/btml/issues/55)
+- [Fixed palette preview aspect ratio](https://github.com/nineteendo/btml/issues/56)
+- [Fixed replay button not being selected when beating a level with less than 3 stars](https://github.com/nineteendo/btml/issues/57)
+- [Fixed selecting pixel out of bounds when moving off the canvas](https://github.com/nineteendo/btml/issues/58)
+- [Fixed syntax highlighting for `/**/`](https://github.com/nineteendo/btml/issues/59)
 
 ## v0.3.0
 
 ### v0.3.0 - Features
 
-- Removed wrapping
+- [Removed wrapping](https://github.com/nineteendo/btml/issues/52)
 
 ### v0.3.0 - Levels
 
-- Added levels 11-14
+- [Added levels 11-14](https://github.com/nineteendo/btml/issues/44)
 
 ### v0.3.0 - Developer Cheats
 
-- Added level 0
-- Enabled coverage
+- [Add enable coverage developer cheat](https://github.com/nineteendo/btml/issues/42)
+- [Add level 0 developer cheat](https://github.com/nineteendo/btml/issues/43)
 
 ### v0.3.0 - Palette Packs
 
-- Expanded Binary Turing Machine Language Palette Pack (+1 palette)
+- [Expanded binary turing machine language palette pack (+1 palette)](https://github.com/nineteendo/btml/issues/46)
+
+### v0.3.0 - Documentation
+
+- [Added changelog](https://github.com/nineteendo/btml/issues/39)
+- [Added comments documentation](https://github.com/nineteendo/btml/issues/40)
+- [Added statements documentation](https://github.com/nineteendo/btml/issues/45)
+- [Added documentation](https://github.com/nineteendo/btml/issues/41)
 
 ### v0.3.0 - Bugfixes
 
-- Fixed input field not being selected when clicking on replay
-- Fixed menu button not being selected when beating the last level
-- Fixed replay button not being selected when failing a level
-- Fixed selected pixel not updating properly
-- Fixed slowdown when disabling all breakpoints
+- [Fixed input field not being selected when clicking on replay](https://github.com/nineteendo/btml/issues/47)
+- [Fixed menu button not being selected when beating the last level](https://github.com/nineteendo/btml/issues/48)
+- [Fixed replay button not being selected when failing a level](https://github.com/nineteendo/btml/issues/49)
+- [Fixed selected pixel not updating properly](https://github.com/nineteendo/btml/issues/50)
+- [Fixed slowdown when disabling all breakpoints](https://github.com/nineteendo/btml/issues/51)
 
 ## v0.2.0
 
 ### v0.2.0 - Features
 
-- Added breakpoints
-- Added executing instruction highlighting
-- Refactored code for better readability
+- [Implemented debugging](https://github.com/nineteendo/btml/issues/36)
+- [Refactored code](https://github.com/nineteendo/btml/issues/37)
 
 ### v0.2.0 - Levels
 
-- Added level 7-10
+- [Added level 7-10](https://github.com/nineteendo/btml/issues/30)
 
 ### v0.2.0 - Developer Cheats
 
-- Disabled loading game
-- Disabled saving game
-- Enabled unlocking all levels
-- Enabled unlocking all author solutions
+- [Added disable loading game developer cheat](https://github.com/nineteendo/btml/issues/27)
+- [Added disable saving game developer cheat](https://github.com/nineteendo/btml/issues/28)
+- [Added enable unlocking all author solutions developer cheat](https://github.com/nineteendo/btml/issues/31)
+- [Added enable unlocking all levels developer cheat](https://github.com/nineteendo/btml/issues/29)
 
 ### v0.2.0 - Bugfixes
 
-- Fixed Ips not working properly below 60
-- Fixed max ipf
-- Fixed entering `\u0003` in single line input fields
-- Fixed palette generator
+- [Fixed entering `\u0003` in single line input fields](https://github.com/nineteendo/btml/issues/32)
+- [Fixed graphics on android](https://github.com/nineteendo/btml/issues/38)
+- [Fixed ips not working properly below 60](https://github.com/nineteendo/btml/issues/33)
+- [Fixed max ipf](https://github.com/nineteendo/btml/issues/34)
+- [Fixed palette generator](https://github.com/nineteendo/btml/issues/35)
 
 ## v0.1.0
 
 ### v0.1.0 - Features
 
-- Added automatically resizing line numbers
-- Added compiler with error messages
-- Added ips counter & exit status
-- Added new, auto, author & best save slots
-- Addded play, pause, turbo toggles & step button
-- Addded syntax highlighting for comments (normal & documentation),  identifiers (constants & functions), keywords (control) & literals (numbers)
+- [Added code controls](https://github.com/nineteendo/btml/issues/2)
+- [Added line numbers](https://github.com/nineteendo/btml/issues/9)
+- [Added save slots](https://github.com/nineteendo/btml/issues/17)
+- [Added status bar](https://github.com/nineteendo/btml/issues/19)
+- [Implemented palette shaders](https://github.com/nineteendo/btml/issues/23)
+- [Implemented palettes](https://github.com/nineteendo/btml/issues/24)
+- [Implemented syntax highlighting](https://github.com/nineteendo/btml/issues/25)
+- [Implemented unit tests](https://github.com/nineteendo/btml/issues/26)
 
 ### v0.1.0 - Levels
 
-- Added level 1-6
+- [Added level 1-6](https://github.com/nineteendo/btml/issues/8)
 
 ### v0.1.0 - Settings
 
-- Added Max Ipf: maximum number of instructions per frame
-- Added Normal Ips: number of instructions per second at normal speed
-- Added Turbo Multiplier: multiplier of instructions per second at turbo speed
-- Added Palette Shader: shader to apply the palette to the canvas
-- Added Palette Pack: pack to choose the palette from
-- Added Palette: palette to color the canvas
-- Added Invert Palette: reverse the color order
-- Added Dark Filter Level: percentage to reduce the color channels
+- [Added dark filter level setting](https://github.com/nineteendo/btml/issues/3)
+- [Added invert palette setting](https://github.com/nineteendo/btml/issues/7)
+- [Added max ipf setting](https://github.com/nineteendo/btml/issues/10)
+- [Added normal ips setting](https://github.com/nineteendo/btml/issues/11)
+- [Added palette pack setting](https://github.com/nineteendo/btml/issues/13)
+- [Added palette setting](https://github.com/nineteendo/btml/issues/14)
+- [Added palette shader setting](https://github.com/nineteendo/btml/issues/15)
+- [Added turbo multiplier setting](https://github.com/nineteendo/btml/issues/22)
 
 ### v0.1.0 - Palette Shaders
 
-- Added Normal Palette Shader: no special effect
-- Added Grid Palette Shader: border around pixels
+- [Added grid palette shader](https://github.com/nineteendo/btml/issues/6)
+- [Added normal palette shader](https://github.com/nineteendo/btml/issues/12)
 
 ### v0.1.0 - Palette Packs
 
-- Added Binary Turing Machine Language Palette Pack (1 palette)
-- Added Game Boy Palette Pack (3 palettes)
-- Added Game Boy Color Palette Pack (12 palettes)
-- Added Super Game Boy Palette Pack (32 palettes)
-- Added Special Palette Pack (4 palettes)
-- Added TheWolfBunny64 Palette Pack (200 palettes)
-- Added PixelShift Palette Pack (45 palettes)
+- [Added binary turing machine language palette pack](https://github.com/nineteendo/btml/issues/1)
+- [Added game boy color palette pack](https://github.com/nineteendo/btml/issues/4)
+- [Added game boy palette pack](https://github.com/nineteendo/btml/issues/5)
+- [Added pixelshift palette pack](https://github.com/nineteendo/btml/issues/16)
+- [Added special palette pack](https://github.com/nineteendo/btml/issues/18)
+- [Added super game boy palette pack](https://github.com/nineteendo/btml/issues/20)
+- [Added thewolfbunny64 palette pack](https://github.com/nineteendo/btml/issues/21)

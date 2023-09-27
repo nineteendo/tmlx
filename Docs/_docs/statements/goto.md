@@ -2,12 +2,19 @@
 title: Goto
 layout: default
 parent: Statements
-last_modified_date: 2023-09-16 15:38
 ---
 
 # Goto, Repeat and Labels
+{: .no_toc }
 
 Goto, repeat and labels are used to jump through the code.
+{: .fs-6 .fw-300 }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 ## Goto
 
@@ -20,23 +27,23 @@ Goto, repeat and labels are used to jump through the code.
 > skip:	write White
 > ```
 
-## Goto - Definition and Usage
+### Goto - Definition and Usage
 
 The `goto` function jumps to the specified label.
 
-## Goto - Syntax
+### Goto - Syntax
 
 ```ebnf
 goto label
 ```
 
-## Goto - Fields
+### Goto - Fields
 
 Field | Description
 -- | --
 label | Required. A defined [label](#labels).
 
-## Goto - More Examples
+### Goto - More Examples
 
 {: .example }
 > Jump to previous line:
@@ -47,6 +54,10 @@ label | Required. A defined [label](#labels).
 > ```
 
 ## Repeat
+{: .d-inline-block }
+
+Deprecated
+{: .label .label-red }
 
 {: .example }
 > Move east until the first white pixel:
@@ -55,7 +66,7 @@ label | Required. A defined [label](#labels).
 > if black move east repeat
 > ```
 
-## Repeat - Definition and Usage
+### Repeat - Definition and Usage
 
 The `repeat` function repeats the current line.
 
@@ -74,7 +85,7 @@ repeat
 > find_white:	if black move east repeat
 > ```
 
-## Labels - Definition and Usage
+### Labels - Definition and Usage
 
 A label allows you to jump to a line.
 
@@ -84,7 +95,7 @@ A label allows you to jump to a line.
 label:
 ```
 
-## Labels - Fields
+### Labels - Fields
 
 Field | Description
 -- | --

@@ -2,12 +2,19 @@
 title: If Else
 layout: default
 parent: Statements
-last_modified_date: 2023-09-16 15:30
 ---
 
 # If, Else and Actions
+{: .no_toc }
 
 Conditional statements are used to perform different actions for white and black pixels.
+{: .fs-6 .fw-300 }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 ## If
 
@@ -60,14 +67,14 @@ Use the `else` statement to specify a single action to be performed if the read 
 ### Else - Syntax
 
 ```ebnf
-if color action else action
+if else action
 ```
 
 ### Else - Fields
 
 Field | Description
 -- | --
-color | Required. `0`/`white` or `1`/`black`.
+if | Required. An [if statement](#if).
 action | Required. An [action](#actions).
 
 ## Actions
@@ -89,9 +96,9 @@ action | Required. An [action](#actions).
 
 Field | Description
 -- | --
-write | Optional. A [write](write) statement, default write read color.
-move | Optional. A [move](move) statement, default precompute action.
-exit, goto or repeat | Optional. An [exit](exit#exit), [goto](goto#goto) or [repeat](goto#repeat) statement, default go to next line.
+write | Optional. A [write statement](write), default write read color.
+move | Optional. A [move statement](move), default precompute action.
+exit, goto or repeat | Optional. An [exit](exit#exit), [goto](goto#goto) or [repeat statement](goto#repeat), default go to next line.
 
 {: .note }
 > An action consists out of at least one statement.

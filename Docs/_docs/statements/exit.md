@@ -2,12 +2,19 @@
 title: Exit
 layout: default
 parent: Statements
-last_modified_date: 2023-09-16 16:58
 ---
 
 # Exit and Exit Status
+{: .no_toc }
 
 The `exit` statement is used to terminate the program and classify the input.
+{: .fs-6 .fw-300 }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 ## Exit
 
@@ -54,6 +61,4 @@ Exit Status | Description
 -- | --
 0 | The input is accepted (the program finished).
 1 | The input is rejected.
-2 | The input is malformed (the program moved off the canvas[^1]).
-
-[^1]: This will become impossible with infinite canvases.
+2 | The input is malformed (the program moved off the canvas).
