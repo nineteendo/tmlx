@@ -9,10 +9,6 @@ All notable changes to this project are documented in this file.
 {: .fs-6 .fw-300 }
 
 ## v0.4.0
-{: .d-inline-block }
-
-Coming soon
-{: .label .label-yellow }
 
 ### v0.4.0 - Features
 
