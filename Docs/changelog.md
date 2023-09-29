@@ -8,6 +8,31 @@ title: Changelog
 All notable changes to this project are documented in this file.
 {: .fs-6 .fw-300 }
 
+## v0.5.0
+{: .d-inline-block }
+
+Coming soon
+{: .label .label-yellow }
+
+### v0.5.0 - Features
+
+- [Added optimise code control](https://github.com/nineteendo/btml/issues/66)
+- [Implemented scrolling canvases with configurable size](https://github.com/nineteendo/btml/issues/67)
+- [Made vscode extension](https://github.com/nineteendo/btml/issues/69)
+
+### v0.5.0 - Levels
+
+- [Added level 16](https://github.com/nineteendo/btml/issues/65)
+
+### v0.5.0 - Settings
+
+- [Added canvas size setting](https://github.com/nineteendo/btml/issues/70)
+
+### v0.5.0 - Bugfixes
+
+- [Flipped unit tests vertically](https://github.com/nineteendo/btml/issues/68)
+- [Fixed palette preview alignment](https://github.com/nineteendo/btml/issues/71)
+
 ## v0.4.0
 
 ### v0.4.0 - Features
@@ -44,21 +69,16 @@ All notable changes to this project are documented in this file.
 
 - [Added level 11-14](https://github.com/nineteendo/btml/issues/44)
 
-### v0.3.0 - Developer Cheats
-
-- [Add enable coverage developer cheat](https://github.com/nineteendo/btml/issues/42)
-- [Add level 0 developer cheat](https://github.com/nineteendo/btml/issues/43)
-
-### v0.3.0 - Palette Packs
-
-- [Expanded binary turing machine language palette pack (+1 palette)](https://github.com/nineteendo/btml/issues/46)
-
 ### v0.3.0 - Documentation
 
 - [Added changelog](https://github.com/nineteendo/btml/issues/39)
 - [Added comments documentation](https://github.com/nineteendo/btml/issues/40)
 - [Added statements documentation](https://github.com/nineteendo/btml/issues/45)
 - [Added documentation](https://github.com/nineteendo/btml/issues/41)
+
+### v0.3.0 - Palette Packs
+
+- [Expanded binary turing machine language palette pack (+1 palette)](https://github.com/nineteendo/btml/issues/46)
 
 ### v0.3.0 - Bugfixes
 
@@ -67,6 +87,11 @@ All notable changes to this project are documented in this file.
 - [Fixed replay button not being selected when failing a level](https://github.com/nineteendo/btml/issues/49)
 - [Fixed selected pixel not updating properly](https://github.com/nineteendo/btml/issues/50)
 - [Fixed slowdown when disabling all breakpoints](https://github.com/nineteendo/btml/issues/51)
+
+### v0.3.0 - Developer Cheats
+
+- [Add enable coverage developer cheat](https://github.com/nineteendo/btml/issues/42)
+- [Add level 0 developer cheat](https://github.com/nineteendo/btml/issues/43)
 
 ## v0.2.0
 
@@ -79,13 +104,6 @@ All notable changes to this project are documented in this file.
 
 - [Added level 7-10](https://github.com/nineteendo/btml/issues/30)
 
-### v0.2.0 - Developer Cheats
-
-- [Added disable loading game developer cheat](https://github.com/nineteendo/btml/issues/27)
-- [Added disable saving game developer cheat](https://github.com/nineteendo/btml/issues/28)
-- [Added enable unlocking all author solutions developer cheat](https://github.com/nineteendo/btml/issues/31)
-- [Added enable unlocking all levels developer cheat](https://github.com/nineteendo/btml/issues/29)
-
 ### v0.2.0 - Bugfixes
 
 - [Fixed entering `\u0003` in single line input fields](https://github.com/nineteendo/btml/issues/32)
@@ -93,6 +111,13 @@ All notable changes to this project are documented in this file.
 - [Fixed ips not working properly below 60](https://github.com/nineteendo/btml/issues/33)
 - [Fixed max ipf](https://github.com/nineteendo/btml/issues/34)
 - [Fixed palette generator](https://github.com/nineteendo/btml/issues/35)
+
+### v0.2.0 - Developer Cheats
+
+- [Added disable loading game developer cheat](https://github.com/nineteendo/btml/issues/27)
+- [Added disable saving game developer cheat](https://github.com/nineteendo/btml/issues/28)
+- [Added enable unlocking all author solutions developer cheat](https://github.com/nineteendo/btml/issues/31)
+- [Added enable unlocking all levels developer cheat](https://github.com/nineteendo/btml/issues/29)
 
 ## v0.1.0
 
