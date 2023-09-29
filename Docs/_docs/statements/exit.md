@@ -1,7 +1,7 @@
 ---
-title: Exit
 layout: default
 parent: Statements
+title: Exit
 ---
 
 # Exit and Exit Status

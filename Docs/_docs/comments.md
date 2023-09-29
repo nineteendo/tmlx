@@ -1,6 +1,6 @@
 ---
-title: Comments
 layout: default
+title: Comments
 ---
 
 # Comments

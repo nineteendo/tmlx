@@ -1,13 +1,13 @@
 ---
-title: Goto
 layout: default
 parent: Statements
+title: Goto
 ---
 
-# Goto, Repeat and Labels
+# Goto and Labels
 {: .no_toc }
 
-Goto, repeat and labels are used to jump through the code.
+Goto and labels are used to jump through the code.
 {: .fs-6 .fw-300 }
 
 ## Table of contents
@@ -19,7 +19,7 @@ Goto, repeat and labels are used to jump through the code.
 ## Goto
 
 {: .example }
-> Skip next line:
+> Skip the next line:
 >
 > ```btml
 > 	if black down else down goto skip
@@ -47,41 +47,12 @@ label | Required. A defined [label](#labels).
 ### Goto - More Examples
 
 {: .example }
-> Jump to previous line:
+> Jump to the previous line:
 >
 > ```btml
 > back:	if white exit 1 else right
 > 	if white exit else right goto back
 > ```
-
-## Repeat
-{: .d-inline-block }
-
-Deprecated
-{: .label .label-red }
-
-{: .example }
-> Move right until the first white pixel:
->
-> ```btml
-> if black right repeat
-> ```
-
-### Repeat - Definition and Usage
-
-The `repeat` function repeats the current line.
-
-### Repeat - Syntax
-
-```ebnf
-repeat
-```
-
-### Repeat - Fields
-
-Field | Description
--- | --
-repeat | Required. `repeat`.
 
 ## Labels
 
@@ -89,7 +60,7 @@ repeat | Required. `repeat`.
 > Explain a line:
 >
 > ```btml
-> find_white:	if black right repeat
+> find_white:	while black right
 > ```
 
 ### Labels - Definition and Usage

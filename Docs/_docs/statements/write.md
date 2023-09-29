@@ -1,7 +1,7 @@
 ---
-title: Write
 layout: default
 parent: Statements
+title: Write
 ---
 
 # Write

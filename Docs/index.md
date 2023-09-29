@@ -1,8 +1,8 @@
 ---
-title: Home
 layout: home
 nav_order: 1
 permalink: /
+title: Home
 ---
 
 # Welcome to the Binary Turing Machine Language

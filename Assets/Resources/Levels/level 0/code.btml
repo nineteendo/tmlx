@@ -1,1 +1,1 @@
-if white write black repeat else write white repeat
+0:	while white write black else write white goto 0

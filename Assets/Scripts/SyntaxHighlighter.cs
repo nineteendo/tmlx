@@ -130,11 +130,11 @@ public class SyntaxHighlighter : ScriptableObject
             tokenType = "identifier.constant"
         },
         new() {
-            Pattern = @"down|left|nowhere|right|up|write",
+            Pattern = @"down|left|right|up|write",
             tokenType = "identifier.function"
         },
         new() {
-            Pattern = @"else|exit|goto|if|repeat",
+            Pattern = @"else|exit|goto|if|while",
             tokenType = "keyword.control"
         },
         new() {

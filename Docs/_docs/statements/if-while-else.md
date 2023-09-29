@@ -1,10 +1,10 @@
 ---
-title: If Else
 layout: default
 parent: Statements
+title: If While Else
 ---
 
-# If, Else and Actions
+# If, While, Else and Actions
 {: .no_toc }
 
 Conditional statements are used to perform different actions for white and black pixels.
@@ -19,10 +19,10 @@ Conditional statements are used to perform different actions for white and black
 ## If
 
 {: .example }
-> Move right until the first white pixel:
+> Move right if the first pixel is black:
 >
 > ```btml
-> if black right repeat
+> if black right
 > ```
 
 ### If - Definition and Usage
@@ -49,16 +49,56 @@ action | Required. An [action](#actions).
 > Emphasize binary:
 >
 > ```btml
-> if 1 right repeat
+> if 1 right
+> ```
+
+## While
+{: .d-inline-block }
+
+New (v0.4.0)
+{: .label .label-green }
+
+{: .example }
+> Move right until the first white pixel:
+>
+> ```btml
+> while black right
+> ```
+
+### While - Definition and Usage
+
+Use the `while` statement to specify a single action to be performed as long as the read pixel has the specified color.
+
+### While - Syntax
+
+```ebnf
+while color action
+```
+
+### While - Fields
+
+Field | Description
+-- | --
+while| Required. `while`.
+color | Required. `0`/`white` or `1`/`black`.
+action | Required. An [action](#actions).
+
+### While - More Examples
+
+{: .example }
+> Emphasize binary:
+>
+> ```btml
+> while 1 right
 > ```
 
 ## Else
 
 {: .example }
-> Move right until the last white pixel:
+> Move right if the first pixel is black else reject the input:
 >
 > ```btml
-> if white right repeat else left
+> if black right else exit 1
 > ```
 
 ### Else - Definition and Usage
@@ -68,16 +108,25 @@ Use the `else` statement to specify a single action to be performed if the read 
 ### Else - Syntax
 
 ```ebnf
-if else action
+(if | while) else action
 ```
 
 ### Else - Fields
 
 Field | Description
 -- | --
-if | Required. An [if statement](#if).
+if or while | Required. An [if](#if)- or [while statement](#while).
 else | Required. `else`.
 action | Required. An [action](#actions).
+
+### Else - More Examples
+
+{: .example }
+> Move right until the last black pixel:
+>
+> ```btml
+> while black right else left
+> ```
 
 ## Actions
 
@@ -91,7 +140,7 @@ action | Required. An [action](#actions).
 ### Actions - Syntax
 
 ```ebnf
-[write] [direction] [exit | goto | repeat]
+[write] [direction] [exit | goto]
 ```
 
 ### Actions - Fields
@@ -99,8 +148,8 @@ action | Required. An [action](#actions).
 Field | Description
 -- | --
 write | Optional. A [write statement](write), default write read color.
-direction | Optional. `nowhere`, `up`, `down`, `left` or `right`, default precompute action.
-exit, goto or repeat | Optional. An [exit](exit#exit)-, [goto](goto#goto)- or [repeat statement](goto#repeat), default go to next line.
+direction | Optional. `up`, `down`, `left` or `right`, default precompute action.
+exit or goto | Optional. An [exit](exit#exit)- or [goto statement](goto#goto), default go to next line.
 
 {: .note }
 > An action consists out of at least one statement.

@@ -59,7 +59,7 @@ public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
 
 public static class BtmlCompiler
 {
-    private static readonly string[] reservedWords = { ":", "black", "down", "else", "exit", "goto", "if", "left", "nowhere", "repeat", "right", "up", "while", "white", "write" };
+    private static readonly string[] reservedWords = { ":", "black", "down", "else", "exit", "goto", "if", "left", "nowhere", "right", "up", "while", "white", "write" };
 
     public static bool Compile(string text, out BtmlInstruction[] optimisedInstructions, out string error)
     {
@@ -188,11 +188,11 @@ public static class BtmlCompiler
     }
 
 
-    private static bool ParseAction(string[] lines, int lineIndex, List<string> tokens, ref int tokenIndex, out BtmlAction action, out string error)
+    private static bool ParseAction(string[] lines, int lineIndex, List<string> tokens, ref int tokenIndex, bool loop, out BtmlAction action, out string error)
     {
         action = new BtmlAction
         {
-            gotoLineIndex = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
+            gotoLineIndex = loop ? lineIndex : lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
         };
 
         // Parse write
@@ -207,19 +207,14 @@ public static class BtmlCompiler
             tokenIndex++;
         }
 
-        // Parse nowhere, up, down, left or right
-        if (tokenIndex < tokens.Count && Enum.TryParse(tokens[tokenIndex], out action.moveDirection))
+        // Parse up, down, left or right
+        if (tokenIndex < tokens.Count && Enum.TryParse(tokens[tokenIndex], out action.moveDirection) && action.moveDirection != BtmlDirection.nowhere)
         {
             tokenIndex++;
         }
 
-        // Parse exit, goto or repeat
-        if (tokenIndex < tokens.Count && tokens[tokenIndex] == "repeat")
-        {
-            tokenIndex++;
-            action.gotoLineIndex = lineIndex;
-        }
-        else if (tokenIndex < tokens.Count && tokens[tokenIndex] == "goto")
+        // Parse exit or goto
+        if (tokenIndex < tokens.Count && tokens[tokenIndex] == "goto")
         {
             if (++tokenIndex >= tokens.Count)
             {
@@ -368,8 +363,9 @@ public static class BtmlCompiler
             }
 
             int oldTokenIndex = tokenIndex;
-            if (tokenIndex < tokens.Count && tokens[tokenIndex] == "if")
+            if (tokenIndex < tokens.Count && (tokens[tokenIndex] == "if" || tokens[tokenIndex] == "while"))
             {
+                bool loop = tokens[tokenIndex] == "while";
                 if (!ParseColor(lineIndex, tokens, ref tokenIndex, out Color32 condition, out string colorError))
                 {
                     instructions = null;
@@ -380,12 +376,12 @@ public static class BtmlCompiler
                 if (++tokenIndex >= tokens.Count)
                 {
                     instructions = null;
-                    error = $"Line {lineIndex + 1}: 'if' action is missing";
+                    error = $"Line {lineIndex + 1}: '{(loop ? "while" : "if")}' action is missing";
                     return false;
                 }
 
                 oldTokenIndex = tokenIndex;
-                if (!ParseAction(lines, lineIndex, tokens, ref tokenIndex, out BtmlAction consequentAction, out string actionError))
+                if (!ParseAction(lines, lineIndex, tokens, ref tokenIndex, loop, out BtmlAction consequentAction, out string actionError))
                 {
                     instructions = null;
                     error = actionError;
@@ -395,7 +391,7 @@ public static class BtmlCompiler
                 if (tokenIndex == oldTokenIndex)
                 {
                     instructions = null;
-                    error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: found '{tokens[tokenIndex]}' before 'if' action";
+                    error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: found '{tokens[tokenIndex]}' before '{(loop ? "while" : "if")}' action";
                     return false;
                 }
 
@@ -416,7 +412,7 @@ public static class BtmlCompiler
                 else
                 {
                     oldTokenIndex = tokenIndex;
-                    if (!ParseAction(lines, lineIndex, tokens, ref tokenIndex, out alternativeAction, out actionError))
+                    if (!ParseAction(lines, lineIndex, tokens, ref tokenIndex, false, out alternativeAction, out actionError))
                     {
                         instructions = null;
                         error = actionError;
@@ -435,7 +431,7 @@ public static class BtmlCompiler
                 instruction.whiteAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? consequentAction : alternativeAction;
                 instruction.conditional = true;
             }
-            else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, out BtmlAction action, out string actionError))
+            else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, false, out BtmlAction action, out string actionError))
             {
                 instruction.blackAction = instruction.whiteAction = action;
             }
