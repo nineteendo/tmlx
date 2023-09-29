@@ -21,7 +21,7 @@ Coming soon
 
 ### v0.4.0 - Levels
 
-- [Added levels 15-16](https://github.com/nineteendo/btml/issues/53)
+- [Added level 15](https://github.com/nineteendo/btml/issues/53)
 
 ### v0.4.0 - Documentation
 
@@ -46,7 +46,7 @@ Coming soon
 
 ### v0.3.0 - Levels
 
-- [Added levels 11-14](https://github.com/nineteendo/btml/issues/44)
+- [Added level 11-14](https://github.com/nineteendo/btml/issues/44)
 
 ### v0.3.0 - Developer Cheats
 

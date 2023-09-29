@@ -19,7 +19,7 @@ public class BtmlRuntime : MonoBehaviour
     public static readonly Color32 COLOR_PIXEL_ON = Color.cyan;
     public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new(0x55, 0xff, 0xff, 0xff);
 
-    public const int LEVEL_COUNT = 14;
+    public const int LEVEL_COUNT = 15;
     public const float MAX_IPF = 3000000f;
     public const float NORMAL_IPS = 5f;
     public const float TURBO_MULTIPLIER = 36000000f;

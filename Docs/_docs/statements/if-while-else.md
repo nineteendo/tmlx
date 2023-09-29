@@ -44,6 +44,10 @@ color | Required. `0`/`white` or `1`/`black`.
 action | Required. An [action](#actions).
 
 ### If - More Examples
+{: .d-inline-block }
+
+New (v0.4.0)
+{: .label .label-green }
 
 {: .example }
 > Emphasize binary:
@@ -120,6 +124,10 @@ else | Required. `else`.
 action | Required. An [action](#actions).
 
 ### Else - More Examples
+{: .d-inline-block }
+
+New (v0.4.0)
+{: .label .label-green }
 
 {: .example }
 > Move right until the last black pixel:
