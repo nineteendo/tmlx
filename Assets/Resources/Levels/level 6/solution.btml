@@ -1,6 +1,6 @@
-0:	if white exit else move east goto 1
-1:	if white exit 1 else move east goto 2
-2:	if white exit else move east goto 3
-3:	if white exit else move east goto 4
-4:	if white exit else move east goto 5
-5:	if white exit 1 else move east goto 0
+0:	if white exit else right goto 1
+1:	if white exit 1 else right goto 2
+2:	if white exit else right goto 3
+3:	if white exit else right goto 4
+4:	if white exit else right goto 5
+5:	if white exit 1 else right goto 0

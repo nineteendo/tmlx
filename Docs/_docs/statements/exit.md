@@ -39,6 +39,7 @@ exit [status]
 
 Field | Description
 -- | --
+exit | Required. `exit`.
 status | Optional. An [exit status](#exit-status), default 0.
 
 ### Exit - More Examples
@@ -47,7 +48,7 @@ status | Optional. An [exit status](#exit-status), default 0.
 > Else is not treated as an exit status:
 >
 > ```btml
-> if black exit else move east
+> if black exit else right
 > if white exit 1
 > ```
 

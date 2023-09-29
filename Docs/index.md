@@ -25,15 +25,15 @@ Welcome aboard, and savor your adventure with the Binary Turing Machine Language
 
 ## Getting Started
 
-Follow these simple steps to begin your journey with BTML:
+Follow these simple steps to begin your journey with Btml:
 
-1. **Download BTML**: Start by downloading the BTML application. You can find the latest release on our [GitHub repository](https://github.com/nineteendo/btml/releases/latest). BTML is available for Windows, Mac, and even Android, making it accessible on multiple platforms.
+1. **Download Btml**: Start by downloading the Btml application. You can find the latest release on our [GitHub repository](https://github.com/nineteendo/btml/releases/latest). Btml is available for Windows, Mac, and even Android, making it accessible on multiple platforms.
 
-2. **Launch the Application**: Once the download is complete, open the BTML application. You're now ready to dive into the world of binary programming.
+2. **Launch the Application**: Once the download is complete, open the Btml application. You're now ready to dive into the world of binary programming.
 
-3. **Start Level 1**: To get hands-on experience with BTML, press the "Play" button within the application and begin with Level 1. This is your first step in mastering this educational programming language.
+3. **Start Level 1**: To get hands-on experience with Btml, press the "Play" button within the application and begin with Level 1. This is your first step in mastering this educational programming language.
 
-Now, you're all set to explore BTML and unlock the exciting possibilities it offers. Happy coding!
+Now, you're all set to explore Btml and unlock the exciting possibilities it offers. Happy coding!
 
 
 ## About the project

@@ -33,6 +33,7 @@ Coming soon
 
 - [Fixed all author solutions unlock cheat when beating a level with less than 3 stars](https://github.com/nineteendo/btml/issues/55)
 - [Fixed palette preview aspect ratio](https://github.com/nineteendo/btml/issues/56)
+- [Fixed pause not being deactivated when pressing stop](https://github.com/nineteendo/btml/issues/64)
 - [Fixed replay button not being selected when beating a level with less than 3 stars](https://github.com/nineteendo/btml/issues/57)
 - [Fixed selecting pixel out of bounds when moving off the canvas](https://github.com/nineteendo/btml/issues/58)
 - [Fixed syntax highlighting for `/**/`](https://github.com/nineteendo/btml/issues/59)

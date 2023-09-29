@@ -22,11 +22,11 @@ public struct BtmlBranch
 
 public enum BtmlDirection
 {
-    N, north = 0,
-    E, east = 1,
-    S, south = 2,
-    W, west = 3,
-    none
+    nowhere,
+    up,
+    down,
+    left,
+    right
 }
 
 public struct BtmlInstruction
@@ -59,14 +59,14 @@ public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
 
 public static class BtmlCompiler
 {
-    private static readonly string[] reservedWords = { ":", "E", "N", "S", "W", "black", "down", "east", "else", "exit", "goto", "if", "left", "move", "north", "repeat", "right", "south", "up", "west", "while", "white", "write" };
+    private static readonly string[] reservedWords = { ":", "black", "down", "else", "exit", "goto", "if", "left", "nowhere", "repeat", "right", "up", "while", "white", "write" };
 
-    public static bool Compile(string text, out BtmlInstruction[] precomputedInstructions, out string error)
+    public static bool Compile(string text, out BtmlInstruction[] optimisedInstructions, out string error)
     {
         if (text == null)
         {
             error = "text is null";
-            precomputedInstructions = null;
+            optimisedInstructions = null;
             return false;
         }
 
@@ -74,7 +74,7 @@ public static class BtmlCompiler
         if (!Process(text, out BtmlInstruction[] processedInstructions, out Dictionary<string, int> labels, out string processError))
         {
             error = processError;
-            precomputedInstructions = null;
+            optimisedInstructions = null;
             return false;
         }
 
@@ -98,30 +98,21 @@ public static class BtmlCompiler
             if (!Resolve(processedInstructionIndex, labels, ref whiteAction, out string resolveError) || !Resolve(processedInstructionIndex, labels, ref blackAction, out resolveError))
             {
                 error = resolveError;
-                precomputedInstructions = null;
+                optimisedInstructions = null;
                 return false;
             }
 
             expandedInstructions[processedInstructionIndex] = processedInstruction;
         }
 
-        // Precompute
-        precomputedInstructions = (BtmlInstruction[])expandedInstructions.Clone();
-        for (int precomputedInstructionIndex = 0; precomputedInstructionIndex < precomputedInstructions.Length; precomputedInstructionIndex++)
+        // Optimise
+        optimisedInstructions = (BtmlInstruction[])expandedInstructions.Clone();
+        HashSet<BtmlBranch> visitedBranches = new(new BtmlBranchEqualityComparer());
+        for (int precomputedInstructionIndex = 0; precomputedInstructionIndex < optimisedInstructions.Length; precomputedInstructionIndex++)
         {
-            ref BtmlInstruction precomputedInstruction = ref precomputedInstructions[precomputedInstructionIndex];
-            HashSet<BtmlBranch> whiteVisitedBranches = new(new BtmlBranchEqualityComparer());
-            HashSet<BtmlBranch> blackVisitedBranches = new(new BtmlBranchEqualityComparer());
-            _ = whiteVisitedBranches.Add(new BtmlBranch() { color = BtmlRuntime.COLOR_PIXEL_OFF, lineIndex = precomputedInstructionIndex });
-            _ = blackVisitedBranches.Add(new BtmlBranch() { color = BtmlRuntime.COLOR_PIXEL_ON, lineIndex = precomputedInstructionIndex });
-            if (
-                !Precompute(precomputedInstructions, whiteVisitedBranches, ref precomputedInstruction.whiteAction, out string precomputeError) ||
-                !Precompute(precomputedInstructions, blackVisitedBranches, ref precomputedInstruction.blackAction, out precomputeError)
-            )
-            {
-                error = precomputeError;
-                return false;
-            }
+            ref BtmlInstruction precomputedInstruction = ref optimisedInstructions[precomputedInstructionIndex];
+            _ = Precompute(optimisedInstructions, visitedBranches, ref precomputedInstruction.whiteAction);
+            _ = Precompute(optimisedInstructions, visitedBranches, ref precomputedInstruction.blackAction);
         }
 
         error = null;
@@ -201,7 +192,6 @@ public static class BtmlCompiler
     {
         action = new BtmlAction
         {
-            moveDirection = BtmlDirection.none,
             gotoLineIndex = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
         };
 
@@ -217,25 +207,13 @@ public static class BtmlCompiler
             tokenIndex++;
         }
 
-        // Parse move
-        if (tokenIndex < tokens.Count && tokens[tokenIndex] == "move")
+        // Parse nowhere, up, down, left or right
+        if (tokenIndex < tokens.Count && Enum.TryParse(tokens[tokenIndex], out action.moveDirection))
         {
-            if (++tokenIndex >= tokens.Count)
-            {
-                error = $"Line {lineIndex + 1}: direction is missing";
-                return false;
-            }
-
-            if (!Enum.TryParse(tokens[tokenIndex], out action.moveDirection) || action.moveDirection == BtmlDirection.none)  // None is for internal use only
-            {
-                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' is not a valid direction";
-                return false;
-            }
-
             tokenIndex++;
         }
 
-        // Parse gotoLine
+        // Parse exit, goto or repeat
         if (tokenIndex < tokens.Count && tokens[tokenIndex] == "repeat")
         {
             tokenIndex++;
@@ -309,20 +287,12 @@ public static class BtmlCompiler
         return false;
     }
 
-    private static bool Precompute(BtmlInstruction[] precomputedInstructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action, out string error)
+    private static bool Precompute(BtmlInstruction[] precomputedInstructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action)
     {
-        if (action.moveDirection != BtmlDirection.none)
+        if (action.moveDirection != BtmlDirection.nowhere || action.gotoLineIndex < 0)
         {
-            error = null;
             return true;
         };
-
-        if (action.gotoLineIndex < 0)
-        {
-            action.moveDirection = BtmlDirection.east;
-            error = null;
-            return true;
-        }
 
         BtmlBranch branch = new()
         {
@@ -331,18 +301,18 @@ public static class BtmlCompiler
         };
         if (visitedBranches.Contains(branch))
         {
-            error = $"Line {action.gotoLineIndex + 1}: found infinite loop without moving";
             return false;
         }
 
         _ = visitedBranches.Add(branch);
         ref BtmlInstruction precomputedInstruction = ref precomputedInstructions[action.gotoLineIndex];
         ref BtmlAction newAction = ref (action.writeColor.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? ref precomputedInstruction.whiteAction : ref precomputedInstruction.blackAction);
-        if (!Precompute(precomputedInstructions, visitedBranches, ref newAction, out error))
+        if (!Precompute(precomputedInstructions, visitedBranches, ref newAction))
         {
-            return false;
+            return false; // Keep looping branch
         }
 
+        _ = visitedBranches.Remove(branch); // Remove non looping branch
         action = newAction;
         return true;
     }
@@ -434,7 +404,6 @@ public static class BtmlCompiler
                 {
                     alternativeAction = new BtmlAction
                     {
-                        moveDirection = BtmlDirection.none,
                         gotoLineIndex = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
                     };
                 }

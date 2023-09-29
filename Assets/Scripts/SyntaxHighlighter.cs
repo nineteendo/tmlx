@@ -126,11 +126,11 @@ public class SyntaxHighlighter : ScriptableObject
 
     public RegexTokenIdentifier[] regexTokenIdentifiers = {
         new() {
-            Pattern = @"E|N|S|W|black|east|north|south|west|white",
+            Pattern = @"black|white",
             tokenType = "identifier.constant"
         },
         new() {
-            Pattern = @"move|write",
+            Pattern = @"down|left|nowhere|right|up|write",
             tokenType = "identifier.function"
         },
         new() {

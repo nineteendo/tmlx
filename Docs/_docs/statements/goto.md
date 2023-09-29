@@ -22,9 +22,9 @@ Goto, repeat and labels are used to jump through the code.
 > Skip next line:
 >
 > ```btml
-> 	if black move south else move south goto skip
-> 	write Black exit
-> skip:	write White
+> 	if black down else down goto skip
+> 	write black exit
+> skip:	write white
 > ```
 
 ### Goto - Definition and Usage
@@ -41,6 +41,7 @@ goto label
 
 Field | Description
 -- | --
+goto | Required. `goto`.
 label | Required. A defined [label](#labels).
 
 ### Goto - More Examples
@@ -49,8 +50,8 @@ label | Required. A defined [label](#labels).
 > Jump to previous line:
 >
 > ```btml
-> back:	if white exit 1 else move east
-> 	if white exit else move east goto back
+> back:	if white exit 1 else right
+> 	if white exit else right goto back
 > ```
 
 ## Repeat
@@ -60,10 +61,10 @@ Deprecated
 {: .label .label-red }
 
 {: .example }
-> Move east until the first white pixel:
+> Move right until the first white pixel:
 >
 > ```btml
-> if black move east repeat
+> if black right repeat
 > ```
 
 ### Repeat - Definition and Usage
@@ -76,13 +77,19 @@ The `repeat` function repeats the current line.
 repeat
 ```
 
+### Repeat - Fields
+
+Field | Description
+-- | --
+repeat | Required. `repeat`.
+
 ## Labels
 
 {: .example }
 > Explain a line:
 >
 > ```btml
-> find_white:	if black move east repeat
+> find_white:	if black right repeat
 > ```
 
 ### Labels - Definition and Usage

@@ -11,13 +11,14 @@ permalink: /docs/statements
 
 <style type="text/css">
     table {
+        min-width: 100%;
         border-collapse: collapse;
     }
 
     td {
-        font-size: 0.7rem !important;
-        min-width: 2.5rem;
-        padding: 0.25rem 0.375rem;
+        font-size: 0.75rem !important;
+        min-width: 3.18rem;
+        padding: 0.2rem 0.318rem;
         text-align: center;
     }
 
@@ -65,41 +66,39 @@ permalink: /docs/statements
     <tbody>
         <tr>
             <td class="td-2"><a href="goto#labels">label:</a></td>
-            <td class="td-2" rowspan=6><a href="if-else#if">if</a></td>
+            <td class="td-2" rowspan=7><a href="if-else#if">if</a></td>
             <td class="td-4">0/white</td>
             <td class="td-5" rowspan=2><a href="write">write</a></td>
             <td class="td-6">0/white</td>
-            <td class="td-5" rowspan=4><a href="move">move</a></td>
-            <td class="td-6">N/north</td>
-            <td class="td-5" rowspan=2><a href="exit/exit">exit</a></td>
+            <td class="td-5">nowhere</td>
+            <td class="td-5" rowspan=2><a href="exit#exit">exit</a></td>
             <td class="td-6"><a href="exit#exit-status">status</a></td>
-            <td class="td-5" rowspan=5><a href="if-else#else">else</a></td>
+            <td class="td-5" rowspan=6><a href="if-else#else">else</a></td>
             <td class="td-8" rowspan=2><a href="write">write</a></td>
             <td class="td-9">0/white</td>
-            <td class="td-8" rowspan=4><a href="move">move</a></td>
-            <td class="td-9">N/north</td>
-            <td class="td-8" rowspan=2><a href="exit/exit">exit</a></td>
+            <td class="td-8">nowhere</td>
+            <td class="td-8" rowspan=2><a href="exit#exit">exit</a></td>
             <td class="td-9"><a href="exit#exit-status">status</a></td>
         </tr>
         <tr>
             <td class="td-1">/</td>
             <td class="td-4">1/black</td>
             <td class="td-6">1/black</td>
-            <td class="td-6">E/east</td>
+            <td class="td-5">up</td>
             <td class="td-6">/</td>
             <td class="td-9">1/black</td>
-            <td class="td-9">E/east</td>
+            <td class="td-8">up</td>
             <td class="td-9">/</td>
         </tr>
         <tr>
             <td class="td-0"></td>
             <td class="td-3"></td>
             <td class="td-4" colspan=2>/</td>
-            <td class="td-6">S/south</td>
+            <td class="td-5">down</td>
             <td class="td-5"><a href="goto#goto">goto</a></td>
             <td class="td-6"><a href="goto#labels">label</a></td>
             <td class="td-7" colspan=2>/</td>
-            <td class="td-9">S/south</td>
+            <td class="td-8">down</td>
             <td class="td-8"><a href="goto#goto">goto</a></td>
             <td class="td-9"><a href="goto#labels">label</a></td>
         </tr>
@@ -108,11 +107,11 @@ permalink: /docs/statements
             <td class="td-3"></td>
             <td class="td-3"></td>
             <td class="td-3"></td>
-            <td class="td-6">W/west</td>
+            <td class="td-5">left</td>
             <td class="td-5" colspan=2><a href="goto#repeat">repeat</a></td>
             <td class="td-6"></td>
             <td class="td-6"></td>
-            <td class="td-9">W/west</td>
+            <td class="td-8">left</td>
             <td class="td-8" colspan=2><a href="goto#repeat">repeat</a></td>
         </tr>
         <tr>
@@ -120,12 +119,26 @@ permalink: /docs/statements
             <td class="td-3"></td>
             <td class="td-3"></td>
             <td class="td-3"></td>
-            <td class="td-4" colspan=2>/</td>
+            <td class="td-5">right</td>
             <td class="td-4" colspan=2>/</td>
             <td class="td-6"></td>
             <td class="td-6"></td>
+            <td class="td-8">right</td>
             <td class="td-7" colspan=2>/</td>
-            <td class="td-7" colspan=2>/</td>
+        </tr>
+        <tr>
+            <td class="td-0"></td>
+            <td class="td-3"></td>
+            <td class="td-3"></td>
+            <td class="td-3"></td>
+            <td class="td-4">/</td>
+            <td class="td-3"></td>
+            <td class="td-3"></td>
+            <td class="td-6"></td>
+            <td class="td-6"></td>
+            <td class="td-7">/</td>
+            <td class="td-6"></td>
+            <td class="td-6"></td>
         </tr>
         <tr>
             <td class="td-0"></td>
@@ -135,31 +148,29 @@ permalink: /docs/statements
             <td class="td-3"></td>
             <td class="td-3"></td>
             <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-4" colspan=7>/</td>
+            <td class="td-4" colspan=8>/</td>
         </tr>
         <tr>
             <td class="td-0"></td>
-            <td class="td-1" rowspan=5><a href="if-else#actions">/</a></td>
-            <td class="td-3" rowspan=5>/</td>
+            <td class="td-1" rowspan=6><a href="if-else#actions">/</a></td>
+            <td class="td-3" rowspan=6>/</td>
             <td class="td-4" rowspan=2><a href="write">write</a></td>
             <td class="td-5">0/white</td>
-            <td class="td-4" rowspan=4><a href="move">move</a></td>
-            <td class="td-5">N/north</td>
-            <td class="td-4" rowspan=2><a href="exit/exit">exit</a></td>
+            <td class="td-4">nowhere</td>
+            <td class="td-4" rowspan=2><a href="exit#exit">exit</a></td>
             <td class="td-5"><a href="exit#exit-status">status</a></td>
-            <td class="td-3" colspan=7 rowspan=5>/</td>
+            <td class="td-3" colspan=7 rowspan=6>/</td>
         </tr>
         <tr>
             <td class="td-0"></td>
             <td class="td-5">1/black</td>
-            <td class="td-5">E/east</td>
+            <td class="td-4">up</td>
             <td class="td-5">/</td>
         </tr>
         <tr>
             <td class="td-0"></td>
             <td class="td-3" colspan=2>/</td>
-            <td class="td-5">S/south</td>
+            <td class="td-4">down</td>
             <td class="td-4"><a href="goto#goto">goto</a></td>
             <td class="td-5"><a href="goto#labels">label</a></td>
         </tr>
@@ -167,15 +178,23 @@ permalink: /docs/statements
             <td class="td-0"></td>
             <td class="td-2"></td>
             <td class="td-2"></td>
-            <td class="td-5">W/west</td>
+            <td class="td-4">left</td>
             <td class="td-4" colspan=2><a href="goto#repeat">repeat</a></td>
         </tr>
         <tr>
             <td class="td-0"></td>
             <td class="td-2"></td>
             <td class="td-2"></td>
+            <td class="td-4">right</td>
             <td class="td-3" colspan=2>/</td>
-            <td class="td-3" colspan=2>/</td>
+        </tr>
+        <tr>
+            <td class="td-0"></td>
+            <td class="td-2"></td>
+            <td class="td-2"></td>
+            <td class="td-3">/</td>
+            <td class="td-2"></td>
+            <td class="td-2"></td>
         </tr>
     </tbody>
 </table>

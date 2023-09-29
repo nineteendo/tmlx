@@ -1,2 +1,2 @@
-even_length:	if white exit else move east goto odd_length
-odd_length:	if white exit 1 else move east goto even_length
+even_length:	if white exit else right goto odd_length
+odd_length:	if white exit 1 else right goto even_length

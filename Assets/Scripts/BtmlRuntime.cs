@@ -114,6 +114,7 @@ public class BtmlRuntime : MonoBehaviour
         if (!playToggle.isOn)
         {
             codeEditor.MarkedLineIndex = -1;
+            pauseToggle.isOn = false;
             instructions = null;
             return;
         }
@@ -263,16 +264,11 @@ public class BtmlRuntime : MonoBehaviour
             }
 
             canvasColors[canvasColorIndex] = action.writeColor;
-            int newProgramIndex = action.gotoLineIndex;
-            if (newProgramIndex < 0)
-            {
-                Exit(-(newProgramIndex + 1), ref executedInstructions);
-                continue;
-            }
-
             switch (action.moveDirection)
             {
-                case BtmlDirection.north:
+                case BtmlDirection.nowhere:
+                    break;
+                case BtmlDirection.up:
                     canvasTextureOffset += canvasTextureWidth;
                     if (canvasTextureOffset == canvasTextureOffsetMax)
                     {
@@ -280,14 +276,7 @@ public class BtmlRuntime : MonoBehaviour
                     }
 
                     break;
-                case BtmlDirection.east:
-                    if (++canvasTextureX == canvasTextureWidth)
-                    {
-                        goto default;
-                    }
-
-                    break;
-                case BtmlDirection.south:
+                case BtmlDirection.down:
                     canvasTextureOffset -= canvasTextureWidth;
                     if (canvasTextureOffset == -canvasTextureWidth)
                     {
@@ -295,17 +284,30 @@ public class BtmlRuntime : MonoBehaviour
                     }
 
                     break;
-                case BtmlDirection.west:
+                case BtmlDirection.left:
                     if (--canvasTextureX == -1)
                     {
                         goto default;
                     }
 
                     break;
-                case BtmlDirection.none:
+                case BtmlDirection.right:
+                    if (++canvasTextureX == canvasTextureWidth)
+                    {
+                        goto default;
+                    }
+
+                    break;
                 default:
                     Exit(2, ref executedInstructions);
                     continue;
+            }
+
+            int newProgramIndex = action.gotoLineIndex;
+            if (newProgramIndex < 0)
+            {
+                Exit(-(newProgramIndex + 1), ref executedInstructions);
+                continue;
             }
 
             instructionIndex = newProgramIndex;

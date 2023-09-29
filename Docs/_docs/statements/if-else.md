@@ -19,10 +19,10 @@ Conditional statements are used to perform different actions for white and black
 ## If
 
 {: .example }
-> Move east until the first white pixel:
+> Move right until the first white pixel:
 >
 > ```btml
-> if black move east repeat
+> if black right repeat
 > ```
 
 ### If - Definition and Usage
@@ -39,6 +39,7 @@ if color action
 
 Field | Description
 -- | --
+if | Required. `if`.
 color | Required. `0`/`white` or `1`/`black`.
 action | Required. An [action](#actions).
 
@@ -48,16 +49,16 @@ action | Required. An [action](#actions).
 > Emphasize binary:
 >
 > ```btml
-> if 1 move east repeat
+> if 1 right repeat
 > ```
 
 ## Else
 
 {: .example }
-> Move east until the last white pixel:
+> Move right until the last white pixel:
 >
 > ```btml
-> if white move east repeat else move west
+> if white right repeat else left
 > ```
 
 ### Else - Definition and Usage
@@ -75,21 +76,22 @@ if else action
 Field | Description
 -- | --
 if | Required. An [if statement](#if).
+else | Required. `else`.
 action | Required. An [action](#actions).
 
 ## Actions
 
 {: .example }
-> Write a black pixel and move east:
+> Write a black pixel and move right:
 >
 > ```btml
-> write Black move east
+> write black right
 > ```
 
 ### Actions - Syntax
 
 ```ebnf
-[write] [move] [exit | goto | repeat]
+[write] [direction] [exit | goto | repeat]
 ```
 
 ### Actions - Fields
@@ -97,8 +99,8 @@ action | Required. An [action](#actions).
 Field | Description
 -- | --
 write | Optional. A [write statement](write), default write read color.
-move | Optional. A [move statement](move), default precompute action.
-exit, goto or repeat | Optional. An [exit](exit#exit), [goto](goto#goto) or [repeat statement](goto#repeat), default go to next line.
+direction | Optional. `nowhere`, `up`, `down`, `left` or `right`, default precompute action.
+exit, goto or repeat | Optional. An [exit](exit#exit)-, [goto](goto#goto)- or [repeat statement](goto#repeat), default go to next line.
 
 {: .note }
 > An action consists out of at least one statement.

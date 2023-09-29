@@ -10,7 +10,7 @@ parent: Statements
 > Write a black pixel:
 >
 > ```btml
-> write Black
+> write black
 > ```
 
 ## Write - Definition and Usage
