@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,6 +20,8 @@ public class BtmlRuntime : MonoBehaviour
     public static readonly Color32 COLOR_PIXEL_ON = Color.cyan;
     public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new(0x55, 0xff, 0xff, 0xff);
 
+    public const int CANVAS_HEIGHT = 30;
+    public const int CANVAS_WIDTH = 30;
     public const int LEVEL_COUNT = 15;
     public const float MAX_IPF = 3000000f;
     public const float NORMAL_IPS = 5f;
@@ -62,9 +65,9 @@ public class BtmlRuntime : MonoBehaviour
     private float targetIps;
     private float totalInstructions;
     private float turboMultiplier;
+    private int canvasHeight;
+    private int canvasWidth;
     private int canvasTextureOffset;
-    private int canvasTextureOffsetMax;
-    private int canvasTextureWidth;
     private int canvasTextureX;
     private int exitStatus = -1;
     private int instructionIndex;
@@ -104,17 +107,13 @@ public class BtmlRuntime : MonoBehaviour
 
     public void TogglePlay()
     {
-        codeEditor.MarkedLines = null;
-        testIndex = 0;
-        LoadTest();
-        elapsedTime = totalInstructions = queuedInstructions = 0f;
-        SelectPixel();
-        canvasTexture.SetPixels32(canvasColors);
-        canvasTexture.Apply();
         if (!playToggle.isOn)
         {
             codeEditor.MarkedLineIndex = -1;
+            codeEditor.MarkedLines = null;
             pauseToggle.isOn = false;
+            testIndex = 0;
+            LoadTest(true);
             instructions = null;
             return;
         }
@@ -122,18 +121,18 @@ public class BtmlRuntime : MonoBehaviour
         if (!BtmlCompiler.Compile(codeEditor.inputField.text, out instructions, out string error))
         {
             errorText.text = error;
+            return;
         }
-        else
-        {
-            codeEditor.MarkedLineIndex = 0;
-            errorText.text = "";
-            slotAutoButton.interactable = true;
-            saveLevel.autoSave = codeEditor.inputField.text;
-            SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
-            SaveFunctions.SaveGame();
-            coveredBlackBranches = new bool[instructions.Length];
-            coveredWhiteBranches = new bool[instructions.Length];
-        }
+
+        codeEditor.MarkedLineIndex = 0;
+        errorText.text = "";
+        slotAutoButton.interactable = true;
+        saveLevel.autoSave = codeEditor.inputField.text;
+        SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
+        SaveFunctions.SaveGame();
+        coveredBlackBranches = new bool[instructions.Length];
+        coveredWhiteBranches = new bool[instructions.Length];
+        elapsedTime = totalInstructions = queuedInstructions = 0f;
     }
 
     public void ToggleTurbo()
@@ -169,28 +168,34 @@ public class BtmlRuntime : MonoBehaviour
         }
     }
 
-    private void LoadTest()
+    private void LoadTest(bool apply)
     {
-        infoText.text = "";
         test = tests[testIndex];
         Texture2D newCanvasTexture = test.canvasTexture;
-        canvasColors = newCanvasTexture.GetPixels32();
-        int canvasTextureHeight = newCanvasTexture.height;
-        canvasTextureWidth = newCanvasTexture.width;
-        canvasTextureOffsetMax = canvasTextureHeight * canvasTextureWidth;
-        _ = canvasTexture.Reinitialize(canvasTextureWidth, canvasTextureHeight);
-        GetComponent<Image>().material.mainTexture = canvasTexture;
-        RectTransform rectTransform = GetComponent<RectTransform>();
-        Vector3 sizeDelta = rectTransform.sizeDelta;
-        float maxDimension = Mathf.Max(sizeDelta.x, sizeDelta.y);
-        sizeDelta.x = canvasTextureHeight <= canvasTextureWidth ? maxDimension : maxDimension * canvasTextureWidth / canvasTextureHeight;
-        sizeDelta.y = canvasTextureHeight >= canvasTextureWidth ? maxDimension : maxDimension * canvasTextureHeight / canvasTextureWidth;
-        rectTransform.sizeDelta = sizeDelta;
-        canvasTextureX = canvasTextureOffset = instructionIndex = 0;
+        canvasColors = Enumerable.Repeat(COLOR_PIXEL_OFF, canvasHeight * canvasWidth).ToArray();
+        Color32[] newCanvasColors = newCanvasTexture.GetPixels32();
+        int newCanvasTextureHeight = Mathf.Min(newCanvasTexture.height, canvasHeight);
+        int newCanvasTextureWidth = Mathf.Min(newCanvasTexture.width, canvasWidth);
+        canvasTextureOffset = (canvasHeight - newCanvasTextureHeight) / 2 * canvasWidth;
+        canvasTextureX = (canvasWidth - newCanvasTextureWidth) / 2;
+        for (int newCanvasTextureY = 0; newCanvasTextureY < newCanvasTextureHeight; newCanvasTextureY++)
+        {
+            Array.Copy(newCanvasColors, newCanvasTextureY * newCanvasTextureWidth, canvasColors, (newCanvasTextureY * canvasWidth) + canvasTextureOffset + canvasTextureX, newCanvasTextureWidth);
+        }
+
+        canvasTextureOffset += (newCanvasTexture.height - 1) * canvasWidth;
+        instructionIndex = 0;
         exitStatus = -1;
         if (breakpoints.Contains(instructionIndex))
         {
             pauseToggle.isOn = true;
+        }
+
+        if (apply)
+        {
+            SelectPixel();
+            canvasTexture.SetPixels32(canvasColors);
+            canvasTexture.Apply();
         }
     }
 
@@ -211,15 +216,6 @@ public class BtmlRuntime : MonoBehaviour
         slotAutoButton.interactable = saveLevel.autoSave != null;
         slotBestButton.interactable = saveLevel.bestSave != null;
         tests = level.tests;
-        canvasTexture = new Texture2D(2, 2, TextureFormat.R8, false)
-        {
-            filterMode = FilterMode.Point,
-            wrapMode = TextureWrapMode.Clamp
-        };
-        LoadTest();
-        SelectPixel();
-        canvasTexture.SetPixels32(canvasColors);
-        canvasTexture.Apply();
         maxIpf = PlayerPrefs.GetFloat("maxIpf", MAX_IPF);
         normalIps = targetIps = PlayerPrefs.GetFloat("normalIps", NORMAL_IPS);
         turboMultiplier = PlayerPrefs.GetFloat("turboMultiplier", TURBO_MULTIPLIER);
@@ -228,7 +224,22 @@ public class BtmlRuntime : MonoBehaviour
         ShaderFunctions.SetShader(material, PlayerPrefs.GetInt("paletteShaderIndex", 0));
         ShaderFunctions.SetPalette(material, PlayerPrefs.GetInt("palettePackIndex", 0), PlayerPrefs.GetInt("paletteIndex", 0));
         ShaderFunctions.SetInvert(material, PlayerPrefs.GetInt("invertPalette", 0) == 1);
+        canvasHeight = PlayerPrefs.GetInt("canvasHeight", CANVAS_HEIGHT);
+        canvasWidth = PlayerPrefs.GetInt("canvasWidth", CANVAS_WIDTH);
         ShaderFunctions.SetDarkFilterLevel(material, PlayerPrefs.GetFloat("darkFilterLevel", 0));
+        canvasTexture = new Texture2D(canvasWidth, canvasHeight, TextureFormat.R8, false)
+        {
+            filterMode = FilterMode.Point,
+            wrapMode = TextureWrapMode.Clamp
+        };
+        LoadTest(true);
+        GetComponent<Image>().material.mainTexture = canvasTexture;
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        Vector3 sizeDelta = rectTransform.sizeDelta;
+        float maxDimension = Mathf.Max(sizeDelta.x, sizeDelta.y);
+        sizeDelta.x = canvasHeight <= canvasWidth ? maxDimension : maxDimension * canvasWidth / canvasHeight;
+        sizeDelta.y = canvasHeight >= canvasWidth ? maxDimension : maxDimension * canvasHeight / canvasWidth;
+        rectTransform.sizeDelta = sizeDelta;
     }
 
     private void Update()
@@ -249,6 +260,7 @@ public class BtmlRuntime : MonoBehaviour
         UnSelectPixel();
         ref BtmlAction action = ref this.action;
         bool hasBreakpoints = breakpoints.Count > 0;
+        int canvasTextureOffsetMax = canvasHeight * canvasWidth;
         for (; executedInstructions < ipf; executedInstructions++)
         {
             int canvasColorIndex = canvasTextureOffset + canvasTextureX;
@@ -269,7 +281,7 @@ public class BtmlRuntime : MonoBehaviour
                 case BtmlDirection.nowhere:
                     break;
                 case BtmlDirection.up:
-                    canvasTextureOffset += canvasTextureWidth;
+                    canvasTextureOffset += canvasWidth;
                     if (canvasTextureOffset == canvasTextureOffsetMax)
                     {
                         goto default;
@@ -277,8 +289,8 @@ public class BtmlRuntime : MonoBehaviour
 
                     break;
                 case BtmlDirection.down:
-                    canvasTextureOffset -= canvasTextureWidth;
-                    if (canvasTextureOffset == -canvasTextureWidth)
+                    canvasTextureOffset -= canvasWidth;
+                    if (canvasTextureOffset == -canvasWidth)
                     {
                         goto default;
                     }
@@ -292,7 +304,7 @@ public class BtmlRuntime : MonoBehaviour
 
                     break;
                 case BtmlDirection.right:
-                    if (++canvasTextureX == canvasTextureWidth)
+                    if (++canvasTextureX == canvasWidth)
                     {
                         goto default;
                     }
@@ -358,7 +370,7 @@ public class BtmlRuntime : MonoBehaviour
 
         if (exitStatus == test.exitStatus && ++testIndex < tests.Length)
         {
-            LoadTest();
+            LoadTest(false);
             executedInstructions++;
             return false;
         }

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class OptionsMenu : MonoBehaviour
 {
     public Toggle invertPaletteToggle;
+    public InputFieldSlider canvasHeightInputFieldSlider;
+    public InputFieldSlider canvasWidthInputFieldSlider;
     public InputFieldSlider darkFilterLevelInputFieldSlider;
     public InputFieldSlider maxIpfInputFieldSlider;
     public InputFieldSlider normalIpsInputFieldSlider;
@@ -24,6 +26,18 @@ public class OptionsMenu : MonoBehaviour
     {
         ShaderFunctions.SetInvert(screenMaterial, invertPaletteToggle.isOn);
         PlayerPrefs.SetInt("invertPalette", invertPaletteToggle.isOn ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public void UpdateCanvasHeight()
+    {
+        PlayerPrefs.SetInt("canvasHeight", Mathf.FloorToInt(canvasHeightInputFieldSlider.slider.value));
+        PlayerPrefs.Save();
+    }
+
+    public void UpdateCanvasWidth()
+    {
+        PlayerPrefs.SetInt("canvasWidth", Mathf.FloorToInt(canvasWidthInputFieldSlider.slider.value));
         PlayerPrefs.Save();
     }
 
@@ -86,6 +100,8 @@ public class OptionsMenu : MonoBehaviour
         palettePackPreviewDropdown.Options = PaletteFunctions.LoadPalettePacks().Select(pack => pack.packName).ToArray();
         paletteShaderPreviewDropdown.Options = ShaderFunctions.LoadShaders().Where((_, index) => index % 2 == 0).ToArray();
         invertPaletteToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt("invertPalette", 0) == 1);
+        canvasHeightInputFieldSlider.slider.value = PlayerPrefs.GetInt("canvasHeight", BtmlRuntime.CANVAS_HEIGHT);
+        canvasWidthInputFieldSlider.slider.value = PlayerPrefs.GetInt("canvasWidth", BtmlRuntime.CANVAS_WIDTH);
         darkFilterLevelInputFieldSlider.slider.value = PlayerPrefs.GetFloat("darkFilterLevel", 0);
         maxIpfInputFieldSlider.slider.value = PlayerPrefs.GetFloat("maxIpf", BtmlRuntime.MAX_IPF);
         normalIpsInputFieldSlider.slider.value = PlayerPrefs.GetFloat("normalIps", BtmlRuntime.NORMAL_IPS);

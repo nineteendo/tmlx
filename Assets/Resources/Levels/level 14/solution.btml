@@ -1,9 +1,9 @@
-read_length_0:	if black up goto read_first else exit 1
+read_length_0:	if black down goto read_first else exit 1
 read_length_1:	if black exit 1 else exit
-read_first:	if 1 up goto read_second_1 else up goto read_second_0
-read_second_0:	if 0 down goto move_south_0 else down goto move_south_1
-read_second_1:	if 1 down goto move_south_0 else exit 1
-move_south_0:	down goto next_0
-move_south_1:	down goto next_1
+read_first:	if 1 down goto read_second_1 else down goto read_second_0
+read_second_0:	if 0 up goto move_south_0 else up goto move_south_1
+read_second_1:	if 1 up goto move_south_0 else exit 1
+move_south_0:	up goto next_0
+move_south_1:	up goto next_1
 next_0:		right goto read_length_0
 next_1:		right goto read_length_1

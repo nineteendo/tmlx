@@ -1,9 +1,9 @@
-/**This program is supposed to accept a multiple of 3, but it contains a bug.Click left of line 5 to add a breakpoint, activate turbo and press play.The program will be paused on line 5 and a black pixel will be selected.Step forward and verify we are on line 9. Unpause to get to the white pixel.Step forward and notice we are not on line 8. Why would that be?When you have corrected the error, remove the breakpoint and deactivate turbo.*/read_length_0:	if white exit else up goto read_input_0
-read_length_1:	if white exit 1 else up goto read_input_2
-read_length_2:	if white exit 1 else up goto read_input_1
-read_input_0:	if 0 down goto next_0 else down goto next_1
-read_input_1:	if 0 down goto next_2 else down goto next_2
-read_input_2:	if 0 down goto next_2 else down goto next_0
+/**This program is supposed to accept a multiple of 3, but it contains a bug.Click left of line 5 to add a breakpoint, activate turbo and press play.The program will be paused on line 5 and a black pixel will be selected.Step forward and verify we are on line 9. Unpause to get to the white pixel.Step forward and notice we are not on line 8. Why would that be?When you have corrected the error, remove the breakpoint and deactivate turbo.*/read_length_0:	if white exit else down goto read_input_0
+read_length_1:	if white exit 1 else down goto read_input_2
+read_length_2:	if white exit 1 else down goto read_input_1
+read_input_0:	if 0 up goto next_0 else up goto next_1
+read_input_1:	if 0 up goto next_2 else up goto next_2
+read_input_2:	if 0 up goto next_2 else up goto next_0
 next_0:		right goto read_length_0
 next_1:		right goto read_length_1
 next_2:		right goto read_length_2

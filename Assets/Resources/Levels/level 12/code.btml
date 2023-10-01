@@ -1,7 +1,7 @@
-/**Run the program and notice how line 6 is orange:- Orange means only the if or (missing) else was executed.Can you modify the program and get 100% coverage instead of 78?*/read_length:	if black up else exit
-		if 1 up goto read_second_1 else up goto read_second_0
-read_second_0:	if 0 down goto move_south else exit 1
-read_second_1:	if 1 down goto move_south else exit 1
-move_south:	down
-		if black right goto read_length else up
+/**Run the program and notice how line 6 is orange:- Orange means only the if or (missing) else was executed.Can you modify the program and get 100% coverage instead of 78?*/read_length:	if black down else exit
+		if 1 down goto read_second_1 else down goto read_second_0
+read_second_0:	if 0 up goto move_south else exit 1
+read_second_1:	if 1 up goto move_south else exit 1
+move_south:	up
+		if black right goto read_length else down
 		if 1 exit 1

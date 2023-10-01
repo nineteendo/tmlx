@@ -17,7 +17,7 @@ Coming soon
 ### v0.5.0 - Features
 
 - [Added optimise code control](https://github.com/nineteendo/btml/issues/66)
-- [Implemented scrolling canvases with configurable size](https://github.com/nineteendo/btml/issues/67)
+- [Implemented canvases with configurable size](https://github.com/nineteendo/btml/issues/67)
 - [Made vscode extension](https://github.com/nineteendo/btml/issues/69)
 
 ### v0.5.0 - Levels

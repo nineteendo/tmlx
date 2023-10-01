@@ -1,2 +1,2 @@
-/**We will be using the row above the input length as a binary input data line.We want to accept positive numbers: 0 (white), followed by any bits.A length of 0 is invalid and results in exit status 2 (malformed input).*/if black up
+/**We will be using the row below the input length as a binary input data line.We want to accept positive numbers: 0 (white), followed by any bits.A length of 0 is invalid and results in exit status 2 (malformed input).*/if black down
 if 1 exit 1

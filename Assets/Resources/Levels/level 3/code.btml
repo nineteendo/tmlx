@@ -1,2 +1,2 @@
-/**A canvas could have multiple pixels and the current pixel can be moved horizontally and vertically.If else statement: if color action else action.Move statements: up | down | left | right.The program already checks if the first 2 pixels are black.You still need to check if the 3th pixel is white (input of length 2).*/if white exit 1 else right
+/**The current pixel can be moved horizontally and vertically.If else statement: if color action else action.Move statements: down | up | left | right.The program already checks if the first 2 pixels are black.You still need to check if the 3th pixel is white (input of length 2).*/if white exit 1 else right
 if white exit 1 else right
