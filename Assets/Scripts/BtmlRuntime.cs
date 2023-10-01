@@ -22,7 +22,7 @@ public class BtmlRuntime : MonoBehaviour
 
     public const int CANVAS_HEIGHT = 30;
     public const int CANVAS_WIDTH = 30;
-    public const int LEVEL_COUNT = 15;
+    public const int LEVEL_COUNT = 16;
     public const float MAX_IPF = 3000000f;
     public const float NORMAL_IPS = 5f;
     public const float TURBO_MULTIPLIER = 36000000f;
@@ -41,6 +41,7 @@ public class BtmlRuntime : MonoBehaviour
     public Text infoText;
     public Text levelEndedText;
     public CodeEditor codeEditor;
+    public Toggle optimiseToggle;
     public Toggle pauseToggle;
     public Toggle playToggle;
     public Toggle turboToggle;
@@ -98,6 +99,12 @@ public class BtmlRuntime : MonoBehaviour
         targetIps = 0f;
     }
 
+    public void ToggleOptimise()
+    {
+        PlayerPrefs.SetInt("optimised", optimiseToggle.isOn ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
     public void TogglePause()
     {
         ipf = 0;
@@ -109,6 +116,7 @@ public class BtmlRuntime : MonoBehaviour
     {
         if (!playToggle.isOn)
         {
+            infoText.text = "";
             codeEditor.MarkedLineIndex = -1;
             codeEditor.MarkedLines = null;
             pauseToggle.isOn = false;
@@ -118,7 +126,7 @@ public class BtmlRuntime : MonoBehaviour
             return;
         }
 
-        if (!BtmlCompiler.Compile(codeEditor.inputField.text, out instructions, out string error))
+        if (!BtmlCompiler.Compile(codeEditor.inputField.text, optimiseToggle.isOn, out instructions, out string error))
         {
             errorText.text = error;
             return;
@@ -219,6 +227,7 @@ public class BtmlRuntime : MonoBehaviour
         maxIpf = PlayerPrefs.GetFloat("maxIpf", MAX_IPF);
         normalIps = targetIps = PlayerPrefs.GetFloat("normalIps", NORMAL_IPS);
         turboMultiplier = PlayerPrefs.GetFloat("turboMultiplier", TURBO_MULTIPLIER);
+        optimiseToggle.isOn = PlayerPrefs.GetInt("optimised", 1) == 1;
         turboToggle.isOn = PlayerPrefs.GetInt("turbo", 0) == 1;
         Material material = GetComponent<Image>().material;
         ShaderFunctions.SetShader(material, PlayerPrefs.GetInt("paletteShaderIndex", 0));

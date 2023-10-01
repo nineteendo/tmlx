@@ -61,7 +61,7 @@ public static class BtmlCompiler
 {
     private static readonly string[] reservedWords = { ":", "black", "down", "else", "exit", "goto", "if", "left", "nowhere", "right", "up", "while", "white", "write" };
 
-    public static bool Compile(string text, out BtmlInstruction[] optimisedInstructions, out string error)
+    public static bool Compile(string text, bool optimised, out BtmlInstruction[] optimisedInstructions, out string error)
     {
         if (text == null)
         {
@@ -105,8 +105,14 @@ public static class BtmlCompiler
             expandedInstructions[processedInstructionIndex] = processedInstruction;
         }
 
-        // Optimise
         optimisedInstructions = (BtmlInstruction[])expandedInstructions.Clone();
+        if (!optimised)
+        {
+            error = null;
+            return true;
+        }
+
+        // Optimise
         HashSet<BtmlBranch> visitedBranches = new(new BtmlBranchEqualityComparer());
         for (int precomputedInstructionIndex = 0; precomputedInstructionIndex < optimisedInstructions.Length; precomputedInstructionIndex++)
         {

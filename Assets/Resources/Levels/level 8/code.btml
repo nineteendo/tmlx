@@ -1,1 +1,1 @@
-/**Instead of defining a label to repeat an instruction, you can use the while instruction.While statement: while color action.While else statement: while color action else action.Accept even unsigned numbers: any bits, followed by 0.*/while black right
+/// The program already moves to the last black pixel. // TODO: accept even unsigned numbers: any bits, followed by 0.while black right else left

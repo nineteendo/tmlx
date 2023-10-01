@@ -1,1 +1,1 @@
-/**A pixel can be either white or black (binary).If statement: if color action.This program is ran twice: first on a white and then on a black pixel.The white pixel should be accepted and the black rejected.It looks like the condition is currently incorrect.*/if white exit 1
+/**A pixel can be white or black (binary).This program runs twice: once starting on a white and once on a black pixel.The former is rejected and the latter accepted.*/// TODO: swap the outcomes.if white exit 1

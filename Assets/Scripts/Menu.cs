@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -17,6 +18,7 @@ public class Menu : MonoBehaviour
 
     private void LoadPage(int newPageIndex)
     {
+        EventSystem.current.SetSelectedGameObject(levelButtons[0].gameObject);
         Save save = SaveFunctions.LoadGame();
         pageIndex = newPageIndex;
         beforeButton.gameObject.SetActive(pageIndex > 0);

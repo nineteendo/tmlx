@@ -1,4 +1,4 @@
-/**You might have already noticed that all lines get green when you beat a level.That is not always the case, run the program and notice how line 2 is red:- Green means the line was entirely executed.- Red means the line was never executed.The reason this is happening is because the missing else on line 1 has been precomputed.Can you combine line 1 and 2 to get 100% coverage instead of 75?*/if white exit
+/**You may have noticed that all the lines turn green when you beat a level.That means they have been fully executed, which is not always the case.Run the program and notice how line 2 is red, meaning it was never executed.That is because the compiler pre-calculated the missing else on line 1.*/// TODO: combine line 1 and 2 to get 100% coverage instead of 75.if white exit
 right
 if white exit 1 else right
 if black exit 1
