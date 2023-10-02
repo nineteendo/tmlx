@@ -159,7 +159,7 @@ public class BtmlRuntime : MonoBehaviour
     private void SelectPixel()
     {
         int canvasColorIndex = canvasTextureOffset + canvasTextureX;
-        if (canvasColorIndex < canvasColors.Length)
+        if (canvasColorIndex > 0 && canvasColorIndex < canvasColors.Length)
         {
             Color32 canvasColor = canvasColors[canvasColorIndex];
             canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
@@ -169,7 +169,7 @@ public class BtmlRuntime : MonoBehaviour
     private void UnSelectPixel()
     {
         int canvasColorIndex = canvasTextureOffset + canvasTextureX;
-        if (canvasColorIndex < canvasColors.Length)
+        if (canvasColorIndex > 0 && canvasColorIndex < canvasColors.Length)
         {
             Color32 canvasColor = canvasColors[canvasColorIndex];
             canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;

@@ -8,6 +8,16 @@ title: Changelog
 All notable changes to this project are documented in this file.
 {: .fs-6 .fw-300 }
 
+## v0.6.0
+{: .d-inline-block }
+
+Coming soon
+{: .label .label-yellow }
+
+### v0.6.0 - Bugfixes
+
+- [Fixed selecting pixel out of bounds when moving off the canvas lower boundaries](https://github.com/nineteendo/btml/issues/73)
+
 ## v0.5.0
 
 ### v0.5.0 - Features
@@ -53,7 +63,7 @@ All notable changes to this project are documented in this file.
 - [Fixed palette preview aspect ratio](https://github.com/nineteendo/btml/issues/56)
 - [Fixed pause not being deactivated when pressing stop](https://github.com/nineteendo/btml/issues/64)
 - [Fixed replay button not being selected when beating a level with less than 3 stars](https://github.com/nineteendo/btml/issues/57)
-- [Fixed selecting pixel out of bounds when moving off the canvas](https://github.com/nineteendo/btml/issues/58)
+- [Fixed selecting pixel out of bounds when moving off the canvas upper boundaries](https://github.com/nineteendo/btml/issues/58)
 - [Fixed syntax highlighting for `/**/`](https://github.com/nineteendo/btml/issues/59)
 
 ## v0.3.0
