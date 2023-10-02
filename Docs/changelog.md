@@ -9,20 +9,16 @@ All notable changes to this project are documented in this file.
 {: .fs-6 .fw-300 }
 
 ## v0.5.0
-{: .d-inline-block }
-
-Coming soon
-{: .label .label-yellow }
 
 ### v0.5.0 - Features
 
 - [Added optimise code control](https://github.com/nineteendo/btml/issues/66)
 - [Implemented canvases with configurable size](https://github.com/nineteendo/btml/issues/67)
-- [Made vscode extension](https://github.com/nineteendo/btml/issues/69)
+- <span>Coming soon</span>{: .label .label-yellow } [Made vscode extension](https://github.com/nineteendo/btml/issues/69)
 
 ### v0.5.0 - Levels
 
-- [Added level 16](https://github.com/nineteendo/btml/issues/65)
+- [Added level 16-17](https://github.com/nineteendo/btml/issues/65)
 
 ### v0.5.0 - Settings
 
@@ -31,6 +27,7 @@ Coming soon
 ### v0.5.0 - Bugfixes
 
 - [Flipped unit tests vertically](https://github.com/nineteendo/btml/issues/68)
+- [Fixed first level not being selected when changing page](https://github.com/nineteendo/btml/issues/72)
 - [Fixed palette preview alignment](https://github.com/nineteendo/btml/issues/71)
 
 ## v0.4.0

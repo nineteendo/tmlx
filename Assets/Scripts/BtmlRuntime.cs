@@ -22,7 +22,7 @@ public class BtmlRuntime : MonoBehaviour
 
     public const int CANVAS_HEIGHT = 30;
     public const int CANVAS_WIDTH = 30;
-    public const int LEVEL_COUNT = 16;
+    public const int LEVEL_COUNT = 17;
     public const float MAX_IPF = 3000000f;
     public const float NORMAL_IPS = 5f;
     public const float TURBO_MULTIPLIER = 36000000f;
