@@ -14,6 +14,10 @@ All notable changes to this project are documented in this file.
 Coming soon
 {: .label .label-yellow }
 
+### v0.6.0 - Features
+
+- [Made vscode extension](https://github.com/nineteendo/btml/issues/69)
+
 ### v0.6.0 - Bugfixes
 
 - [Fixed selecting pixel out of bounds when moving off the canvas lower boundaries](https://github.com/nineteendo/btml/issues/73)
@@ -24,7 +28,6 @@ Coming soon
 
 - [Added optimise code control](https://github.com/nineteendo/btml/issues/66)
 - [Implemented canvases with configurable size](https://github.com/nineteendo/btml/issues/67)
-- <span>Coming soon</span>{: .label .label-yellow } [Made vscode extension](https://github.com/nineteendo/btml/issues/69)
 
 ### v0.5.0 - Levels
 
