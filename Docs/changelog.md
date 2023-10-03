@@ -20,6 +20,8 @@ Coming soon
 
 ### v0.6.0 - Bugfixes
 
+- [Fixed next level button not being visible when locked](https://github.com/nineteendo/btml/issues/75)
+- [Fixed next page button not being visible when locked](https://github.com/nineteendo/btml/issues/74)
 - [Fixed selecting pixel out of bounds when moving off the canvas lower boundaries](https://github.com/nineteendo/btml/issues/73)
 
 ## v0.5.0
@@ -39,9 +41,9 @@ Coming soon
 
 ### v0.5.0 - Bugfixes
 
-- [Flipped unit tests vertically](https://github.com/nineteendo/btml/issues/68)
 - [Fixed first level not being selected when changing page](https://github.com/nineteendo/btml/issues/72)
 - [Fixed palette preview alignment](https://github.com/nineteendo/btml/issues/71)
+- [Flipped unit tests vertically](https://github.com/nineteendo/btml/issues/68)
 
 ## v0.4.0
 
@@ -83,8 +85,8 @@ Coming soon
 
 - [Added changelog](https://github.com/nineteendo/btml/issues/39)
 - [Added comments documentation](https://github.com/nineteendo/btml/issues/40)
-- [Added statements documentation](https://github.com/nineteendo/btml/issues/45)
 - [Added documentation](https://github.com/nineteendo/btml/issues/41)
+- [Added statements documentation](https://github.com/nineteendo/btml/issues/45)
 
 ### v0.3.0 - Palette Packs
 

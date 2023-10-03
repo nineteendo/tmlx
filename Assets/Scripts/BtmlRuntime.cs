@@ -158,9 +158,9 @@ public class BtmlRuntime : MonoBehaviour
 
     private void SelectPixel()
     {
-        int canvasColorIndex = canvasTextureOffset + canvasTextureX;
-        if (canvasColorIndex > 0 && canvasColorIndex < canvasColors.Length)
+        if (canvasTextureOffset >= 0 && canvasTextureOffset < canvasColors.Length && canvasTextureX >= 0 && canvasTextureX < canvasWidth)
         {
+            int canvasColorIndex = canvasTextureOffset + canvasTextureX;
             Color32 canvasColor = canvasColors[canvasColorIndex];
             canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
         }
@@ -168,9 +168,9 @@ public class BtmlRuntime : MonoBehaviour
 
     private void UnSelectPixel()
     {
-        int canvasColorIndex = canvasTextureOffset + canvasTextureX;
-        if (canvasColorIndex > 0 && canvasColorIndex < canvasColors.Length)
+        if (canvasTextureOffset >= 0 && canvasTextureOffset < canvasColors.Length && canvasTextureX >= 0 && canvasTextureX < canvasWidth)
         {
+            int canvasColorIndex = canvasTextureOffset + canvasTextureX;
             Color32 canvasColor = canvasColors[canvasColorIndex];
             canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
         }
@@ -269,7 +269,7 @@ public class BtmlRuntime : MonoBehaviour
         UnSelectPixel();
         ref BtmlAction action = ref this.action;
         bool hasBreakpoints = breakpoints.Count > 0;
-        int canvasTextureOffsetMax = canvasHeight * canvasWidth;
+        int canvasColorsLength = canvasColors.Length;
         for (; executedInstructions < ipf; executedInstructions++)
         {
             int canvasColorIndex = canvasTextureOffset + canvasTextureX;
@@ -291,7 +291,7 @@ public class BtmlRuntime : MonoBehaviour
                     break;
                 case BtmlDirection.up:
                     canvasTextureOffset += canvasWidth;
-                    if (canvasTextureOffset == canvasTextureOffsetMax)
+                    if (canvasTextureOffset >= canvasColorsLength)
                     {
                         goto default;
                     }
@@ -299,21 +299,21 @@ public class BtmlRuntime : MonoBehaviour
                     break;
                 case BtmlDirection.down:
                     canvasTextureOffset -= canvasWidth;
-                    if (canvasTextureOffset == -canvasWidth)
+                    if (canvasTextureOffset < 0)
                     {
                         goto default;
                     }
 
                     break;
                 case BtmlDirection.left:
-                    if (--canvasTextureX == -1)
+                    if (--canvasTextureX < 0)
                     {
                         goto default;
                     }
 
                     break;
                 case BtmlDirection.right:
-                    if (++canvasTextureX == canvasWidth)
+                    if (++canvasTextureX >= canvasWidth)
                     {
                         goto default;
                     }
@@ -445,10 +445,11 @@ public class BtmlRuntime : MonoBehaviour
 
 #if UNITY_EDITOR
         // Add level 0 for debugging
-        nextButton.gameObject.SetActive(levelIndex + 1 < saveLevels.Count && levelIndex + 1 <= LEVEL_COUNT);
+        nextButton.gameObject.SetActive(levelIndex + 1 <= LEVEL_COUNT);
 #else
-        nextButton.gameObject.SetActive(levelIndex + 1 < saveLevels.Count && levelIndex + 1 < LEVEL_COUNT);
+        nextButton.gameObject.SetActive(levelIndex + 1 < LEVEL_COUNT);
 #endif
+        nextButton.interactable = nextButton.gameObject.activeSelf && levelIndex + 1 < saveLevels.Count;
         nextButton.onClick.RemoveAllListeners();
         if (nextButton.gameObject.activeSelf)
         {

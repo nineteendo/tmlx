@@ -30,10 +30,11 @@ public class Menu : MonoBehaviour
 
 #if UNITY_EDITOR
         // Add level 0 for debugging
-        nextButton.gameObject.SetActive((15 * pageIndex) + 15 <= BtmlRuntime.LEVEL_COUNT && (15 * pageIndex) + 15 < save.levels.Count);
+        nextButton.gameObject.SetActive((15 * pageIndex) + 15 <= BtmlRuntime.LEVEL_COUNT);
 #else
-        nextButton.gameObject.SetActive((15 * pageIndex) + 15 < BtmlRuntime.LEVEL_COUNT && (15 * pageIndex) + 15 < save.levels.Count);
+        nextButton.gameObject.SetActive((15 * pageIndex) + 15 < BtmlRuntime.LEVEL_COUNT);
 #endif
+        nextButton.interactable = nextButton.gameObject.activeSelf && (15 * pageIndex) + 15 < save.levels.Count;
         nextButton.onClick.RemoveAllListeners();
         if (nextButton.gameObject.activeSelf)
         {
