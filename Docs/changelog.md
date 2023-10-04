@@ -23,6 +23,7 @@ Coming soon
 - [Fixed next level button not being visible when locked](https://github.com/nineteendo/btml/issues/75)
 - [Fixed next page button not being visible when locked](https://github.com/nineteendo/btml/issues/74)
 - [Fixed selecting pixel out of bounds when moving off the canvas lower boundaries](https://github.com/nineteendo/btml/issues/73)
+- [Fixed small breakpoint hitboxes](https://github.com/nineteendo/btml/issues/76)
 
 ## v0.5.0
 

@@ -79,7 +79,7 @@ public class CodeEditor : MonoBehaviour
         else
         {
             breakpointToggle = Instantiate(breakpointTogglePrebab, lineNumbersText.transform);
-            breakpointToggle.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(widthPerChar, widthPerChar);
+            breakpointToggle.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(heightPerChar, heightPerChar);
             breakpointToggle.onValueChanged.AddListener((_) => ToggleBreakpoint(breakpointToggleIndex));
             breakpointToggles.Add(breakpointToggle);
         }
