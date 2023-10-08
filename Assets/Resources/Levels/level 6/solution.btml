@@ -1,6 +1,5 @@
-0:	if white exit else right goto 1
-1:	if white exit 1 else right goto 2
-2:	if white exit else right goto 3
-3:	if white exit else right goto 4
-4:	if white exit else right goto 5
-5:	if white exit 1 else right goto 0
+even_length:	if white exit else right goto odd_length
+odd_length:	if white left else right goto even_length
+0:	if white exit else left goto 1
+1:	if white exit 1 else left goto 2
+2:	if white exit 1 else left goto 0

@@ -7,7 +7,16 @@ title: Statements
 
 # Statements
 
-<span>New (v0.4.0)</span>{: .label .label-green } Here is a visual representation of all possible statements. Click on a word for more information.
+{: .example }
+> Write a black pixel and move right:
+>
+> ```btml
+> write black right
+> ```
+
+## Statements - Overview
+
+Here is a visual representation of all possible statements. Click on a word for more information.
 
 <style type="text/css">
     table {
@@ -179,3 +188,12 @@ title: Statements
         </tr>
     </tbody>
 </table>
+
+## Statements - More Examples
+
+{: .example }
+> Statements can be conditional:
+>
+> ```btml
+> if black right else exit 1
+> ```

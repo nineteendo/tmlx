@@ -30,10 +30,6 @@ Field | Description
 color | Required. `0`/`white` or `1`/`black`.
 
 ## Write - More Examples
-{: .d-inline-block }
-
-New (v0.4.0)
-{: .label .label-green }
 
 {: .example }
 > Emphasize binary:
