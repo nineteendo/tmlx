@@ -10,11 +10,14 @@ title: If While Else
 Conditional statements are used to perform different actions for white and black pixels.
 {: .fs-6 .fw-300 }
 
-## Table of contents
-{: .no_toc .text-delta }
-
+<details open markdown="block">
+  <summary>
+    Table of Contents
+  </summary>
+  {: .text-delta }
 1. TOC
 {:toc}
+</details>
 
 ## If
 

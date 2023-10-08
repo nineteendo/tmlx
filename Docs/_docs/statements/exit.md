@@ -10,11 +10,14 @@ title: Exit
 The `exit` statement is used to terminate the program and classify the input.
 {: .fs-6 .fw-300 }
 
-## Table of contents
-{: .no_toc .text-delta }
-
+<details open markdown="block">
+  <summary>
+    Table of Contents
+  </summary>
+  {: .text-delta }
 1. TOC
 {:toc}
+</details>
 
 ## Exit
 

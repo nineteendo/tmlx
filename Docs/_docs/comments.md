@@ -9,11 +9,14 @@ title: Comments
 Comments can be used to explain code, and to make it more readable.
 {: .fs-6 .fw-300 }
 
-## Table of contents
-{: .no_toc .text-delta }
-
+<details open markdown="block">
+  <summary>
+    Table of Contents
+  </summary>
+  {: .text-delta }
 1. TOC
 {:toc}
+</details>
 
 ## Single Line Comments
 
