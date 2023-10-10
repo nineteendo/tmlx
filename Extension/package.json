@@ -52,13 +52,13 @@
 		"type": "individual",
 		"url": "https://www.paypal.com/paypalme/nineteendo"
 	},
-	"homepage": "https://github.com/nineteendo/btml/Extension/#readme",
+	"homepage": "https://github.com/nineteendo/btml/tree/main/Extension#readme",
 	"license": "AGPL-3.0",
 	"name": "btml",
 	"publisher": "nicezombies",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/nineteendo/btml/Extension"
+		"url": "https://github.com/nineteendo/btml/tree/main/Extension"
 	},
 	"version": "0.0.1"
 }
