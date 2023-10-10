@@ -2,9 +2,9 @@
 
 All notable changes to the "btml" extension will be documented in this file.
 
-## [Unreleased]
+## v0.1.0
 
-### [Unreleased] - Features
+### v0.1.0 - Features
 
 - Keybinding for `\v`
 - Syntax highlighting
