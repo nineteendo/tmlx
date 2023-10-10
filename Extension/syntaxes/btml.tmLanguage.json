@@ -1,0 +1,64 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Btml",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#identifiers"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#literals"
+		}
+	],
+	"repository": {
+		"comments": {
+			"patterns": [
+				{
+					"begin": "/\\*",
+					"captures": {
+						"0": {
+							"name": "comment.block.btml"
+						}
+					},
+					"end": "\\*/",
+					"name": "comment.block.btml"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.comment.btml"
+						}
+					},
+					"match": "\\/\\/[^\\v]*(\\v|$\\n)?",
+					"name": "comment.line.btml"
+				}
+			]
+		},
+		"identifiers": {
+			"patterns": [
+				{
+					"match": "\\b(black|white)\\b",
+					"name": "constant.language.btml"
+				},
+				{
+					"match": "\\b(down|left|right|up|write)\\b",
+					"name": "support.function.btml"
+				}
+			]
+		},
+		"keywords": {
+			"match": "\\b(else|exit|goto|if|while)\\b",
+			"name": "keyword.control.btml"
+		},
+		"literals": {
+			"match": "\\b\\d+\\b",
+			"name": "constant.numeric.btml"
+		}
+	},
+	"scopeName": "source.btml"
+}
