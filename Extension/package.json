@@ -1,4 +1,7 @@
 {
+	"activationEvents": [
+		"onLanguage:btml"
+	],
 	"author": {
 		"email": "nineteendo19d0@gmail.com",
 		"name": "Nice Zombies",
@@ -9,10 +12,24 @@
 		"url": "https://github.com/nineteendo/btml/issues"
 	},
 	"categories": [
-		"Keymaps",
 		"Programming Languages"
 	],
 	"contributes": {
+		"configurationDefaults": {
+			"[btml]": {
+				"editor.insertSpaces": false,
+				"editor.rulers": [
+					78
+				],
+				"editor.tabSize": 8,
+				"editor.unicodeHighlight.allowedCharacters": {
+					"\u000b": true
+				},
+				"editor.wordBasedSuggestions": false,
+				"editor.wordWrap": "on",
+				"files.eol": "\n"
+			}
+		},
 		"grammars": [
 			{
 				"language": "btml",
@@ -26,7 +43,8 @@
 					"text": "\u000b"
 				},
 				"command": "type",
-				"key": "shift+enter"
+				"key": "shift+enter",
+				"when": "editorLangId == btml"
 			}
 		],
 		"languages": [
@@ -44,21 +62,40 @@
 		]
 	},
 	"description": "The Binary Turing Machine Language",
+	"devDependencies": {
+		"@types/mocha": "^9.1.0",
+		"@types/node": "^16.18.34",
+		"@typescript-eslint/eslint-plugin": "^6.7.0",
+		"@typescript-eslint/parser": "^6.7.0",
+		"esbuild": "^0.19.4",
+		"eslint": "^8.35.0",
+		"mocha": "^9.2.1",
+		"typescript": "^5.2.2"
+	},
 	"displayName": "Btml",
 	"engines": {
-		"vscode": "^1.54.0"
+		"vscode": "^1.73.0"
 	},
 	"funding": {
 		"type": "individual",
 		"url": "https://www.paypal.com/paypalme/nineteendo"
 	},
 	"homepage": "https://github.com/nineteendo/btml/tree/main/Extension#readme",
+	"icon": "images/BTML0_Logo.png",
 	"license": "AGPL-3.0",
+	"main": "./client/out/extension",
 	"name": "btml",
 	"publisher": "nicezombies",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/nineteendo/btml/tree/main/Extension"
 	},
-	"version": "0.0.1"
+	"scripts": {
+		"compile": "tsc -b",
+		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
+		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+		"vscode:prepublish": "npm run compile",
+		"watch": "tsc -b -w"
+	},
+	"version": "0.0.2"
 }

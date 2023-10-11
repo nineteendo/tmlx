@@ -1,0 +1,8 @@
+{
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
+	"editor.insertSpaces": false,
+	"typescript.preferences.quoteStyle": "single",
+	"typescript.tsc.autoDetect": "off"
+}
