@@ -31,8 +31,8 @@ export function activate(context: ExtensionContext) {
 	};
 
 	client = new LanguageClient(
-		'languageServerExample',
-		'Language Server Example',
+		'btmlServer',
+		'Btml Server',
 		serverOptions,
 		clientOptions
 	);

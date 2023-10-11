@@ -1,4 +1,13 @@
 {
+	"autoClosingPairs": [
+		{
+			"close": "*/",
+			"notIn": [
+				"comment"
+			],
+			"open": "/*"
+		}
+	],
 	"comments": {
 		"blockComment": [
 			"/*",

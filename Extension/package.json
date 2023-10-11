@@ -88,14 +88,15 @@
 	"publisher": "nicezombies",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/nineteendo/btml/tree/main/Extension"
+		"url": "https://github.com/nineteendo/btml"
 	},
 	"scripts": {
-		"compile": "tsc -b",
-		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
-		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
-		"vscode:prepublish": "npm run compile",
-		"watch": "tsc -b -w"
+		"vscode:prepublish": "npm run esbuild-client -- --minify && npm run esbuild-server -- --minify",
+		"esbuild-client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
+		"esbuild-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --format=cjs --platform=node",
+		"esbuild": "npm run esbuild-client -- --sourcemap && npm run esbuild-server -- --sourcemap",
+		"esbuild-watch": "npm run esbuild-client -- --sourcemap --watch && npm run esbuild-server -- --sourcemap --watch",
+		"test-compile": "tsc -p ./"
 	},
-	"version": "0.0.2"
+	"version": "0.0.3"
 }

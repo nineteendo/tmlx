@@ -6,6 +6,6 @@ Syntax highlighting support for Btml in Visual Studio Code.
 
 Adds syntax highlighting support for Btml (.btml).
 
-![syntax-highlighting](images/syntax-highlighting.png)
+![syntax-highlighting](Extension/images/syntax-highlighting.png)
 
 **Enjoy!**

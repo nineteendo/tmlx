@@ -20,7 +20,7 @@
 	"publisher": "nicezombies",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/nineteendo/btml/tree/main/Extension/client"
+		"url": "https://github.com/nineteendo/btml"
 	},
 	"version": "0.0.2"
 }
