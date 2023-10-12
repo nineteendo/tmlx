@@ -23,6 +23,12 @@ public class MainMenu : MonoBehaviour
 #endif
     }
 
+    public void ViewDocs()
+    {
+        Application.OpenURL("http://nineteendo.github.io/btml");
+    }
+
+
     private void Update()
     {
         if (Input.GetButtonDown("Cancel")) // Player is tired of the application ;(

@@ -52,7 +52,7 @@ Comments can be used to explain code, and to make it more readable.
 ### Multi-line Comments - Syntax
 
 ```ebnf
-/* {text \v} text */
+/* {text (\n | \v)} text */
 ```
 
 {: .note }
