@@ -178,7 +178,7 @@ public class CodeEditor : MonoBehaviour
         for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
         {
             string line = lines[lineIndex];
-            if (markedLines != null && lineIndex < markedLines.Length)
+            if (markedLines != null && lineIndex < markedLines.Length && markedLines[lineIndex].a > 0x00)
             {
                 markedTextList.Add($"<mark=#{ColorUtility.ToHtmlStringRGBA(markedLines[lineIndex])}>{line}</mark>");
             }

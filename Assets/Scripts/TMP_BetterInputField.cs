@@ -32,7 +32,6 @@ public class TMP_BetterInputField : TMP_InputField
         // RuntimePlatform.MetroPlayerX86, RuntimePlatform.MetroPlayerX64 & RuntimePlatform.MetroPlayerARM are obsolete
         return Application.platform is RuntimePlatform.WSAPlayerX86 or RuntimePlatform.WSAPlayerX64 or RuntimePlatform.WSAPlayerARM
             ? !TouchScreenKeyboard.isSupported || TouchScreenKeyboard.isInPlaceEditingAllowed
-            : (TouchScreenKeyboard.isSupported && shouldHideSoftKeyboard)
-|| !TouchScreenKeyboard.isSupported || shouldHideSoftKeyboard || shouldHideMobileInput;
+            : (TouchScreenKeyboard.isSupported && shouldHideSoftKeyboard) || !TouchScreenKeyboard.isSupported || shouldHideSoftKeyboard || shouldHideMobileInput;
     }
 }

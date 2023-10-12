@@ -1,1 +1,8 @@
-/**Welcome to the Binary Turing Machine Language (Btml).Visit http://nineteendo.github.io/btml for the documentation.If you press play, the program exits with status 0 (accept) and fails test 1.Press replay and press play again to end the execution.*/// TODO: change that to 1 (reject).exit 0
+/**
+Welcome to the Binary Turing Machine Language (Btml).
+Visit http://nineteendo.github.io/btml for the documentation.
+If you press play, the program exits with status 0 (accept) and fails test 1.
+Press replay and press play again to end the execution.
+*/
+// TODO: change that to 1 (reject).
+exit 0

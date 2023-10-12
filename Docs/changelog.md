@@ -16,13 +16,16 @@ Coming soon
 
 ### v0.6.0 - Features
 
+- [Allowed empty lines](https://github.com/nineteendo/btml/issues/79)
 - [Made vscode extension](https://github.com/nineteendo/btml/issues/69)
 
 ### v0.6.0 - Bugfixes
 
+- [Fixed low resolution](https://github.com/nineteendo/btml/issues/78)
 - [Fixed next level button not being visible when locked](https://github.com/nineteendo/btml/issues/75)
 - [Fixed next page button not being visible when locked](https://github.com/nineteendo/btml/issues/74)
 - [Fixed selecting pixel out of bounds when moving off the canvas lower boundaries](https://github.com/nineteendo/btml/issues/73)
+- [Fixed slow normal speed](https://github.com/nineteendo/btml/issues/80)
 - [Fixed small breakpoint hitboxes](https://github.com/nineteendo/btml/issues/76)
 
 ## v0.5.0
@@ -30,6 +33,7 @@ Coming soon
 ### v0.5.0 - Features
 
 - [Added optimise code control](https://github.com/nineteendo/btml/issues/66)
+- [Flipped unit tests vertically](https://github.com/nineteendo/btml/issues/68)
 - [Implemented canvases with configurable size](https://github.com/nineteendo/btml/issues/67)
 
 ### v0.5.0 - Levels
@@ -44,7 +48,6 @@ Coming soon
 
 - [Fixed first level not being selected when changing page](https://github.com/nineteendo/btml/issues/72)
 - [Fixed palette preview alignment](https://github.com/nineteendo/btml/issues/71)
-- [Flipped unit tests vertically](https://github.com/nineteendo/btml/issues/68)
 
 ## v0.4.0
 

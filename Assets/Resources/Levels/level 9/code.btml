@@ -1,3 +1,12 @@
-/**Here is the approach to accept even bit parity:1. Read length line: if 0: accept if remainder is 0.2. Read input line: if 1: add 1, take remainder after division by 2.3. Repeat.*/// TODO: finish implementation.// NOTE: you need one state per remainder.read_length_x:	if white exit 1 else down goto read_input_x
+/**
+Here is the approach to accept even bit parity:
+
+1. Read length line: if 0: accept if remainder is 0.
+2. Read input line: if 1: add 1, take remainder after division by 2.
+3. Repeat.
+*/
+// TODO: finish implementation.
+// NOTE: you need one state per remainder.
+read_length_x:	if white exit 1 else down goto read_input_x
 read_input_x:	if 0 up goto next_x else up goto next_x
 next_x:		right goto read_length_x

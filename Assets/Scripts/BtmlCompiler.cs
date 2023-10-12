@@ -29,12 +29,18 @@ public enum BtmlDirection
     right
 }
 
+public enum BtmlInstructionType
+{
+    nothing,
+    unconditional,
+    conditional
+}
+
 public struct BtmlInstruction
 {
     public BtmlAction blackAction;
     public BtmlAction whiteAction;
-
-    public bool conditional;
+    public BtmlInstructionType instructionType;
 }
 
 
@@ -61,51 +67,60 @@ public static class BtmlCompiler
 {
     private static readonly string[] reservedWords = { ":", "black", "down", "else", "exit", "goto", "if", "left", "nowhere", "right", "up", "while", "white", "write" };
 
-    public static bool Compile(string text, bool optimised, out BtmlInstruction[] optimisedInstructions, out string error)
+    public static bool Compile(string text, bool optimised, out BtmlInstruction[] instructions, out int instructionCount, out string error)
     {
         if (text == null)
         {
             error = "text is null";
-            optimisedInstructions = null;
+            instructions = null;
+            instructionCount = 0;
             return false;
         }
 
         // Process
-        if (!Process(text, out BtmlInstruction[] processedInstructions, out Dictionary<string, int> labels, out string processError))
+        if (!Process(text, out BtmlInstruction[] processedInstructions, out Dictionary<string, int> labels, out instructionCount, out string processError))
         {
             error = processError;
-            optimisedInstructions = null;
+            instructions = null;
             return false;
         }
 
         // Expand
-        BtmlInstruction[] expandedInstructions = new BtmlInstruction[processedInstructions.Length];
-        for (int processedInstructionIndex = 0; processedInstructionIndex < processedInstructions.Length; processedInstructionIndex++)
+        BtmlInstruction[] expandedInstructions = (BtmlInstruction[])processedInstructions.Clone();
+        for (int expandedInstructionIndex = 0; expandedInstructionIndex < expandedInstructions.Length; expandedInstructionIndex++)
         {
-            BtmlInstruction processedInstruction = processedInstructions[processedInstructionIndex];
-            ref BtmlAction whiteAction = ref processedInstruction.whiteAction;
-            ref BtmlAction blackAction = ref processedInstruction.blackAction;
-            if (whiteAction.writeColor.a < 0xff)
+            ref BtmlInstruction expandedInstruction = ref expandedInstructions[expandedInstructionIndex];
+            ref BtmlAction whiteAction = ref expandedInstruction.whiteAction;
+            ref BtmlAction blackAction = ref expandedInstruction.blackAction;
+            if (whiteAction.writeColor.a <= 0x00)
             {
                 whiteAction.writeColor = BtmlRuntime.COLOR_PIXEL_OFF;
             }
 
-            if (blackAction.writeColor.a < 0xff)
+            if (blackAction.writeColor.a <= 0x00)
             {
                 blackAction.writeColor = BtmlRuntime.COLOR_PIXEL_ON;
             }
 
-            if (!Resolve(processedInstructionIndex, labels, ref whiteAction, out string resolveError) || !Resolve(processedInstructionIndex, labels, ref blackAction, out resolveError))
+            if (!Resolve(expandedInstructionIndex, labels, ref whiteAction, out string resolveError) || !Resolve(expandedInstructionIndex, labels, ref blackAction, out resolveError))
             {
                 error = resolveError;
-                optimisedInstructions = null;
+                instructions = null;
                 return false;
             }
-
-            expandedInstructions[processedInstructionIndex] = processedInstruction;
         }
 
-        optimisedInstructions = (BtmlInstruction[])expandedInstructions.Clone();
+        // Pre-optimise
+        HashSet<BtmlBranch> visitedBranches = new(new BtmlBranchEqualityComparer());
+        BtmlInstruction[] preoptimisedInstructions = (BtmlInstruction[])expandedInstructions.Clone();
+        for (int preoptimisedInstructionIndex = 0; preoptimisedInstructionIndex < preoptimisedInstructions.Length; preoptimisedInstructionIndex++)
+        {
+            ref BtmlInstruction preoptimisedInstruction = ref preoptimisedInstructions[preoptimisedInstructionIndex];
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.blackAction);
+        }
+
+        instructions = (BtmlInstruction[])preoptimisedInstructions.Clone();
         if (!optimised)
         {
             error = null;
@@ -113,12 +128,15 @@ public static class BtmlCompiler
         }
 
         // Optimise
-        HashSet<BtmlBranch> visitedBranches = new(new BtmlBranchEqualityComparer());
-        for (int precomputedInstructionIndex = 0; precomputedInstructionIndex < optimisedInstructions.Length; precomputedInstructionIndex++)
+        visitedBranches.Clear();
+        for (int instructionIndex = 0; instructionIndex < instructions.Length; instructionIndex++)
         {
-            ref BtmlInstruction precomputedInstruction = ref optimisedInstructions[precomputedInstructionIndex];
-            _ = Precompute(optimisedInstructions, visitedBranches, ref precomputedInstruction.whiteAction);
-            _ = Precompute(optimisedInstructions, visitedBranches, ref precomputedInstruction.blackAction);
+            ref BtmlInstruction optimisedInstruction = ref instructions[instructionIndex];
+            if (optimisedInstruction.instructionType != BtmlInstructionType.nothing)
+            {
+                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.whiteAction);
+                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.blackAction);
+            }
         }
 
         error = null;
@@ -198,7 +216,11 @@ public static class BtmlCompiler
     {
         action = new BtmlAction
         {
-            gotoLineIndex = loop ? lineIndex : lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
+            gotoLineIndex = loop
+                ? lineIndex
+                : lineIndex + 1 < lines.Length
+                    ? lineIndex + 1
+                    : -1
         };
 
         // Parse write
@@ -288,27 +310,26 @@ public static class BtmlCompiler
         return false;
     }
 
-    private static bool Precompute(BtmlInstruction[] precomputedInstructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action)
+    private static bool Precompute(BtmlInstruction[] instructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action)
     {
         if (action.moveDirection != BtmlDirection.nowhere || action.gotoLineIndex < 0)
         {
             return true;
-        };
+        }
 
         BtmlBranch branch = new()
         {
             color = action.writeColor,
             lineIndex = action.gotoLineIndex
         };
-        if (visitedBranches.Contains(branch))
+        if (!visitedBranches.Add(branch))
         {
             return false;
         }
 
-        _ = visitedBranches.Add(branch);
-        ref BtmlInstruction precomputedInstruction = ref precomputedInstructions[action.gotoLineIndex];
-        ref BtmlAction newAction = ref (action.writeColor.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? ref precomputedInstruction.whiteAction : ref precomputedInstruction.blackAction);
-        if (!Precompute(precomputedInstructions, visitedBranches, ref newAction))
+        ref BtmlInstruction instruction = ref instructions[action.gotoLineIndex];
+        ref BtmlAction newAction = ref (action.writeColor.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? ref instruction.whiteAction : ref instruction.blackAction);
+        if (!Precompute(instructions, visitedBranches, ref newAction))
         {
             return false; // Keep looping branch
         }
@@ -318,23 +339,44 @@ public static class BtmlCompiler
         return true;
     }
 
-    private static bool Process(string text, out BtmlInstruction[] instructions, out Dictionary<string, int> labels, out string error)
+    private static void Preoptimise(BtmlInstruction[] preoptimisedInstructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action)
+    {
+        if (action.gotoLineIndex < 0)
+        {
+            return;
+        }
+
+        ref BtmlInstruction preoptimisedInstruction = ref preoptimisedInstructions[action.gotoLineIndex];
+        if (preoptimisedInstruction.instructionType != BtmlInstructionType.nothing)
+        {
+            return;
+        }
+
+        BtmlBranch branch = new()
+        {
+            color = action.writeColor,
+            lineIndex = action.gotoLineIndex
+        };
+        if (visitedBranches.Add(branch))
+        {
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.blackAction);
+        }
+
+        action.gotoLineIndex = preoptimisedInstruction.whiteAction.gotoLineIndex;
+    }
+
+    private static bool Process(string text, out BtmlInstruction[] instructions, out Dictionary<string, int> labels, out int instructionCount, out string error)
     {
         List<BtmlInstruction> instructionList = new();
         labels = new Dictionary<string, int>();
+        instructionCount = 0;
         int blockCommentStartIndex = -1;
         string[] lines = text.Split('\n');
         for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
         {
             BtmlInstruction instruction = new();
             List<string> tokens = Tokenize(lineIndex, lines[lineIndex], ref blockCommentStartIndex);
-            if (tokens.Count == 0)
-            {
-                instructions = null;
-                error = $"Line {lineIndex + 1}: found empty line, use shift enter if an empty line was intended";
-                return false;
-            }
-
             int tokenIndex = 0;
             if (tokenIndex < tokens.Count && tokens[tokenIndex] == ":")
             {
@@ -360,12 +402,7 @@ public static class BtmlCompiler
                 }
 
                 labels.Add(tokens[tokenIndex++], lineIndex);
-                if (++tokenIndex >= tokens.Count)
-                {
-                    instructions = null;
-                    error = $"Line {lineIndex + 1}: instruction is missing after label, use shift enter if a line break was intended";
-                    return false;
-                }
+                tokenIndex++;
             }
 
             int oldTokenIndex = tokenIndex;
@@ -435,11 +472,15 @@ public static class BtmlCompiler
 
                 instruction.blackAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_ON) ? consequentAction : alternativeAction;
                 instruction.whiteAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? consequentAction : alternativeAction;
-                instruction.conditional = true;
+                instruction.instructionType = BtmlInstructionType.conditional;
             }
             else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, false, out BtmlAction action, out string actionError))
             {
                 instruction.blackAction = instruction.whiteAction = action;
+                if (tokenIndex != oldTokenIndex)
+                {
+                    instruction.instructionType = BtmlInstructionType.unconditional;
+                }
             }
             else
             {
@@ -449,18 +490,16 @@ public static class BtmlCompiler
             }
 
             // Check end
-            if (tokenIndex == oldTokenIndex)
-            {
-                instructions = null;
-                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' is not a valid instruction";
-                return false;
-            }
-
             if (tokenIndex < tokens.Count)
             {
                 instructions = null;
-                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' should be on the next line";
+                error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' {(tokenIndex == oldTokenIndex ? "is not a valid instruction" : "should be on the next line")}";
                 return false;
+            }
+
+            if (instruction.instructionType != BtmlInstructionType.nothing)
+            {
+                instructionCount++;
             }
 
             instructionList.Add(instruction);

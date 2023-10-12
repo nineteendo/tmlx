@@ -24,8 +24,8 @@ public class BtmlRuntime : MonoBehaviour
     public const int CANVAS_WIDTH = 30;
     public const int LEVEL_COUNT = 17;
     public const float MAX_IPF = 3000000f;
-    public const float NORMAL_IPS = 5f;
-    public const float TURBO_MULTIPLIER = 36000000f;
+    public const float NORMAL_IPS = 10f;
+    public const float TURBO_MULTIPLIER = 18000000f;
     public const float UPDATE_INTERVAL = .5f;
 
     public Button menuButton;
@@ -71,6 +71,7 @@ public class BtmlRuntime : MonoBehaviour
     private int canvasTextureOffset;
     private int canvasTextureX;
     private int exitStatus = -1;
+    private int instructionCount;
     private int instructionIndex;
     private int ipf;
     private static int levelIndex;
@@ -89,7 +90,13 @@ public class BtmlRuntime : MonoBehaviour
 
     public void LoadSlot(int slotIndex)
     {
-        codeEditor.inputField.text = slotIndex == 0 ? level.code : slotIndex == 1 ? saveLevel.autoSave : slotIndex == 2 ? level.solution : saveLevel.bestSave;
+        codeEditor.inputField.text = slotIndex == 0
+            ? level.code
+            : slotIndex == 1
+                ? saveLevel.autoSave
+                : slotIndex == 2
+                    ? level.solution
+                    : saveLevel.bestSave;
     }
 
     public void Step()
@@ -109,7 +116,9 @@ public class BtmlRuntime : MonoBehaviour
     {
         ipf = 0;
         queuedInstructions = 0f;
-        targetIps = pauseToggle.isOn ? 0f : normalIps * (turboToggle.isOn ? turboMultiplier : 1f);
+        targetIps = pauseToggle.isOn
+            ? 0f
+            : normalIps * (turboToggle.isOn ? turboMultiplier : 1f);
     }
 
     public void TogglePlay()
@@ -126,20 +135,21 @@ public class BtmlRuntime : MonoBehaviour
             return;
         }
 
-        if (!BtmlCompiler.Compile(codeEditor.inputField.text, optimiseToggle.isOn, out instructions, out string error))
+        if (!BtmlCompiler.Compile(codeEditor.inputField.text, optimiseToggle.isOn, out instructions, out instructionCount, out string error))
         {
             errorText.text = error;
             return;
         }
 
-        codeEditor.MarkedLineIndex = 0;
+        coveredBlackBranches = new bool[instructions.Length];
+        coveredWhiteBranches = new bool[instructions.Length];
+        SetupInstructionIndex();
+        codeEditor.MarkedLineIndex = instructionIndex;
         errorText.text = "";
         slotAutoButton.interactable = true;
         saveLevel.autoSave = codeEditor.inputField.text;
         SaveFunctions.LoadGame().levels[levelIndex] = saveLevel;
         SaveFunctions.SaveGame();
-        coveredBlackBranches = new bool[instructions.Length];
-        coveredWhiteBranches = new bool[instructions.Length];
         elapsedTime = totalInstructions = queuedInstructions = 0f;
     }
 
@@ -155,7 +165,6 @@ public class BtmlRuntime : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-
     private void SelectPixel()
     {
         if (canvasTextureOffset >= 0 && canvasTextureOffset < canvasColors.Length && canvasTextureX >= 0 && canvasTextureX < canvasWidth)
@@ -164,6 +173,19 @@ public class BtmlRuntime : MonoBehaviour
             Color32 canvasColor = canvasColors[canvasColorIndex];
             canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
         }
+    }
+
+    private void SetupInstructionIndex()
+    {
+        int newInstructionIndex = instructions != null && instructions[0].instructionType == BtmlInstructionType.nothing ? instructions[0].whiteAction.gotoLineIndex : 0;
+        if (newInstructionIndex >= 0)
+        {
+            instructionIndex = newInstructionIndex;
+            return;
+        }
+
+        int executedInstructions = 0;
+        Exit(-(newInstructionIndex + 1), ref executedInstructions);
     }
 
     private void UnSelectPixel()
@@ -192,7 +214,7 @@ public class BtmlRuntime : MonoBehaviour
         }
 
         canvasTextureOffset += (newCanvasTexture.height - 1) * canvasWidth;
-        instructionIndex = 0;
+        SetupInstructionIndex();
         exitStatus = -1;
         if (breakpoints.Contains(instructionIndex))
         {
@@ -324,14 +346,14 @@ public class BtmlRuntime : MonoBehaviour
                     continue;
             }
 
-            int newProgramIndex = action.gotoLineIndex;
-            if (newProgramIndex < 0)
+            int newInstructionIndex = action.gotoLineIndex;
+            if (newInstructionIndex < 0)
             {
-                Exit(-(newProgramIndex + 1), ref executedInstructions);
+                Exit(-(newInstructionIndex + 1), ref executedInstructions);
                 continue;
             }
 
-            instructionIndex = newProgramIndex;
+            instructionIndex = newInstructionIndex;
             if (hasBreakpoints && breakpoints.Contains(instructionIndex))
             {
                 pauseToggle.isOn = true;
@@ -384,7 +406,6 @@ public class BtmlRuntime : MonoBehaviour
             return false;
         }
 
-        int instructionCount = instructions.Length;
         levelEndedMenuOverlay.SetActive(true);
         int starCount;
         if (testIndex < tests.Length)
@@ -399,18 +420,34 @@ public class BtmlRuntime : MonoBehaviour
             Color32[] markedLines = new Color32[instructions.Length];
             for (int instructionIndex = 0; instructionIndex < instructions.Length; instructionIndex++)
             {
-                int coveredBranchesCount = !instructions[instructionIndex].conditional ? coveredBlackBranches[instructionIndex] || coveredWhiteBranches[instructionIndex] ? 2 : 0 : (coveredBlackBranches[instructionIndex] ? 1 : 0) + (coveredWhiteBranches[instructionIndex] ? 1 : 0);
+                BtmlInstructionType instructionType = instructions[instructionIndex].instructionType;
+                if (instructionType == BtmlInstructionType.nothing)
+                {
+                    continue;
+                }
+
+                int coveredBranchesCount = instructionType != BtmlInstructionType.conditional
+                    ? coveredBlackBranches[instructionIndex] || coveredWhiteBranches[instructionIndex] ? 2 : 0
+                    : (coveredBlackBranches[instructionIndex] ? 1 : 0) + (coveredWhiteBranches[instructionIndex] ? 1 : 0);
+
                 totalCoveredBranchesCount += coveredBranchesCount;
-                markedLines[instructionIndex] = coveredBranchesCount == 0 ? COLOR_COVERED_NEVER : coveredBranchesCount == 1 ? COLOR_COVERED_HALF : COLOR_COVERED_ENTIRELY;
+                markedLines[instructionIndex] = coveredBranchesCount == 0
+                    ? COLOR_COVERED_NEVER
+                    : coveredBranchesCount == 1
+                        ? COLOR_COVERED_HALF
+                        : COLOR_COVERED_ENTIRELY;
             }
 
-            int coveragePercentage = 100 * totalCoveredBranchesCount / (2 * instructions.Length);
+            int coveragePercentage = 100 * totalCoveredBranchesCount / (2 * instructionCount);
             levelEndedText.text = $"{coveragePercentage}% Coverage";
             codeEditor.MarkedLines = markedLines;
-            int targetInstructionCount = level.solution.Count(c => c == '\n') + 1;
-            starCount = instructionCount > targetInstructionCount * 2f
-                ? 0
-                : instructionCount > targetInstructionCount * 1.5f ? 1 : instructionCount > targetInstructionCount ? 2 : 3;
+            starCount = !BtmlCompiler.Compile(level.solution, false, out _, out int targetInstructionCount, out _) || instructionCount <= targetInstructionCount
+                ? 3
+                : instructionCount <= targetInstructionCount * 1.5f
+                    ? 2
+                    : instructionCount <= targetInstructionCount * 2f
+                        ? 1
+                        : 0;
 
             congratulationsText.color = instructionCount >= targetInstructionCount ? COLOR_SOLUTION_NORMAL : COLOR_SOLUTION_UNKNOWN;
             congratulationsText.text = instructionCount > targetInstructionCount
@@ -425,7 +462,7 @@ public class BtmlRuntime : MonoBehaviour
                 saveLevels.Add(new SaveLevel());
             }
 
-            if (saveLevel.bestSave == null || saveLevel.autoSave.Count(c => c == '\n') < saveLevel.bestSave.Count(c => c == '\n'))
+            if (saveLevel.bestSave == null || !BtmlCompiler.Compile(level.solution, false, out _, out int bestInstructionCount, out _) || instructionCount < bestInstructionCount)
             {
                 saveLevel.bestSave = saveLevel.autoSave;
             }
@@ -458,7 +495,9 @@ public class BtmlRuntime : MonoBehaviour
 
         EventSystem.current.SetSelectedGameObject(testIndex < tests.Length || starCount < 3
             ? replayButton.gameObject
-            : nextButton.gameObject.activeSelf ? nextButton.gameObject : menuButton.gameObject
+            : nextButton.gameObject.activeSelf
+                ? nextButton.gameObject
+                : menuButton.gameObject
         );
         instructions = null;
         ipf = 0;
