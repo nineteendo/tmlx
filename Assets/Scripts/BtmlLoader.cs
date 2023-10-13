@@ -17,7 +17,8 @@ public struct BtmlLevelSettings
 
 public struct BtmlTest
 {
-    public Texture2D canvasTexture;
+    public Texture2D inputTexture;
+    public Texture2D outputTexture;
 
     public int exitStatus;
 }
@@ -25,6 +26,7 @@ public struct BtmlTest
 [Serializable]
 public struct BtmlTestSettings
 {
+    public bool checkOutput;
     public int exitStatus;
 }
 
@@ -47,10 +49,16 @@ public static class BtmlLoader
         for (int testIndex = 0; testIndex < tests.Length; testIndex++)
         {
             string testPath = testsPath + $"test {testIndex + 1}/";
+            BtmlTest test = new();
             BtmlTestSettings testSettings = JsonUtility.FromJson<BtmlTestSettings>(Resources.Load<TextAsset>(testPath + "testSettings").text);
-            int exitStatus = testSettings.exitStatus;
-            Texture2D canvasTexture = Resources.Load<Texture2D>(testPath + "canvasTexture");
-            tests[testIndex] = new BtmlTest() { canvasTexture = canvasTexture, exitStatus = exitStatus };
+            test.inputTexture = Resources.Load<Texture2D>(testPath + "inputTexture");
+            if (testSettings.checkOutput)
+            {
+                test.outputTexture = Resources.Load<Texture2D>(testPath + "outputTexture");
+            }
+
+            test.exitStatus = testSettings.exitStatus;
+            tests[testIndex] = test;
         }
 
         return new BtmlLevel() { tests = tests, code = code, solution = solution };

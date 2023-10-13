@@ -8,16 +8,25 @@ title: Changelog
 All notable changes to this project are documented in this file.
 {: .fs-6 .fw-300 }
 
-## v0.6.0
+{% comment %} 
+## v0.7.0
 {: .d-inline-block }
 
 Coming soon
 {: .label .label-yellow }
+{% endcomment %}
+
+## v0.6.0
 
 ### v0.6.0 - Features
 
 - [Allowed empty lines](https://github.com/nineteendo/btml/issues/79)
+- [Implemented output goal](https://github.com/nineteendo/btml/issues/82)
 - [Made vscode extension](https://github.com/nineteendo/btml/issues/69)
+
+### v0.6.0 - Levels
+
+- [Added level 18](https://github.com/nineteendo/btml/issues/81)
 
 ### v0.6.0 - Bugfixes
 
@@ -62,9 +71,9 @@ Coming soon
 
 ### v0.4.0 - Documentation
 
-- [Add statements overview](https://github.com/nineteendo/btml/issues/63)
-- [Create issues for all changes](https://github.com/nineteendo/btml/issues/61)
-- [Document new syntax](https://github.com/nineteendo/btml/issues/62)
+- [Added statements overview](https://github.com/nineteendo/btml/issues/63)
+- [Created issues for all changes](https://github.com/nineteendo/btml/issues/61)
+- [Documented new syntax](https://github.com/nineteendo/btml/issues/62)
 
 ### v0.4.0 - Bugfixes
 
@@ -106,8 +115,8 @@ Coming soon
 
 ### v0.3.0 - Developer Cheats
 
-- [Add enable coverage developer cheat](https://github.com/nineteendo/btml/issues/42)
-- [Add level 0 developer cheat](https://github.com/nineteendo/btml/issues/43)
+- [Added enable coverage developer cheat](https://github.com/nineteendo/btml/issues/42)
+- [Added level 0 developer cheat](https://github.com/nineteendo/btml/issues/43)
 
 ## v0.2.0
 

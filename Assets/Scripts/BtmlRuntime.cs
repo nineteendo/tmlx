@@ -22,7 +22,7 @@ public class BtmlRuntime : MonoBehaviour
 
     public const int CANVAS_HEIGHT = 30;
     public const int CANVAS_WIDTH = 30;
-    public const int LEVEL_COUNT = 17;
+    public const int LEVEL_COUNT = 18;
     public const float MAX_IPF = 3000000f;
     public const float NORMAL_IPS = 10f;
     public const float TURBO_MULTIPLIER = 18000000f;
@@ -201,19 +201,19 @@ public class BtmlRuntime : MonoBehaviour
     private void LoadTest(bool apply)
     {
         test = tests[testIndex];
-        Texture2D newCanvasTexture = test.canvasTexture;
+        Texture2D inputTexture = test.inputTexture;
         canvasColors = Enumerable.Repeat(COLOR_PIXEL_OFF, canvasHeight * canvasWidth).ToArray();
-        Color32[] newCanvasColors = newCanvasTexture.GetPixels32();
-        int newCanvasTextureHeight = Mathf.Min(newCanvasTexture.height, canvasHeight);
-        int newCanvasTextureWidth = Mathf.Min(newCanvasTexture.width, canvasWidth);
-        canvasTextureOffset = (canvasHeight - newCanvasTextureHeight) / 2 * canvasWidth;
-        canvasTextureX = (canvasWidth - newCanvasTextureWidth) / 2;
-        for (int newCanvasTextureY = 0; newCanvasTextureY < newCanvasTextureHeight; newCanvasTextureY++)
+        Color32[] inputColors = inputTexture.GetPixels32();
+        int inputTextureHeight = Mathf.Min(inputTexture.height, canvasHeight);
+        int inputTextureWidth = Mathf.Min(inputTexture.width, canvasWidth);
+        canvasTextureOffset = (canvasHeight - inputTextureHeight) / 2 * canvasWidth;
+        canvasTextureX = (canvasWidth - inputTextureWidth) / 2;
+        for (int inputTextureY = 0; inputTextureY < inputTextureHeight; inputTextureY++)
         {
-            Array.Copy(newCanvasColors, newCanvasTextureY * newCanvasTextureWidth, canvasColors, (newCanvasTextureY * canvasWidth) + canvasTextureOffset + canvasTextureX, newCanvasTextureWidth);
+            Array.Copy(inputColors, inputTextureY * inputTextureWidth, canvasColors, (inputTextureY * canvasWidth) + canvasTextureOffset + canvasTextureX, inputTextureWidth);
         }
 
-        canvasTextureOffset += (newCanvasTexture.height - 1) * canvasWidth;
+        canvasTextureOffset += (inputTexture.height - 1) * canvasWidth;
         SetupInstructionIndex();
         exitStatus = -1;
         if (breakpoints.Contains(instructionIndex))
@@ -283,7 +283,7 @@ public class BtmlRuntime : MonoBehaviour
         queuedInstructions += targetIps * Time.unscaledDeltaTime;
         ipf = Mathf.FloorToInt(Mathf.Min(queuedInstructions, maxIpf));
         int executedInstructions = 0;
-        if (!playToggle.isOn || instructions == null || LevelEnded(ref executedInstructions))
+        if (!playToggle.isOn || instructions == null || HasLevelEnded(ref executedInstructions))
         {
             return;
         }
@@ -383,11 +383,46 @@ public class BtmlRuntime : MonoBehaviour
         exitStatus = newExitStatus;
         infoText.text = $"EXIT {exitStatus}";
         executedInstructions++;
-        _ = LevelEnded(ref executedInstructions);
+        _ = HasLevelEnded(ref executedInstructions);
         executedInstructions--;
     }
 
-    private bool LevelEnded(ref int executedInstructions)
+    private bool AreArraysEqual(Color32[] array1, int startIndexArray1, Color32[] array2, int startIndexArray2, int length)
+    {
+        if (startIndexArray1 + length > array1.Length || startIndexArray2 + length > array2.Length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < length; i++)
+        {
+            if (array1[startIndexArray1 + i].r != array2[startIndexArray2 + i].r)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private int GetStartIndex()
+    {
+        int canvasColorsLength = canvasColors.Length;
+        for (int startIndex = 0; startIndex < canvasWidth; startIndex++)
+        {
+            for (int offset = 0; offset < canvasColorsLength; offset += canvasWidth)
+            {
+                if (canvasColors[offset + startIndex].r == COLOR_PIXEL_ON.r)
+                {
+                    return startIndex;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    private bool HasLevelEnded(ref int executedInstructions)
     {
         if (testIndex >= tests.Length)
         {
@@ -399,7 +434,7 @@ public class BtmlRuntime : MonoBehaviour
             return false;
         }
 
-        if (exitStatus == test.exitStatus && ++testIndex < tests.Length)
+        if (IsOutputCorrect() && exitStatus == test.exitStatus && ++testIndex < tests.Length)
         {
             LoadTest(false);
             executedInstructions++;
@@ -438,7 +473,7 @@ public class BtmlRuntime : MonoBehaviour
                         : COLOR_COVERED_ENTIRELY;
             }
 
-            int coveragePercentage = 100 * totalCoveredBranchesCount / (2 * instructionCount);
+            int coveragePercentage = instructionCount == 0 ? 100 : 100 * totalCoveredBranchesCount / (2 * instructionCount);
             levelEndedText.text = $"{coveragePercentage}% Coverage";
             codeEditor.MarkedLines = markedLines;
             starCount = !BtmlCompiler.Compile(level.solution, false, out _, out int targetInstructionCount, out _) || instructionCount <= targetInstructionCount
@@ -502,6 +537,36 @@ public class BtmlRuntime : MonoBehaviour
         instructions = null;
         ipf = 0;
         queuedInstructions = 0f;
+        return true;
+    }
+
+    private bool IsOutputCorrect()
+    {
+        if (test.outputTexture == null)
+        {
+            return true;
+        }
+
+        int startX = GetStartIndex();
+        int startY = Array.FindIndex(canvasColors, color => color.r == COLOR_PIXEL_ON.r) / canvasWidth;
+        int startOffset = startY * canvasWidth;
+        Texture2D outputTexture = test.outputTexture;
+        Color32[] outputColors = outputTexture.GetPixels32();
+        int outputTextureHeight = outputTexture.height;
+        int outputTextureWidth = outputTexture.width;
+        if (canvasWidth < startX + outputTextureWidth || canvasHeight < startY + outputTextureHeight)
+        {
+            return false;
+        }
+
+        for (int outputTextureY = 0; outputTextureY < outputTextureHeight; outputTextureY++)
+        {
+            if (!AreArraysEqual(canvasColors, (outputTextureY * canvasWidth) + startOffset + startX, outputColors, outputTextureY * outputTextureWidth, outputTextureWidth))
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 }

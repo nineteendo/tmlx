@@ -1,0 +1,37 @@
+// Read second input
+mul_mov_nxt:	while black right else left
+		if black down else exit
+		down
+		if 1 write 0 up goto add_read_1st_0 else up goto sft_ini_b
+
+// Add first input to output
+add_read_len_0:	if black down goto add_read_1st_0 else right goto sft_ini_a
+add_read_len_1:	if black down goto add_read_1st_1 else exit 2 // Overflow
+add_read_1st_0:	if 0 up goto add_mov_nxt_0 else down goto add_read_2nd
+add_read_1st_1:	if 1 up goto add_mov_nxt_1 else down
+add_read_2nd:	down
+		if 0 write 1 up else write 0 up goto add_mov_1st
+		up goto add_mov_len_0
+add_mov_1st:	up goto add_mov_len_1
+add_mov_len_0:	up goto add_mov_nxt_0
+add_mov_len_1:	up goto add_mov_nxt_1
+add_mov_nxt_0:	left goto add_read_len_0
+add_mov_nxt_1:	left goto add_read_len_1
+
+// Shift first input left
+sft_ini_a:	while black right else left goto sft_ini
+sft_ini_b:	up
+sft_ini:	write white down goto sft_read_1st_0
+sft_read_len_0:	if black down goto sft_read_1st_0 else right goto mul_mov_nxt
+sft_read_len_1:	if black down goto sft_read_1st_1 else right goto clr_mov_nxt
+sft_read_1st_0:	if 0 up goto sft_mov_nxt_0 else write 0 up goto sft_mov_nxt_1
+sft_read_1st_1:	if 1 up goto sft_mov_nxt_1 else write 1 up
+sft_mov_nxt_0:	left goto sft_read_len_0
+sft_mov_nxt_1:	left goto sft_read_len_1
+
+// Clear input
+clr_mov_nxt:	if black down else exit
+		down
+		if 0 up else exit 2 // Overflow
+		write 0 up
+		write white right goto clr_mov_nxt

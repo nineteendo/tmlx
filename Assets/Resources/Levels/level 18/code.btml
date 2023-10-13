@@ -1,0 +1,3 @@
+/// We will be using a copy of the length line.
+// TODO: make correct multiplication
+// NOTE: do not forget to handle overflow.
