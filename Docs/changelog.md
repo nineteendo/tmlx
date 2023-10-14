@@ -8,13 +8,15 @@ title: Changelog
 All notable changes to this project are documented in this file.
 {: .fs-6 .fw-300 }
 
-{% comment %} 
 ## v0.7.0
 {: .d-inline-block }
 
 Coming soon
 {: .label .label-yellow }
-{% endcomment %}
+
+### v0.7.0 - Palette Packs
+
+- [Expanded thewolfbunny64 palette pack](https://github.com/nineteendo/btml/issues/83)
 
 ## v0.6.0
 
@@ -103,7 +105,7 @@ Coming soon
 
 ### v0.3.0 - Palette Packs
 
-- [Expanded binary turing machine language palette pack (+1 palette)](https://github.com/nineteendo/btml/issues/46)
+- [Expanded binary turing machine language palette pack](https://github.com/nineteendo/btml/issues/46)
 
 ### v0.3.0 - Bugfixes
 

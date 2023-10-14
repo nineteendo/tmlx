@@ -16,7 +16,7 @@
 	"pixelshift_15_gb_backlight_blue":          [["#3FC1FF", "#068EFF", "#0058FF", "#00006D"]],
 	"pixelshift_16_gb_backlight_faded":         [["#FFFFFF", "#E2E2E2", "#9E9E9E", "#808080"]],
 	"pixelshift_17_gb_backlight_orange":        [["#FDA910", "#F88806", "#E96B08", "#833403"]],
-	"pixelshift_18_gb_backlight_white_":        [["#BAC9E8", "#9091C9", "#6731FF", "#0C0FD0"]],
+	"pixelshift_18_gb_backlight_white":         [["#BAC9E8", "#9091C9", "#6731FF", "#0C0FD0"]],
 	"pixelshift_19_gb_backlight_yellow_dark":   [["#99931A", "#8B7E0F", "#63530F", "#4F3B08"]],
 	"pixelshift_20_gb_bootleg":                 [["#89AABB", "#9EB481", "#4A714A", "#4A2D2C"], ["#F7C6B5", "#DE7B52", "#9C3900", "#4A3100"], ["#F7C6B5", "#DE7B52", "#9C3900", "#4A3100"]],
 	"pixelshift_21_gb_hunter":                  [["#B4B0AD", "#7D7A78", "#464544", "#101010"]],
