@@ -51,7 +51,7 @@ status | Optional. An [exit status](#exit-status), default 0.
 > Else is not treated as an exit status:
 >
 > ```btml
-> if black exit else right
+> if color exit else right
 > if white exit 1
 > ```
 

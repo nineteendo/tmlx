@@ -1,4 +1,4 @@
-read_length:	if black down else exit 1
+read_length:	if color down else exit 1
 		if 1 down goto read_second_1 else down goto read_second_0
 read_second_0:	if 0 up goto move_length else exit
 read_second_1:	if 1 up goto move_length else exit 1

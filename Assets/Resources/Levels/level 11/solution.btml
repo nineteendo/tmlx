@@ -1,4 +1,4 @@
-		if black down else exit 2
+		if color down else exit 2
 		if 1 down goto read_second_1 else down goto read_second_0
 read_second_0:	if 1 exit 1 else exit
 read_second_1:	if 0 exit 1

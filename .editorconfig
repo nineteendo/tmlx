@@ -1,2 +1,4 @@
-[*.cs]
+is_global = true
+
 dotnet_analyzer_diagnostic.severity = warning
+dotnet_diagnostic.USG0001.severity = none

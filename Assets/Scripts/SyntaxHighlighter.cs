@@ -126,7 +126,7 @@ public class SyntaxHighlighter : ScriptableObject
 
     public RegexTokenIdentifier[] regexTokenIdentifiers = {
         new() {
-            Pattern = @"black|white",
+            Pattern = @"black|blue|color|cyan|green|magenta|red|white|yellow",
             tokenType = "identifier.constant"
         },
         new() {

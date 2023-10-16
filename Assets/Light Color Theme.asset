@@ -23,7 +23,7 @@ MonoBehaviour:
     tokenType: comment.normal
   - tokenColor:
       serializedVersion: 2
-      rgba: 4290867200
+      rgba: 4294901760
     tokenType: identifier.constant
   - tokenColor:
       serializedVersion: 2

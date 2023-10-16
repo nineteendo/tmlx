@@ -25,7 +25,7 @@ Conditional statements are used to perform different actions for white and black
 > Move right if the first pixel is black:
 >
 > ```btml
-> if black right
+> if color right
 > ```
 
 ### If - Definition and Usage
@@ -35,7 +35,7 @@ Use the `if` statement to specify a single action to be performed if the read pi
 ### If - Syntax
 
 ```ebnf
-if color action
+if condition action
 ```
 
 ### If - Fields
@@ -43,7 +43,7 @@ if color action
 Field | Description
 -- | --
 if | Required. `if`.
-color | Required. `0`/`white` or `1`/`black`.
+condition | Required. `0`/`white` or `1`/`color`.
 action | Required. An [action](#actions).
 
 ### If - More Examples
@@ -65,7 +65,7 @@ New (v0.4.0)
 > Move right until the first white pixel:
 >
 > ```btml
-> while black right
+> while color right
 > ```
 
 ### While - Definition and Usage
@@ -75,7 +75,7 @@ Use the `while` statement to specify a single action to be performed as long as 
 ### While - Syntax
 
 ```ebnf
-while color action
+while condition action
 ```
 
 ### While - Fields
@@ -83,7 +83,7 @@ while color action
 Field | Description
 -- | --
 while| Required. `while`.
-color | Required. `0`/`white` or `1`/`black`.
+condition | Required. `0`/`white` or `1`/`color`.
 action | Required. An [action](#actions).
 
 ### While - More Examples
@@ -101,7 +101,7 @@ action | Required. An [action](#actions).
 > Move right if the first pixel is black else reject the input:
 >
 > ```btml
-> if black right else exit 1
+> if color right else exit 1
 > ```
 
 ### Else - Definition and Usage
@@ -128,7 +128,7 @@ action | Required. An [action](#actions).
 > Move right until the last black pixel:
 >
 > ```btml
-> while black right else left
+> while color right else left
 > ```
 
 ## Actions
@@ -150,7 +150,7 @@ action | Required. An [action](#actions).
 
 Field | Description
 -- | --
-write | Optional. A [write statement](write), default write read color.
+write | Optional. A [write statement](write).
 direction | Optional. `up`, `down`, `left` or `right`, default precompute action.
 exit or goto | Optional. An [exit](exit#exit)- or [goto statement](goto#goto), default go to next line.
 

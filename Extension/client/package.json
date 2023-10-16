@@ -9,11 +9,11 @@
 	},
 	"description": "Btml language server client",
 	"devDependencies": {
-		"@types/vscode": "^1.73.0",
+		"@types/vscode": "^1.83.1",
 		"@vscode/test-electron": "^2.2.3"
 	},
 	"engines": {
-		"vscode": "^1.73.0"
+		"vscode": "^1.83.1"
 	},
 	"license": "AGPL-3.0",
 	"name": "btml-client",

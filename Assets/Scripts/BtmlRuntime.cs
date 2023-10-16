@@ -15,17 +15,49 @@ public class BtmlRuntime : MonoBehaviour
     public static readonly Color32 COLOR_COVERED_NEVER = new(0xff, 0x00, 0x00, 0x33);
     public static readonly Color32 COLOR_SOLUTION_NORMAL = new(0x32, 0x32, 0x32, 0xff);
     public static readonly Color32 COLOR_SOLUTION_UNKNOWN = Color.green;
-    public static readonly Color32 COLOR_PIXEL_OFF = Color.white;
-    public static readonly Color32 COLOR_PIXEL_OFF_SELECTED = new(0xaa, 0xff, 0xff, 0xff);
-    public static readonly Color32 COLOR_PIXEL_ON = Color.cyan;
-    public static readonly Color32 COLOR_PIXEL_ON_SELECTED = new(0x55, 0xff, 0xff, 0xff);
+    public static readonly Color32 COLOR_PIXEL_BLACK = Color.black;
+    public static readonly Color32 COLOR_PIXEL_BLACK_SELECTED = new(0x55, 0x55, 0x55, 0xff);
+    public static readonly Color32 COLOR_PIXEL_BLUE = Color.blue;
+    public static readonly Color32 COLOR_PIXEL_BLUE_SELECTED = new(0x55, 0x55, 0xaa, 0xff);
+    public static readonly Color32 COLOR_PIXEL_CYAN = Color.cyan;
+    public static readonly Color32 COLOR_PIXEL_CYAN_SELECTED = new(0x55, 0xaa, 0xaa, 0xff);
+    public static readonly Color32 COLOR_PIXEL_GREEN = Color.green;
+    public static readonly Color32 COLOR_PIXEL_GREEN_SELECTED = new(0x55, 0xaa, 0x55, 0xff);
+    public static readonly Color32 COLOR_PIXEL_MAGENTA = Color.magenta;
+    public static readonly Color32 COLOR_PIXEL_MAGENTA_SELECTED = new(0xaa, 0x55, 0xaa, 0xff);
+    public static readonly Color32 COLOR_PIXEL_RED = Color.red;
+    public static readonly Color32 COLOR_PIXEL_RED_SELECTED = new(0xaa, 0x55, 0x55, 0xff);
+    public static readonly Color32 COLOR_PIXEL_WHITE = Color.white;
+    public static readonly Color32 COLOR_PIXEL_WHITE_SELECTED = new(0xaa, 0xaa, 0xaa, 0xff);
+    public static readonly Color32 COLOR_PIXEL_YELLOW = new(0xff, 0xff, 0x00, 0xff);
+    public static readonly Color32 COLOR_PIXEL_YELLOW_SELECTED = new(0xaa, 0xaa, 0x55, 0xff);
+    public static readonly Dictionary<Color32, Color32> COLOR_TO_SELECTED_COLOR_DICTIONARY = new() {
+        { COLOR_PIXEL_BLACK,   COLOR_PIXEL_BLACK_SELECTED   },
+        { COLOR_PIXEL_BLUE,    COLOR_PIXEL_BLUE_SELECTED    },
+        { COLOR_PIXEL_CYAN,    COLOR_PIXEL_CYAN_SELECTED    },
+        { COLOR_PIXEL_GREEN,   COLOR_PIXEL_GREEN_SELECTED   },
+        { COLOR_PIXEL_MAGENTA, COLOR_PIXEL_MAGENTA_SELECTED },
+        { COLOR_PIXEL_RED,     COLOR_PIXEL_RED_SELECTED     },
+        { COLOR_PIXEL_WHITE,   COLOR_PIXEL_WHITE_SELECTED   },
+        { COLOR_PIXEL_YELLOW,  COLOR_PIXEL_YELLOW_SELECTED  }
+    };
+    public static readonly Dictionary<Color32, Color32> SELECTED_COLOR_TO_COLOR_DICTIONARY = new() {
+        { COLOR_PIXEL_BLACK_SELECTED,   COLOR_PIXEL_BLACK   },
+        { COLOR_PIXEL_BLUE_SELECTED,    COLOR_PIXEL_BLUE    },
+        { COLOR_PIXEL_CYAN_SELECTED,    COLOR_PIXEL_CYAN    },
+        { COLOR_PIXEL_GREEN_SELECTED,   COLOR_PIXEL_GREEN   },
+        { COLOR_PIXEL_MAGENTA_SELECTED, COLOR_PIXEL_MAGENTA },
+        { COLOR_PIXEL_RED_SELECTED,     COLOR_PIXEL_RED     },
+        { COLOR_PIXEL_WHITE_SELECTED,   COLOR_PIXEL_WHITE   },
+        { COLOR_PIXEL_YELLOW_SELECTED,  COLOR_PIXEL_YELLOW  }
+    };
 
     public const int CANVAS_HEIGHT = 30;
     public const int CANVAS_WIDTH = 30;
     public const int LEVEL_COUNT = 18;
-    public const float MAX_IPF = 3000000f;
+    public const float MAX_IPF = 800000f;
     public const float NORMAL_IPS = 10f;
-    public const float TURBO_MULTIPLIER = 18000000f;
+    public const float TURBO_MULTIPLIER = 4800000f;
     public const float UPDATE_INTERVAL = .5f;
 
     public Button menuButton;
@@ -90,13 +122,13 @@ public class BtmlRuntime : MonoBehaviour
 
     public void LoadSlot(int slotIndex)
     {
-        codeEditor.inputField.text = slotIndex == 0
-            ? level.code
-            : slotIndex == 1
-                ? saveLevel.autoSave
-                : slotIndex == 2
-                    ? level.solution
-                    : saveLevel.bestSave;
+        codeEditor.inputField.text = slotIndex switch
+        {
+            0 => level.code,
+            1 => saveLevel.autoSave,
+            2 => level.solution,
+            _ => saveLevel.bestSave,
+        };
     }
 
     public void Step()
@@ -171,7 +203,10 @@ public class BtmlRuntime : MonoBehaviour
         {
             int canvasColorIndex = canvasTextureOffset + canvasTextureX;
             Color32 canvasColor = canvasColors[canvasColorIndex];
-            canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON_SELECTED : COLOR_PIXEL_OFF_SELECTED;
+            if (COLOR_TO_SELECTED_COLOR_DICTIONARY.ContainsKey(canvasColor))
+            {
+                canvasColors[canvasColorIndex] = COLOR_TO_SELECTED_COLOR_DICTIONARY[canvasColor];
+            }
         }
     }
 
@@ -194,7 +229,10 @@ public class BtmlRuntime : MonoBehaviour
         {
             int canvasColorIndex = canvasTextureOffset + canvasTextureX;
             Color32 canvasColor = canvasColors[canvasColorIndex];
-            canvasColors[canvasColorIndex] = canvasColor.r == COLOR_PIXEL_ON.r || canvasColor.r == COLOR_PIXEL_ON_SELECTED.r ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF;
+            if (SELECTED_COLOR_TO_COLOR_DICTIONARY.ContainsKey(canvasColor))
+            {
+                canvasColors[canvasColorIndex] = SELECTED_COLOR_TO_COLOR_DICTIONARY[canvasColor];
+            }
         }
     }
 
@@ -202,7 +240,7 @@ public class BtmlRuntime : MonoBehaviour
     {
         test = tests[testIndex];
         Texture2D inputTexture = test.inputTexture;
-        canvasColors = Enumerable.Repeat(COLOR_PIXEL_OFF, canvasHeight * canvasWidth).ToArray();
+        canvasColors = Enumerable.Repeat(COLOR_PIXEL_WHITE, canvasHeight * canvasWidth).ToArray();
         Color32[] inputColors = inputTexture.GetPixels32();
         int inputTextureHeight = Mathf.Min(inputTexture.height, canvasHeight);
         int inputTextureWidth = Mathf.Min(inputTexture.width, canvasWidth);
@@ -258,7 +296,7 @@ public class BtmlRuntime : MonoBehaviour
         canvasHeight = PlayerPrefs.GetInt("canvasHeight", CANVAS_HEIGHT);
         canvasWidth = PlayerPrefs.GetInt("canvasWidth", CANVAS_WIDTH);
         ShaderFunctions.SetDarkFilterLevel(material, PlayerPrefs.GetFloat("darkFilterLevel", 0));
-        canvasTexture = new Texture2D(canvasWidth, canvasHeight, TextureFormat.R8, false)
+        canvasTexture = new Texture2D(canvasWidth, canvasHeight, TextureFormat.RGB565, false)
         {
             filterMode = FilterMode.Point,
             wrapMode = TextureWrapMode.Clamp
@@ -295,9 +333,10 @@ public class BtmlRuntime : MonoBehaviour
         for (; executedInstructions < ipf; executedInstructions++)
         {
             int canvasColorIndex = canvasTextureOffset + canvasTextureX;
-            if (canvasColors[canvasColorIndex].r == COLOR_PIXEL_ON.r)
+            Color32 canvasColor = canvasColors[canvasColorIndex];
+            if (canvasColor.r != COLOR_PIXEL_WHITE.r || canvasColor.g != COLOR_PIXEL_WHITE.g || canvasColor.b != COLOR_PIXEL_WHITE.b)
             {
-                action = ref instructions[instructionIndex].blackAction;
+                action = ref instructions[instructionIndex].colorAction;
                 coveredBlackBranches[instructionIndex] = true;
             }
             else
@@ -306,7 +345,12 @@ public class BtmlRuntime : MonoBehaviour
                 coveredWhiteBranches[instructionIndex] = true;
             }
 
-            canvasColors[canvasColorIndex] = action.writeColor;
+            Color32 writeColor = action.writeColor;
+            if (writeColor.a > 0x00)
+            {
+                canvasColors[canvasColorIndex] = writeColor;
+            }
+
             switch (action.moveDirection)
             {
                 case BtmlDirection.nowhere:
@@ -396,7 +440,7 @@ public class BtmlRuntime : MonoBehaviour
 
         for (int i = 0; i < length; i++)
         {
-            if (array1[startIndexArray1 + i].r != array2[startIndexArray2 + i].r)
+            if (!array1[startIndexArray1 + i].Equals(array2[startIndexArray2 + i]))
             {
                 return false;
             }
@@ -412,7 +456,7 @@ public class BtmlRuntime : MonoBehaviour
         {
             for (int offset = 0; offset < canvasColorsLength; offset += canvasWidth)
             {
-                if (canvasColors[offset + startIndex].r == COLOR_PIXEL_ON.r)
+                if (canvasColors[offset + startIndex].Equals(COLOR_PIXEL_BLACK))
                 {
                     return startIndex;
                 }
@@ -466,11 +510,12 @@ public class BtmlRuntime : MonoBehaviour
                     : (coveredBlackBranches[instructionIndex] ? 1 : 0) + (coveredWhiteBranches[instructionIndex] ? 1 : 0);
 
                 totalCoveredBranchesCount += coveredBranchesCount;
-                markedLines[instructionIndex] = coveredBranchesCount == 0
-                    ? COLOR_COVERED_NEVER
-                    : coveredBranchesCount == 1
-                        ? COLOR_COVERED_HALF
-                        : COLOR_COVERED_ENTIRELY;
+                markedLines[instructionIndex] = coveredBranchesCount switch
+                {
+                    0 => COLOR_COVERED_NEVER,
+                    1 => COLOR_COVERED_HALF,
+                    _ => COLOR_COVERED_ENTIRELY,
+                };
             }
 
             int coveragePercentage = instructionCount == 0 ? 100 : 100 * totalCoveredBranchesCount / (2 * instructionCount);
@@ -548,7 +593,7 @@ public class BtmlRuntime : MonoBehaviour
         }
 
         int startX = GetStartIndex();
-        int startY = Array.FindIndex(canvasColors, color => color.r == COLOR_PIXEL_ON.r) / canvasWidth;
+        int startY = Array.FindIndex(canvasColors, color => color.Equals(COLOR_PIXEL_BLACK)) / canvasWidth;
         int startOffset = startY * canvasWidth;
         Texture2D outputTexture = test.outputTexture;
         Color32[] outputColors = outputTexture.GetPixels32();

@@ -42,7 +42,7 @@
 		"identifiers": {
 			"patterns": [
 				{
-					"match": "\\b(black|white)\\b",
+					"match": "\\b(black|blue|color|cyan|green|magenta|red|white|yellow)\\b",
 					"name": "constant.language.btml"
 				},
 				{

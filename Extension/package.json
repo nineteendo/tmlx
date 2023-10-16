@@ -1,7 +1,4 @@
 {
-	"activationEvents": [
-		"onLanguage:btml"
-	],
 	"author": {
 		"email": "nineteendo19d0@gmail.com",
 		"name": "Nice Zombies",
@@ -74,7 +71,7 @@
 	},
 	"displayName": "Btml",
 	"engines": {
-		"vscode": "^1.73.0"
+		"vscode": "^1.83.1"
 	},
 	"funding": {
 		"type": "individual",

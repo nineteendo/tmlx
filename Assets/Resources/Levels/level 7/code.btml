@@ -1,5 +1,5 @@
 /// We will be using the row below the length line as an input line.
 // TODO: accept positive numbers: 0 (white), followed by any bits.
 // NOTE: a length of 0 should exit with status 2 (malformed input).
-if black down
+if color down
 if 1 exit 1

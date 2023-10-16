@@ -2,10 +2,9 @@ Shader "Palette/Normal"
 {
     Properties
     {
-        [MainTexture] _ColorIdxs ("Base (RGB) Trans (A)", 2D) = "white" {} // NOTE - Fixes _MainTex_TexelSize not updating
+        _MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
         _ColorMap ("Color Map (RGB)", 2D) = "white" {}
-        [Toggle(FLIP_HORIZONTAL)] _FlipHorizontal("Flip Horizontal", Float) = .0
-        [Toggle(FLIP_VERTICAL)] _FlipVertical("Flip Vertical", Float) = .0
+        [Toggle(INVERT_COLORS)] _InvertColors("Invert Colors", Float) = .0
         _DarkFilterLevel("Dark Filter Level %", Range(.0, 50.0)) = .0
     }
     SubShader
@@ -23,8 +22,7 @@ Shader "Palette/Normal"
             #pragma fragment frag
             #pragma multi_compile_fog
 
-            #pragma multi_compile _ FLIP_HORIZONTAL
-            #pragma multi_compile _ FLIP_VERTICAL
+            #pragma multi_compile _ INVERT_COLORS
 
             #include "UnityCG.cginc"
 
@@ -42,15 +40,15 @@ Shader "Palette/Normal"
             };
 
             float _DarkFilterLevel;
-            float4 _ColorIdxs_ST, _ColorMap_ST, _ColorMap_TexelSize;
+            float4 _MainTex_ST, _ColorMap_ST, _ColorMap_TexelSize;
             // Enable high precision on mobile
-            sampler2D_float _ColorIdxs, _ColorMap;
+            sampler2D_float _MainTex, _ColorMap;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _ColorIdxs);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -58,35 +56,11 @@ Shader "Palette/Normal"
             fixed4 frag (v2f i) : SV_Target
             {
                 // Sample the main texture
-                fixed4 col = tex2D(_ColorIdxs, i.uv);
+                fixed4 col = tex2D(_MainTex, i.uv);
 
-                // Sample the color map texture
-                float width = _ColorMap_TexelSize.z;
-                float height = _ColorMap_TexelSize.w;
-                float xScale, yScale;
-                if (width <= 4.0)
-                    xScale = width <= 2.0 ? 1.0 : 3.0;
-                else
-                    xScale = width <= 16.0 ? 15.0 : 255.0;
-
-                if (height <= 4.0)
-                    yScale = height <= 2.0 ? 1.0 : 3.0;
-                else
-                    yScale = height <= 16.0 ? 15.0 : 255.0;
-
-            #ifdef FLIP_HORIZONTAL
-                float x = 1.0 - floor(1.0 + col.r * xScale) / width;
-            #else
-                float x = floor(col.r * xScale) / width;
+            #ifdef INVERT_COLORS
+                col.rgb = 1.0 - col.rgb;
             #endif
-
-            #ifdef FLIP_VERTICAL
-                float y = 1.0 - floor(1.0 + col.g * yScale) / height;
-            #else
-                float y = floor(col.g * yScale) / height;
-            #endif
-
-                col.rgb = tex2D(_ColorMap, TRANSFORM_TEX(float2(x, y), _ColorMap)).rgb;
 
                 // Apply Dark Filter Level %
                 col.rgb *= 1.0 - _DarkFilterLevel / 100.0;
