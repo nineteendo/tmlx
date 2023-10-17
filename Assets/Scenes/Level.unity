@@ -3714,6 +3714,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 772425796}
     m_Modifications:
+    - target: {fileID: 552659477860474464, guid: d95db428cf83a426c84e03fc96b57088, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1474045388883405122, guid: d95db428cf83a426c84e03fc96b57088, type: 3}
       propertyPath: m_Name
       value: CodeEditor
@@ -3724,11 +3728,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2016986805675433855, guid: d95db428cf83a426c84e03fc96b57088, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 11.444946
+      value: 11.445068
       objectReference: {fileID: 0}
     - target: {fileID: 3055052971961725455, guid: d95db428cf83a426c84e03fc96b57088, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055052971961725455, guid: d95db428cf83a426c84e03fc96b57088, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -32.444763
       objectReference: {fileID: 0}
     - target: {fileID: 5256622964223961063, guid: d95db428cf83a426c84e03fc96b57088, type: 3}
       propertyPath: m_Pivot.x

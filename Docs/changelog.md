@@ -33,6 +33,12 @@ Unreleased
 
 - [Removed palettes](https://github.com/nineteendo/btml/issues/88)
 
+### v0.7.0 - Bugfixes
+
+- [Fixed caret disappearing on low resolutions](https://github.com/nineteendo/btml/issues/92)
+- [Fixed highlighted input](https://github.com/nineteendo/btml/issues/90)
+- [Fixed mobile input](https://github.com/nineteendo/btml/issues/91)
+
 ## v0.6.0
 
 ### v0.6.0 - Features
