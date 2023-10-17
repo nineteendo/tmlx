@@ -290,9 +290,8 @@ public class BtmlRuntime : MonoBehaviour
         optimiseToggle.isOn = PlayerPrefs.GetInt("optimised", 1) == 1;
         turboToggle.isOn = PlayerPrefs.GetInt("turbo", 0) == 1;
         Material material = GetComponent<Image>().material;
-        ShaderFunctions.SetShader(material, PlayerPrefs.GetInt("paletteShaderIndex", 0));
-        ShaderFunctions.SetPalette(material, PlayerPrefs.GetInt("palettePackIndex", 0), PlayerPrefs.GetInt("paletteIndex", 0));
-        ShaderFunctions.SetInvert(material, PlayerPrefs.GetInt("invertPalette", 0) == 1);
+        ShaderFunctions.SetShader(material, PlayerPrefs.GetInt("shaderIndex", 0));
+        ShaderFunctions.SetInvertColors(material, PlayerPrefs.GetInt("invertColors", 0) == 1);
         canvasHeight = PlayerPrefs.GetInt("canvasHeight", CANVAS_HEIGHT);
         canvasWidth = PlayerPrefs.GetInt("canvasWidth", CANVAS_WIDTH);
         ShaderFunctions.SetDarkFilterLevel(material, PlayerPrefs.GetFloat("darkFilterLevel", 0));
