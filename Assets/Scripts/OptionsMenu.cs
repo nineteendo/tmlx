@@ -74,12 +74,12 @@ public class OptionsMenu : MonoBehaviour
     {
         shaderPreviewDropdown.Options = ShaderFunctions.LoadShaders();
         invertColorsToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt("invertColors", 0) == 1);
-        canvasHeightInputFieldSlider.slider.value = PlayerPrefs.GetInt("canvasHeight", BtmlRuntime.CANVAS_HEIGHT);
-        canvasWidthInputFieldSlider.slider.value = PlayerPrefs.GetInt("canvasWidth", BtmlRuntime.CANVAS_WIDTH);
+        canvasHeightInputFieldSlider.slider.value = PlayerPrefs.GetInt("canvasHeight", TmlxRuntime.CANVAS_HEIGHT);
+        canvasWidthInputFieldSlider.slider.value = PlayerPrefs.GetInt("canvasWidth", TmlxRuntime.CANVAS_WIDTH);
         darkFilterLevelInputFieldSlider.slider.value = PlayerPrefs.GetFloat("darkFilterLevel", 0);
-        maxIpfInputFieldSlider.slider.value = PlayerPrefs.GetFloat("maxIpf", BtmlRuntime.MAX_IPF);
-        normalIpsInputFieldSlider.slider.value = PlayerPrefs.GetFloat("normalIps", BtmlRuntime.NORMAL_IPS);
-        turboMultiplierInputFieldSlider.slider.value = PlayerPrefs.GetFloat("turboMultiplier", BtmlRuntime.TURBO_MULTIPLIER);
+        maxIpfInputFieldSlider.slider.value = PlayerPrefs.GetFloat("maxIpf", TmlxRuntime.MAX_IPF);
+        normalIpsInputFieldSlider.slider.value = PlayerPrefs.GetFloat("normalIps", TmlxRuntime.NORMAL_IPS);
+        turboMultiplierInputFieldSlider.slider.value = PlayerPrefs.GetFloat("turboMultiplier", TmlxRuntime.TURBO_MULTIPLIER);
         shaderPreviewDropdown.Value = PlayerPrefs.GetInt("shaderIndex", 0);
         InvertColors();
         UpdateDarkFilterLevel();

@@ -2,8 +2,8 @@ using System.IO;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
-[ScriptedImporter(1, "btml")]
-public class BtmlImporter : ScriptedImporter
+[ScriptedImporter(1, "tmlx")]
+public class TmlxImporter : ScriptedImporter
 {
     public override void OnImportAsset(AssetImportContext ctx)
     {

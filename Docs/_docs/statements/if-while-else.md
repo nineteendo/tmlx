@@ -24,7 +24,7 @@ Conditional statements are used to perform different actions for white and black
 {: .example }
 > Move right if the first pixel is black:
 >
-> ```btml
+> ```tmlx
 > if color right
 > ```
 
@@ -51,7 +51,7 @@ action | Required. An [action](#actions).
 {: .example }
 > Emphasize binary:
 >
-> ```btml
+> ```tmlx
 > if 1 right
 > ```
 
@@ -64,7 +64,7 @@ New (v0.4.0)
 {: .example }
 > Move right until the first white pixel:
 >
-> ```btml
+> ```tmlx
 > while color right
 > ```
 
@@ -91,7 +91,7 @@ action | Required. An [action](#actions).
 {: .example }
 > Emphasize binary:
 >
-> ```btml
+> ```tmlx
 > while 1 right
 > ```
 
@@ -100,7 +100,7 @@ action | Required. An [action](#actions).
 {: .example }
 > Move right if the first pixel is black else reject the input:
 >
-> ```btml
+> ```tmlx
 > if color right else exit 1
 > ```
 
@@ -127,7 +127,7 @@ action | Required. An [action](#actions).
 {: .example }
 > Move right until the last black pixel:
 >
-> ```btml
+> ```tmlx
 > while color right else left
 > ```
 
@@ -136,7 +136,7 @@ action | Required. An [action](#actions).
 {: .example }
 > Write a black pixel and move right:
 >
-> ```btml
+> ```tmlx
 > write black right
 > ```
 

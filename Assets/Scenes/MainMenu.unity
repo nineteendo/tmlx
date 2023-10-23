@@ -574,7 +574,7 @@ GameObject:
   - component: {fileID: 863558603}
   - component: {fileID: 863558602}
   m_Layer: 5
-  m_Name: BtmlLogo
+  m_Name: TmlxLogo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

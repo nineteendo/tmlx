@@ -1,6 +1,6 @@
 # Change Log
 
-All notable changes to the "btml" extension will be documented in this file.
+All notable changes to the "tmlx" extension will be documented in this file.
 
 ## v0.2.0
 

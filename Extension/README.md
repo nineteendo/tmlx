@@ -1,10 +1,10 @@
-# Btml extension for Visual Studio Code
+# Tmlx extension for Visual Studio Code
 
-Syntax highlighting support for Btml in Visual Studio Code.
+Syntax highlighting support for Tmlx in Visual Studio Code.
 
 ## Syntax highlighting
 
-Adds syntax highlighting support for Btml (.btml).
+Adds syntax highlighting support for Tmlx (.tmlx).
 
 ![syntax-highlighting](Extension/images/syntax-highlighting.png)
 

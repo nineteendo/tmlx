@@ -9,7 +9,7 @@ title: Write
 {: .example }
 > Write a black pixel:
 >
-> ```btml
+> ```tmlx
 > write black
 > ```
 
@@ -34,6 +34,6 @@ color | Required. `0`/`white`, `1`/`black`, `blue`, `cyan`, `green`, `red`, `mag
 {: .example }
 > Emphasize binary:
 >
-> ```btml
+> ```tmlx
 > write 1
 > ```

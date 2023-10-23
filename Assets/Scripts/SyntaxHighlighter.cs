@@ -88,7 +88,7 @@ public class RegexTokenIdentifier : TokenIdentifier
 }
 
 
-[CreateAssetMenu(fileName = "New Syntax Highlighter", menuName = "Btml/Syntax Highlighter")]
+[CreateAssetMenu(fileName = "New Syntax Highlighter", menuName = "Tmlx/Syntax Highlighter")]
 public class SyntaxHighlighter : ScriptableObject
 {
     public CommentTokenIdentifier[] commentTokenIdentifiers = {

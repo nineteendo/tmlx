@@ -24,7 +24,7 @@ The `exit` statement is used to terminate the program and classify the input.
 {: .example }
 > Reject the input if the first pixel is white:
 >
-> ```btml
+> ```tmlx
 > if white exit 1
 > ```
 
@@ -50,7 +50,7 @@ status | Optional. An [exit status](#exit-status), default 0.
 {: .example }
 > Else is not treated as an exit status:
 >
-> ```btml
+> ```tmlx
 > if color exit else right
 > if white exit 1
 > ```

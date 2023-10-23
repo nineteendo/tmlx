@@ -1,6 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "Btml",
+	"name": "Tmlx",
 	"patterns": [
 		{
 			"include": "#comments"
@@ -22,20 +22,20 @@
 					"begin": "/\\*",
 					"captures": {
 						"0": {
-							"name": "comment.block.btml"
+							"name": "comment.block.tmlx"
 						}
 					},
 					"end": "\\*/",
-					"name": "comment.block.btml"
+					"name": "comment.block.tmlx"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "punctuation.definition.comment.btml"
+							"name": "punctuation.definition.comment.tmlx"
 						}
 					},
 					"match": "\\/\\/[^\\v]*(\\v|$\\n)?",
-					"name": "comment.line.btml"
+					"name": "comment.line.tmlx"
 				}
 			]
 		},
@@ -43,22 +43,22 @@
 			"patterns": [
 				{
 					"match": "\\b(black|blue|color|cyan|green|magenta|red|white|yellow)\\b",
-					"name": "constant.language.btml"
+					"name": "constant.language.tmlx"
 				},
 				{
 					"match": "\\b(down|left|right|up|write)\\b",
-					"name": "support.function.btml"
+					"name": "support.function.tmlx"
 				}
 			]
 		},
 		"keywords": {
 			"match": "\\b(else|exit|goto|if|while)\\b",
-			"name": "keyword.control.btml"
+			"name": "keyword.control.tmlx"
 		},
 		"literals": {
 			"match": "\\b\\d+\\b",
-			"name": "constant.numeric.btml"
+			"name": "constant.numeric.tmlx"
 		}
 	},
-	"scopeName": "source.btml"
+	"scopeName": "source.tmlx"
 }

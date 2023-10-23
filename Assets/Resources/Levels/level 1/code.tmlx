@@ -1,6 +1,6 @@
 /**
-Welcome to the Binary Turing Machine Language (Btml).
-Visit http://nineteendo.github.io/btml for the documentation.
+Welcome to the Turing Machine Language X-bit (Tmlx).
+Visit http://nineteendo.github.io/tmlx for the documentation.
 If you press play, the program exits with status 0 (accept) and fails test 1.
 Press replay and press play again to end the execution.
 */

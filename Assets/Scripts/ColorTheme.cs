@@ -11,7 +11,7 @@ public struct TokenColoring
 }
 
 [Serializable]
-[CreateAssetMenu(fileName = "New Color Theme", menuName = "Btml/Color Theme")]
+[CreateAssetMenu(fileName = "New Color Theme", menuName = "Tmlx/Color Theme")]
 public class ColorTheme : ScriptableObject
 {
     public TokenColoring[] tokenColorings = {
