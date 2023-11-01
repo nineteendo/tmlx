@@ -12,9 +12,9 @@
 
     {% if site.last_edit_timestamp or site.gh_edit_link %}
       <div class="d-flex mt-2">
-        {% if site.last_edit_timestamp and site.last_edit_time_format %}
+        {% if site.last_edit_timestamp and site.last-modified-at.date-format %}
           <p class="text-small text-grey-dk-000 mb-0 mr-2">
-            Page last modified: <span class="d-inline-block">{% capture lastmod_date %}{% last_modified {{ page.path }} %}{% endcapture %}{{ lastmod_date | date: site.last_edit_time_format}}</span>.
+            Page last modified: <span class="d-inline-block">{{ page.last_modified_at | date: site.last-modified-at.date-format }}</span>.
           </p>
         {% endif %}
         {% if

@@ -109,7 +109,6 @@ back_to_top_text: Back to top
 
 # Footer last edited timestamp
 last_edit_timestamp: true # show or hide edit time
-last_edit_time_format: "%b %e %Y at %I:%M %p" # uses ruby's time format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
 
 # Footer "Edit this page on GitHub" link text
 gh_edit_link: true # show or hide edit this page link
@@ -147,7 +146,8 @@ callouts:
 # ga_tracking: UA-2709176-10
 # ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true/nil by default)
 
-plugins: []
+plugins:
+  - jekyll-last-modified-at
 
 kramdown:
   syntax_highlighter_opts:
@@ -187,3 +187,7 @@ just_the_docs:
       # Exclude the collection from the search
       # Supports true or false (default)
       # search_exclude: true
+
+last-modified-at:
+  # Optional. The default date format, used if none is specified in the tag.
+  date-format: "%b %e %Y at %I:%M %p" # uses ruby's time format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
