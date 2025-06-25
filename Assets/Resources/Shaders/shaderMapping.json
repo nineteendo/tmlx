@@ -1,0 +1,6 @@
+{
+    "shaderMapping": [
+        "Normal", "Palette-Normal",
+        "Grid",   "Palette-Grid"
+    ]
+}
