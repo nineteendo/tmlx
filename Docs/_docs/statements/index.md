@@ -26,13 +26,9 @@ Here is a visual representation of all possible statements. Click on a word for 
 
     td {
         font-size: 0.75rem !important;
-        min-width: 3.18rem;
-        padding: 0.159rem 0.318rem;
+        min-width: 3.27rem;
+        padding: 0.29rem 0.327rem;
         text-align: center;
-    }
-
-    tbody tr:last-of-type td {
-        padding-bottom: 0;
     }
 
     .td-0 {
@@ -79,15 +75,15 @@ Here is a visual representation of all possible statements. Click on a word for 
     <tbody>
         <tr>
             <td class="td-2"><a href="goto#labels">label:</a></td>
-            <td class="td-2" rowspan=10><a href="if-while-else#if">if</a>/<a href="if-while-else#while">while</a></td>
+            <td class="td-2" rowspan=6><a href="if-while-else#if">if</a>/<a href="if-while-else#while">while</a></td>
             <td class="td-4">0/white</td>
-            <td class="td-5" rowspan=8><a href="write">write</a></td>
+            <td class="td-5" rowspan=2><a href="write">write</a></td>
             <td class="td-6">0/white</td>
             <td class="td-5">up</td>
             <td class="td-5" rowspan=2><a href="exit#exit">exit</a></td>
             <td class="td-6"><a href="exit#exit-status">status</a></td>
-            <td class="td-5" rowspan=9><a href="if-while-else#else">else</a></td>
-            <td class="td-8" rowspan=8><a href="write">write</a></td>
+            <td class="td-5" rowspan=5><a href="if-while-else#else">else</a></td>
+            <td class="td-8" rowspan=2><a href="write">write</a></td>
             <td class="td-9">0/white</td>
             <td class="td-8">up</td>
             <td class="td-8" rowspan=2><a href="exit#exit">exit</a></td>
@@ -95,7 +91,7 @@ Here is a visual representation of all possible statements. Click on a word for 
         </tr>
         <tr>
             <td class="td-1">/</td>
-            <td class="td-4">1/color</td>
+            <td class="td-4">1/black</td>
             <td class="td-6">1/black</td>
             <td class="td-5">down</td>
             <td class="td-6">/</td>
@@ -106,11 +102,11 @@ Here is a visual representation of all possible statements. Click on a word for 
         <tr>
             <td class="td-0"></td>
             <td class="td-3"></td>
-            <td class="td-6">blue</td>
+            <td class="td-4" colspan=2>/</td>
             <td class="td-5">left</td>
             <td class="td-5"><a href="goto#goto">goto</a></td>
             <td class="td-6"><a href="goto#labels">label</a></td>
-            <td class="td-9">blue</td>
+            <td class="td-7" colspan=2>/</td>
             <td class="td-8">left</td>
             <td class="td-8"><a href="goto#goto">goto</a></td>
             <td class="td-9"><a href="goto#labels">label</a></td>
@@ -118,21 +114,25 @@ Here is a visual representation of all possible statements. Click on a word for 
         <tr>
             <td class="td-0"></td>
             <td class="td-3"></td>
-            <td class="td-6">green</td>
+            <td class="td-3"></td>
+            <td class="td-3"></td>
             <td class="td-5">right</td>
             <td class="td-4" colspan=2>/</td>
-            <td class="td-9">green</td>
+            <td class="td-6"></td>
+            <td class="td-6"></td>
             <td class="td-8">right</td>
             <td class="td-7" colspan=2>/</td>
         </tr>
         <tr>
             <td class="td-0"></td>
             <td class="td-3"></td>
-            <td class="td-6">cyan</td>
+            <td class="td-3"></td>
+            <td class="td-3"></td>
             <td class="td-4">/</td>
             <td class="td-3"></td>
             <td class="td-3"></td>
-            <td class="td-9">cyan</td>
+            <td class="td-6"></td>
+            <td class="td-6"></td>
             <td class="td-7">/</td>
             <td class="td-6"></td>
             <td class="td-6"></td>
@@ -140,71 +140,23 @@ Here is a visual representation of all possible statements. Click on a word for 
         <tr>
             <td class="td-0"></td>
             <td class="td-3"></td>
-            <td class="td-6">red</td>
             <td class="td-3"></td>
             <td class="td-3"></td>
             <td class="td-3"></td>
-            <td class="td-9">red</td>
-            <td class="td-6"></td>
-            <td class="td-6"></td>
-            <td class="td-6"></td>
+            <td class="td-3"></td>
+            <td class="td-3"></td>
+            <td class="td-4" colspan=8>/</td>
         </tr>
         <tr>
             <td class="td-0"></td>
-            <td class="td-3"></td>
-            <td class="td-6">magenta</td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-9">magenta</td>
-            <td class="td-6"></td>
-            <td class="td-6"></td>
-            <td class="td-6"></td>
-        </tr>
-        <tr>
-            <td class="td-0"></td>
-            <td class="td-3"></td>
-            <td class="td-6">yellow</td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-9">yellow</td>
-            <td class="td-6"></td>
-            <td class="td-6"></td>
-            <td class="td-6"></td>
-        </tr>
-        <tr>
-            <td class="td-0"></td>
-            <td class="td-3"></td>
-            <td class="td-4" colspan=2>/</td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-7" colspan=2>/</td>
-            <td class="td-6"></td>
-            <td class="td-6"></td>
-            <td class="td-6"></td>
-        </tr>
-         <tr>
-            <td class="td-0"></td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-3"></td>
-            <td class="td-4" colspan=6>/</td>
-        </tr>
-        <tr>
-            <td class="td-0"></td>
-            <td class="td-1" rowspan=9><a href="if-while-else#actions">/</a></td>
-            <td class="td-3" rowspan=9>/</td>
-            <td class="td-4" rowspan=8><a href="write">write</a></td>
+            <td class="td-1" rowspan=5><a href="if-while-else#actions">/</a></td>
+            <td class="td-3" rowspan=5>/</td>
+            <td class="td-4" rowspan=2><a href="write">write</a></td>
             <td class="td-5">0/white</td>
             <td class="td-4">up</td>
             <td class="td-4" rowspan=2><a href="exit#exit">exit</a></td>
             <td class="td-5"><a href="exit#exit-status">status</a></td>
-            <td class="td-3" colspan=6 rowspan=9>/</td>
+            <td class="td-3" colspan=7 rowspan=5>/</td>
         </tr>
         <tr>
             <td class="td-0"></td>
@@ -214,49 +166,23 @@ Here is a visual representation of all possible statements. Click on a word for 
         </tr>
         <tr>
             <td class="td-0"></td>
-            <td class="td-5">blue</td>
+            <td class="td-3" colspan=2>/</td>
             <td class="td-4">left</td>
             <td class="td-4"><a href="goto#goto">goto</a></td>
             <td class="td-5"><a href="goto#labels">label</a></td>
         </tr>
         <tr>
             <td class="td-0"></td>
-            <td class="td-5">cyan</td>
+            <td class="td-2"></td>
+            <td class="td-2"></td>
             <td class="td-4">right</td>
             <td class="td-3" colspan=2>/</td>
         </tr>
         <tr>
             <td class="td-0"></td>
-            <td class="td-5">green</td>
+            <td class="td-2"></td>
+            <td class="td-2"></td>
             <td class="td-3">/</td>
-            <td class="td-2"></td>
-            <td class="td-2"></td>
-        </tr>
-        <tr>
-            <td class="td-0"></td>
-            <td class="td-5">red</td>
-            <td class="td-2"></td>
-            <td class="td-2"></td>
-            <td class="td-2"></td>
-        </tr>
-        <tr>
-            <td class="td-0"></td>
-            <td class="td-5">magenta</td>
-            <td class="td-2"></td>
-            <td class="td-2"></td>
-            <td class="td-2"></td>
-        </tr>
-        <tr>
-            <td class="td-0"></td>
-            <td class="td-5">yellow</td>
-            <td class="td-2"></td>
-            <td class="td-2"></td>
-            <td class="td-2"></td>
-        </tr>
-        <tr>
-            <td class="td-0"></td>
-            <td class="td-3" colspan=2>/</td>
-            <td class="td-2"></td>
             <td class="td-2"></td>
             <td class="td-2"></td>
         </tr>
@@ -269,5 +195,5 @@ Here is a visual representation of all possible statements. Click on a word for 
 > Statements can be conditional:
 >
 > ```btml
-> if color right else exit 1
+> if black right else exit 1
 > ```

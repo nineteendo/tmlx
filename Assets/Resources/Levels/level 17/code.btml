@@ -3,4 +3,4 @@
 start:	if white exit else down
 	if 1 write 0 up else exit 1
 	write white right
-	while color right else left
+	while black right else left

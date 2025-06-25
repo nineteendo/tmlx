@@ -1,3 +1,3 @@
 if white exit 1 else right
 if white exit 1 else right
-if color exit 1
+if black exit 1

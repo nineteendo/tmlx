@@ -1,4 +1,4 @@
-		while color right else left
+		while black right else left
 read_length_0:	if white exit else down goto read_first_0
 read_length_1:	if white exit 2 else down goto read_first_1
 read_first_0:	if 1 down goto read_second_1 else down goto read_second_0

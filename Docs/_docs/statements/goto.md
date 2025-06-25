@@ -25,7 +25,7 @@ Goto and labels are used to jump through the code.
 > Skip the next line:
 >
 > ```btml
-> 	if color down else down goto skip
+> 	if black down else down goto skip
 > 	write black exit
 > skip:	write white
 > ```
@@ -63,7 +63,7 @@ label | Required. A defined [label](#labels).
 > Explain a line:
 >
 > ```btml
-> find_white:	while color right
+> find_white:	while black right
 > ```
 
 ### Labels - Definition and Usage

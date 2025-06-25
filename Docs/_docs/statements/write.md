@@ -27,7 +27,7 @@ write color
 
 Field | Description
 -- | --
-color | Required. `0`/`white`, `1`/`black`, `blue`, `cyan`, `green`, `red`, `magenta` or `yellow`.
+color | Required. `0`/`white` or `1`/`black`.
 
 ## Write - More Examples
 

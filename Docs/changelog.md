@@ -5,33 +5,18 @@ title: Changelog
 
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented in this file.
 {: .fs-6 .fw-300 }
-
-[View changelog of vscode extension](https://marketplace.visualstudio.com/items/nicezombies.btml/changelog){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
 
 ## v0.7.0
 {: .d-inline-block }
 
-Unreleased
+Coming soon
 {: .label .label-yellow }
 
-### v0.7.0 - Features
+### v0.7.0 - Palette Packs
 
-- [Implemented colored canvases](https://github.com/nineteendo/btml/issues/85)
-
-### v0.7.0 - Documentation
-
-- [Document colored canvases](https://github.com/nineteendo/btml/issues/89)
-
-### v0.7.0 - Settings
-
-- [Removed palette pack setting](https://github.com/nineteendo/btml/issues/86)
-- [Removed palette setting](https://github.com/nineteendo/btml/issues/87)
-
-### v0.7.0 - Palettes
-
-- [Removed palettes](https://github.com/nineteendo/btml/issues/88)
+- [Expanded thewolfbunny64 palette pack](https://github.com/nineteendo/btml/issues/83)
 
 ### v0.7.0 - Bugfixes
 
@@ -78,8 +63,8 @@ Unreleased
 
 ### v0.5.0 - Bugfixes
 
-- [Fixed canvas preview alignment](https://github.com/nineteendo/btml/issues/71)
 - [Fixed first level not being selected when changing page](https://github.com/nineteendo/btml/issues/72)
+- [Fixed palette preview alignment](https://github.com/nineteendo/btml/issues/71)
 
 ## v0.4.0
 
@@ -101,15 +86,11 @@ Unreleased
 ### v0.4.0 - Bugfixes
 
 - [Fixed all author solutions unlock cheat when beating a level with less than 3 stars](https://github.com/nineteendo/btml/issues/55)
-- [Fixed canvas preview aspect ratio](https://github.com/nineteendo/btml/issues/56)
+- [Fixed palette preview aspect ratio](https://github.com/nineteendo/btml/issues/56)
 - [Fixed pause not being deactivated when pressing stop](https://github.com/nineteendo/btml/issues/64)
 - [Fixed replay button not being selected when beating a level with less than 3 stars](https://github.com/nineteendo/btml/issues/57)
 - [Fixed selecting pixel out of bounds when moving off the canvas upper boundaries](https://github.com/nineteendo/btml/issues/58)
 - [Fixed syntax highlighting for `/**/`](https://github.com/nineteendo/btml/issues/59)
-
-### v0.4.0 - Developer Cheats
-
-- [Removed enable coverage developer cheat](https://github.com/nineteendo/btml/issues/84)
 
 ## v0.3.0
 
@@ -128,7 +109,7 @@ Unreleased
 - [Added documentation](https://github.com/nineteendo/btml/issues/41)
 - [Added statements documentation](https://github.com/nineteendo/btml/issues/45)
 
-### v0.3.0 - Palettes
+### v0.3.0 - Palette Packs
 
 - [Expanded binary turing machine language palette pack](https://github.com/nineteendo/btml/issues/46)
 
@@ -179,6 +160,8 @@ Unreleased
 - [Added line numbers](https://github.com/nineteendo/btml/issues/9)
 - [Added save slots](https://github.com/nineteendo/btml/issues/17)
 - [Added status bar](https://github.com/nineteendo/btml/issues/19)
+- [Implemented palette shaders](https://github.com/nineteendo/btml/issues/23)
+- [Implemented palettes](https://github.com/nineteendo/btml/issues/24)
 - [Implemented syntax highlighting](https://github.com/nineteendo/btml/issues/25)
 - [Implemented unit tests](https://github.com/nineteendo/btml/issues/26)
 
@@ -189,21 +172,20 @@ Unreleased
 ### v0.1.0 - Settings
 
 - [Added dark filter level setting](https://github.com/nineteendo/btml/issues/3)
-- [Added invert colors setting](https://github.com/nineteendo/btml/issues/7)
+- [Added invert palette setting](https://github.com/nineteendo/btml/issues/7)
 - [Added max ipf setting](https://github.com/nineteendo/btml/issues/10)
 - [Added normal ips setting](https://github.com/nineteendo/btml/issues/11)
 - [Added palette pack setting](https://github.com/nineteendo/btml/issues/13)
 - [Added palette setting](https://github.com/nineteendo/btml/issues/14)
-- [Added shader setting](https://github.com/nineteendo/btml/issues/15)
+- [Added palette shader setting](https://github.com/nineteendo/btml/issues/15)
 - [Added turbo multiplier setting](https://github.com/nineteendo/btml/issues/22)
 
-### v0.1.0 - Shaders
+### v0.1.0 - Palette Shaders
 
-- [Added grid shader](https://github.com/nineteendo/btml/issues/6)
-- [Added normal shader](https://github.com/nineteendo/btml/issues/12)
-- [Implemented shaders](https://github.com/nineteendo/btml/issues/23)
+- [Added grid palette shader](https://github.com/nineteendo/btml/issues/6)
+- [Added normal palette shader](https://github.com/nineteendo/btml/issues/12)
 
-### v0.1.0 - Palettes
+### v0.1.0 - Palette Packs
 
 - [Added binary turing machine language palette pack](https://github.com/nineteendo/btml/issues/1)
 - [Added game boy color palette pack](https://github.com/nineteendo/btml/issues/4)
@@ -212,4 +194,3 @@ Unreleased
 - [Added special palette pack](https://github.com/nineteendo/btml/issues/18)
 - [Added super game boy palette pack](https://github.com/nineteendo/btml/issues/20)
 - [Added thewolfbunny64 palette pack](https://github.com/nineteendo/btml/issues/21)
-- [Implemented palettes](https://github.com/nineteendo/btml/issues/24)

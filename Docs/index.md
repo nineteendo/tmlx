@@ -7,8 +7,8 @@ title: Home
 
 # Welcome to the Binary Turing Machine Language
 
-[Get started](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[View source code](https://github.com/nineteendo/btml){: .btn .fs-5 .mb-4 .mb-md-0 }
+[Get started now](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[View it on GitHub](https://github.com/nineteendo/btml){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 {: .warning }
 This website documents the features of the current `main` branch of Btml. See [the changelog](changelog) for a list of releases, new features, and bug fixes.

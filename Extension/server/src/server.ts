@@ -6,7 +6,7 @@ import {
 	TextDocumentPositionParams,
 } from 'vscode-languageserver/node';
 
-const suggestions = ['black', 'blue', 'color', 'cyan', 'green', 'magenta', 'red', 'white', 'yellow'].map<CompletionItem>(label => {
+const suggestions = ['black', 'white'].map<CompletionItem>(label => {
 	return {
 		label,
 		kind: CompletionItemKind.Constant,

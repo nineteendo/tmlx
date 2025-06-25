@@ -8,4 +8,4 @@ That is because the compiler pre-calculated the missing else on line 1.
 if white exit
 right
 if white exit 1 else right
-if color exit 1
+if black exit 1

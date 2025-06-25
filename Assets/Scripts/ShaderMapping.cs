@@ -18,14 +18,14 @@ public static class ShaderFunctions
 
     public static void SetInvert(Material material, bool invert)
     {
-        material.SetFloat("_InvertColors", invert ? 1f : 0f);
+        material.SetFloat("_FlipHorizontal", invert ? 0f : 1f);
         if (invert)
         {
-            material.EnableKeyword("INVERT_COLORS");
+            material.DisableKeyword("FLIP_HORIZONTAL");
         }
         else
         {
-            material.DisableKeyword("INVERT_COLORS");
+            material.EnableKeyword("FLIP_HORIZONTAL");
         }
     }
 

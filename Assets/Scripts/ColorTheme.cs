@@ -24,7 +24,7 @@ public class ColorTheme : ScriptableObject
             tokenType = "comment.normal"
         },
         new() {
-            tokenColor = new Color32(0x00, 0x00, 0xff, 0xff),
+            tokenColor = new Color32(0x00, 0x70, 0xC1, 0xff),
             tokenType = "identifier.constant"
         },
         new() {

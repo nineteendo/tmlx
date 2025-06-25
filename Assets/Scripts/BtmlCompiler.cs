@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -37,7 +38,7 @@ public enum BtmlInstructionType
 
 public struct BtmlInstruction
 {
-    public BtmlAction colorAction;
+    public BtmlAction blackAction;
     public BtmlAction whiteAction;
     public BtmlInstructionType instructionType;
 }
@@ -64,25 +65,7 @@ public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
 
 public static class BtmlCompiler
 {
-    private static readonly Dictionary<int, Color32> INT_TO_COLOR_OR_CONDITION_DICTIONARY = new() {
-        { 0, BtmlRuntime.COLOR_PIXEL_WHITE },
-        { 1, BtmlRuntime.COLOR_PIXEL_BLACK }
-    };
-    private static readonly Dictionary<string, Color32> STRING_TO_COLOR_DICTIONARY = new() {
-        { "black",   BtmlRuntime.COLOR_PIXEL_BLACK   },
-        { "blue",    BtmlRuntime.COLOR_PIXEL_BLUE    },
-        { "cyan",    BtmlRuntime.COLOR_PIXEL_CYAN    },
-        { "green",   BtmlRuntime.COLOR_PIXEL_GREEN   },
-        { "magenta", BtmlRuntime.COLOR_PIXEL_MAGENTA },
-        { "red",     BtmlRuntime.COLOR_PIXEL_RED     },
-        { "white",   BtmlRuntime.COLOR_PIXEL_WHITE   },
-        { "yellow",  BtmlRuntime.COLOR_PIXEL_YELLOW  }
-    };
-    private static readonly Dictionary<string, Color32> STRING_TO_CONDITION_DICTIONARY = new() {
-        { "white", BtmlRuntime.COLOR_PIXEL_WHITE },
-        { "color", BtmlRuntime.COLOR_PIXEL_BLACK }
-    };
-    private static readonly HashSet<string> reservedWords = new() { ":", "black", "blue", "color", "cyan", "down", "else", "exit", "goto", "green", "if", "left", "magenta", "nowhere", "red", "right", "up", "while", "white", "write", "yellow" };
+    private static readonly string[] reservedWords = { ":", "black", "down", "else", "exit", "goto", "if", "left", "nowhere", "right", "up", "while", "white", "write" };
 
     public static bool Compile(string text, bool optimised, out BtmlInstruction[] instructions, out int instructionCount, out string error)
     {
@@ -95,7 +78,7 @@ public static class BtmlCompiler
         }
 
         // Process
-        if (!Process(text, out BtmlInstruction[] processedInstructions, out Dictionary<string, int> labelsDictionary, out instructionCount, out string processError))
+        if (!Process(text, out BtmlInstruction[] processedInstructions, out Dictionary<string, int> labels, out instructionCount, out string processError))
         {
             error = processError;
             instructions = null;
@@ -108,8 +91,18 @@ public static class BtmlCompiler
         {
             ref BtmlInstruction expandedInstruction = ref expandedInstructions[expandedInstructionIndex];
             ref BtmlAction whiteAction = ref expandedInstruction.whiteAction;
-            ref BtmlAction colorAction = ref expandedInstruction.colorAction;
-            if (!Resolve(expandedInstructionIndex, labelsDictionary, ref whiteAction, out string resolveError) || !Resolve(expandedInstructionIndex, labelsDictionary, ref colorAction, out resolveError))
+            ref BtmlAction blackAction = ref expandedInstruction.blackAction;
+            if (whiteAction.writeColor.a <= 0x00)
+            {
+                whiteAction.writeColor = BtmlRuntime.COLOR_PIXEL_OFF;
+            }
+
+            if (blackAction.writeColor.a <= 0x00)
+            {
+                blackAction.writeColor = BtmlRuntime.COLOR_PIXEL_ON;
+            }
+
+            if (!Resolve(expandedInstructionIndex, labels, ref whiteAction, out string resolveError) || !Resolve(expandedInstructionIndex, labels, ref blackAction, out resolveError))
             {
                 error = resolveError;
                 instructions = null;
@@ -123,8 +116,8 @@ public static class BtmlCompiler
         for (int preoptimisedInstructionIndex = 0; preoptimisedInstructionIndex < preoptimisedInstructions.Length; preoptimisedInstructionIndex++)
         {
             ref BtmlInstruction preoptimisedInstruction = ref preoptimisedInstructions[preoptimisedInstructionIndex];
-            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction, BtmlRuntime.COLOR_PIXEL_WHITE);
-            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.colorAction, BtmlRuntime.COLOR_PIXEL_BLACK);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.blackAction);
         }
 
         instructions = (BtmlInstruction[])preoptimisedInstructions.Clone();
@@ -141,8 +134,8 @@ public static class BtmlCompiler
             ref BtmlInstruction optimisedInstruction = ref instructions[instructionIndex];
             if (optimisedInstruction.instructionType != BtmlInstructionType.nothing)
             {
-                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.whiteAction, BtmlRuntime.COLOR_PIXEL_WHITE);
-                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.colorAction, BtmlRuntime.COLOR_PIXEL_BLACK);
+                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.whiteAction);
+                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.blackAction);
             }
         }
 
@@ -298,16 +291,16 @@ public static class BtmlCompiler
         }
 
         bool number = int.TryParse(tokens[tokenIndex], out int bit);
-        if (number && INT_TO_COLOR_OR_CONDITION_DICTIONARY.ContainsKey(bit))
+        if (number ? bit == 0 : tokens[tokenIndex] == "white")
         {
-            color = INT_TO_COLOR_OR_CONDITION_DICTIONARY[bit];
+            color = BtmlRuntime.COLOR_PIXEL_OFF;
             error = null;
             return true;
         }
 
-        if (!number && STRING_TO_COLOR_DICTIONARY.ContainsKey(tokens[tokenIndex]))
+        if (number ? bit == 1 : tokens[tokenIndex] == "black")
         {
-            color = STRING_TO_COLOR_DICTIONARY[tokens[tokenIndex]];
+            color = BtmlRuntime.COLOR_PIXEL_ON;
             error = null;
             return true;
         }
@@ -317,51 +310,16 @@ public static class BtmlCompiler
         return false;
     }
 
-    private static bool ParseCondition(int lineIndex, List<string> tokens, ref int tokenIndex, out Color32 condition, out string error)
-    {
-        if (++tokenIndex >= tokens.Count)
-        {
-            condition = Color.clear;
-            error = $"Line {lineIndex + 1}: condition is missing";
-            return false;
-        }
-
-        bool number = int.TryParse(tokens[tokenIndex], out int bit);
-        if (number && INT_TO_COLOR_OR_CONDITION_DICTIONARY.ContainsKey(bit))
-        {
-            condition = INT_TO_COLOR_OR_CONDITION_DICTIONARY[bit];
-            error = null;
-            return true;
-        }
-
-        if (!number && STRING_TO_CONDITION_DICTIONARY.ContainsKey(tokens[tokenIndex]))
-        {
-            condition = STRING_TO_CONDITION_DICTIONARY[tokens[tokenIndex]];
-            error = null;
-            return true;
-        }
-
-        condition = Color.clear;
-        error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: '{tokens[tokenIndex]}' is not a valid condition";
-        return false;
-    }
-
-    private static bool Precompute(BtmlInstruction[] instructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action, Color32 color)
+    private static bool Precompute(BtmlInstruction[] instructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action)
     {
         if (action.moveDirection != BtmlDirection.nowhere || action.gotoLineIndex < 0)
         {
             return true;
         }
 
-        Color32 writeColor = action.writeColor;
-        if (writeColor.a > 0)
-        {
-            color = writeColor;
-        }
-
         BtmlBranch branch = new()
         {
-            color = color,
+            color = action.writeColor,
             lineIndex = action.gotoLineIndex
         };
         if (!visitedBranches.Add(branch))
@@ -370,8 +328,8 @@ public static class BtmlCompiler
         }
 
         ref BtmlInstruction instruction = ref instructions[action.gotoLineIndex];
-        ref BtmlAction newAction = ref (color.Equals(BtmlRuntime.COLOR_PIXEL_WHITE) ? ref instruction.whiteAction : ref instruction.colorAction);
-        if (!Precompute(instructions, visitedBranches, ref newAction, color))
+        ref BtmlAction newAction = ref (action.writeColor.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? ref instruction.whiteAction : ref instruction.blackAction);
+        if (!Precompute(instructions, visitedBranches, ref newAction))
         {
             return false; // Keep looping branch
         }
@@ -381,7 +339,7 @@ public static class BtmlCompiler
         return true;
     }
 
-    private static void Preoptimise(BtmlInstruction[] preoptimisedInstructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action, Color32 color)
+    private static void Preoptimise(BtmlInstruction[] preoptimisedInstructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action)
     {
         if (action.gotoLineIndex < 0)
         {
@@ -394,30 +352,24 @@ public static class BtmlCompiler
             return;
         }
 
-        Color32 writeColor = action.writeColor;
-        if (writeColor.a > 0)
-        {
-            color = writeColor;
-        }
-
         BtmlBranch branch = new()
         {
-            color = color,
+            color = action.writeColor,
             lineIndex = action.gotoLineIndex
         };
         if (visitedBranches.Add(branch))
         {
-            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction, BtmlRuntime.COLOR_PIXEL_WHITE);
-            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.colorAction, BtmlRuntime.COLOR_PIXEL_BLACK);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.blackAction);
         }
 
         action.gotoLineIndex = preoptimisedInstruction.whiteAction.gotoLineIndex;
     }
 
-    private static bool Process(string text, out BtmlInstruction[] instructions, out Dictionary<string, int> labelsDictionary, out int instructionCount, out string error)
+    private static bool Process(string text, out BtmlInstruction[] instructions, out Dictionary<string, int> labels, out int instructionCount, out string error)
     {
         List<BtmlInstruction> instructionList = new();
-        labelsDictionary = new Dictionary<string, int>();
+        labels = new Dictionary<string, int>();
         instructionCount = 0;
         int blockCommentStartIndex = -1;
         string[] lines = text.Split('\n');
@@ -442,14 +394,14 @@ public static class BtmlCompiler
                     return false;
                 }
 
-                if (labelsDictionary.ContainsKey(tokens[tokenIndex]))
+                if (labels.ContainsKey(tokens[tokenIndex]))
                 {
                     instructions = null;
-                    error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: label '{tokens[tokenIndex]}' is already defined on line {labelsDictionary[tokens[tokenIndex]] + 1}";
+                    error = $"Line {lineIndex + 1}, word {tokenIndex + 1}: label '{tokens[tokenIndex]}' is already defined on line {labels[tokens[tokenIndex]] + 1}";
                     return false;
                 }
 
-                labelsDictionary.Add(tokens[tokenIndex++], lineIndex);
+                labels.Add(tokens[tokenIndex++], lineIndex);
                 tokenIndex++;
             }
 
@@ -457,7 +409,7 @@ public static class BtmlCompiler
             if (tokenIndex < tokens.Count && (tokens[tokenIndex] == "if" || tokens[tokenIndex] == "while"))
             {
                 bool loop = tokens[tokenIndex] == "while";
-                if (!ParseCondition(lineIndex, tokens, ref tokenIndex, out Color32 condition, out string colorError))
+                if (!ParseColor(lineIndex, tokens, ref tokenIndex, out Color32 condition, out string colorError))
                 {
                     instructions = null;
                     error = colorError;
@@ -518,13 +470,13 @@ public static class BtmlCompiler
                     }
                 }
 
-                instruction.colorAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_BLACK) ? consequentAction : alternativeAction;
-                instruction.whiteAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_WHITE) ? consequentAction : alternativeAction;
+                instruction.blackAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_ON) ? consequentAction : alternativeAction;
+                instruction.whiteAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_OFF) ? consequentAction : alternativeAction;
                 instruction.instructionType = BtmlInstructionType.conditional;
             }
             else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, false, out BtmlAction action, out string actionError))
             {
-                instruction.colorAction = instruction.whiteAction = action;
+                instruction.blackAction = instruction.whiteAction = action;
                 if (tokenIndex != oldTokenIndex)
                 {
                     instruction.instructionType = BtmlInstructionType.unconditional;
@@ -565,7 +517,7 @@ public static class BtmlCompiler
         return true;
     }
 
-    private static bool Resolve(int processedInstructionIndex, Dictionary<string, int> labelsDictionary, ref BtmlAction action, out string error)
+    private static bool Resolve(int processedInstructionIndex, Dictionary<string, int> labels, ref BtmlAction action, out string error)
     {
         if (action.gotoLabel == null)
         {
@@ -573,13 +525,13 @@ public static class BtmlCompiler
             return true;
         }
 
-        if (!labelsDictionary.ContainsKey(action.gotoLabel))
+        if (!labels.ContainsKey(action.gotoLabel))
         {
             error = $"Line {processedInstructionIndex + 1}: label '{action.gotoLabel}' is not defined";
             return false;
         }
 
-        action.gotoLineIndex = labelsDictionary[action.gotoLabel];
+        action.gotoLineIndex = labels[action.gotoLabel];
         action.gotoLabel = null;
         error = null;
         return true;
