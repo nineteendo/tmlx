@@ -13,7 +13,7 @@ public class LevelButton : MonoBehaviour
         Button button = GetComponent<Button>();
         button.interactable = unlocked;
         button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(() => TmlxRuntime.LoadLevel(levelIndex));
+        button.onClick.AddListener(() => BtmlRuntime.LoadLevel(levelIndex));
         lockIcon.SetActive(!unlocked);
         levelText.gameObject.SetActive(unlocked);
 #if UNITY_EDITOR

@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-public struct TmlxAction
+public struct BtmlAction
 {
     public Color32 writeColor;
-    public TmlxDirection moveDirection;
+    public BtmlDirection moveDirection;
 
     public int gotoLineIndex;
     public string gotoLabel;
 }
 
-public struct TmlxBranch
+public struct BtmlBranch
 {
     public Color32 color;
 
     public int lineIndex;
 }
 
-public enum TmlxDirection
+public enum BtmlDirection
 {
     nowhere,
     up,
@@ -28,29 +28,29 @@ public enum TmlxDirection
     right
 }
 
-public enum TmlxInstructionType
+public enum BtmlInstructionType
 {
     nothing,
     unconditional,
     conditional
 }
 
-public struct TmlxInstruction
+public struct BtmlInstruction
 {
-    public TmlxAction colorAction;
-    public TmlxAction whiteAction;
-    public TmlxInstructionType instructionType;
+    public BtmlAction colorAction;
+    public BtmlAction whiteAction;
+    public BtmlInstructionType instructionType;
 }
 
 
-public class TmlxBranchEqualityComparer : IEqualityComparer<TmlxBranch>
+public class BtmlBranchEqualityComparer : IEqualityComparer<BtmlBranch>
 {
-    public bool Equals(TmlxBranch x, TmlxBranch y)
+    public bool Equals(BtmlBranch x, BtmlBranch y)
     {
         return x.lineIndex == y.lineIndex && x.color.Equals(y.color);
     }
 
-    public int GetHashCode(TmlxBranch obj)
+    public int GetHashCode(BtmlBranch obj)
     {
         unchecked  // Don't check overflow
         {
@@ -62,29 +62,29 @@ public class TmlxBranchEqualityComparer : IEqualityComparer<TmlxBranch>
     }
 }
 
-public static class TmlxCompiler
+public static class BtmlCompiler
 {
     private static readonly Dictionary<int, Color32> INT_TO_COLOR_OR_CONDITION_DICTIONARY = new() {
-        { 0, TmlxRuntime.COLOR_PIXEL_WHITE },
-        { 1, TmlxRuntime.COLOR_PIXEL_BLACK }
+        { 0, BtmlRuntime.COLOR_PIXEL_WHITE },
+        { 1, BtmlRuntime.COLOR_PIXEL_BLACK }
     };
     private static readonly Dictionary<string, Color32> STRING_TO_COLOR_DICTIONARY = new() {
-        { "black",   TmlxRuntime.COLOR_PIXEL_BLACK   },
-        { "blue",    TmlxRuntime.COLOR_PIXEL_BLUE    },
-        { "cyan",    TmlxRuntime.COLOR_PIXEL_CYAN    },
-        { "green",   TmlxRuntime.COLOR_PIXEL_GREEN   },
-        { "magenta", TmlxRuntime.COLOR_PIXEL_MAGENTA },
-        { "red",     TmlxRuntime.COLOR_PIXEL_RED     },
-        { "white",   TmlxRuntime.COLOR_PIXEL_WHITE   },
-        { "yellow",  TmlxRuntime.COLOR_PIXEL_YELLOW  }
+        { "black",   BtmlRuntime.COLOR_PIXEL_BLACK   },
+        { "blue",    BtmlRuntime.COLOR_PIXEL_BLUE    },
+        { "cyan",    BtmlRuntime.COLOR_PIXEL_CYAN    },
+        { "green",   BtmlRuntime.COLOR_PIXEL_GREEN   },
+        { "magenta", BtmlRuntime.COLOR_PIXEL_MAGENTA },
+        { "red",     BtmlRuntime.COLOR_PIXEL_RED     },
+        { "white",   BtmlRuntime.COLOR_PIXEL_WHITE   },
+        { "yellow",  BtmlRuntime.COLOR_PIXEL_YELLOW  }
     };
     private static readonly Dictionary<string, Color32> STRING_TO_CONDITION_DICTIONARY = new() {
-        { "white", TmlxRuntime.COLOR_PIXEL_WHITE },
-        { "color", TmlxRuntime.COLOR_PIXEL_BLACK }
+        { "white", BtmlRuntime.COLOR_PIXEL_WHITE },
+        { "color", BtmlRuntime.COLOR_PIXEL_BLACK }
     };
     private static readonly HashSet<string> reservedWords = new() { ":", "black", "blue", "color", "cyan", "down", "else", "exit", "goto", "green", "if", "left", "magenta", "nowhere", "red", "right", "up", "while", "white", "write", "yellow" };
 
-    public static bool Compile(string text, bool optimised, out TmlxInstruction[] instructions, out int instructionCount, out string error)
+    public static bool Compile(string text, bool optimised, out BtmlInstruction[] instructions, out int instructionCount, out string error)
     {
         if (text == null)
         {
@@ -95,7 +95,7 @@ public static class TmlxCompiler
         }
 
         // Process
-        if (!Process(text, out TmlxInstruction[] processedInstructions, out Dictionary<string, int> labelsDictionary, out instructionCount, out string processError))
+        if (!Process(text, out BtmlInstruction[] processedInstructions, out Dictionary<string, int> labelsDictionary, out instructionCount, out string processError))
         {
             error = processError;
             instructions = null;
@@ -103,12 +103,12 @@ public static class TmlxCompiler
         }
 
         // Expand
-        TmlxInstruction[] expandedInstructions = (TmlxInstruction[])processedInstructions.Clone();
+        BtmlInstruction[] expandedInstructions = (BtmlInstruction[])processedInstructions.Clone();
         for (int expandedInstructionIndex = 0; expandedInstructionIndex < expandedInstructions.Length; expandedInstructionIndex++)
         {
-            ref TmlxInstruction expandedInstruction = ref expandedInstructions[expandedInstructionIndex];
-            ref TmlxAction whiteAction = ref expandedInstruction.whiteAction;
-            ref TmlxAction colorAction = ref expandedInstruction.colorAction;
+            ref BtmlInstruction expandedInstruction = ref expandedInstructions[expandedInstructionIndex];
+            ref BtmlAction whiteAction = ref expandedInstruction.whiteAction;
+            ref BtmlAction colorAction = ref expandedInstruction.colorAction;
             if (!Resolve(expandedInstructionIndex, labelsDictionary, ref whiteAction, out string resolveError) || !Resolve(expandedInstructionIndex, labelsDictionary, ref colorAction, out resolveError))
             {
                 error = resolveError;
@@ -118,16 +118,16 @@ public static class TmlxCompiler
         }
 
         // Pre-optimise
-        HashSet<TmlxBranch> visitedBranches = new(new TmlxBranchEqualityComparer());
-        TmlxInstruction[] preoptimisedInstructions = (TmlxInstruction[])expandedInstructions.Clone();
+        HashSet<BtmlBranch> visitedBranches = new(new BtmlBranchEqualityComparer());
+        BtmlInstruction[] preoptimisedInstructions = (BtmlInstruction[])expandedInstructions.Clone();
         for (int preoptimisedInstructionIndex = 0; preoptimisedInstructionIndex < preoptimisedInstructions.Length; preoptimisedInstructionIndex++)
         {
-            ref TmlxInstruction preoptimisedInstruction = ref preoptimisedInstructions[preoptimisedInstructionIndex];
-            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction, TmlxRuntime.COLOR_PIXEL_WHITE);
-            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.colorAction, TmlxRuntime.COLOR_PIXEL_BLACK);
+            ref BtmlInstruction preoptimisedInstruction = ref preoptimisedInstructions[preoptimisedInstructionIndex];
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction, BtmlRuntime.COLOR_PIXEL_WHITE);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.colorAction, BtmlRuntime.COLOR_PIXEL_BLACK);
         }
 
-        instructions = (TmlxInstruction[])preoptimisedInstructions.Clone();
+        instructions = (BtmlInstruction[])preoptimisedInstructions.Clone();
         if (!optimised)
         {
             error = null;
@@ -138,11 +138,11 @@ public static class TmlxCompiler
         visitedBranches.Clear();
         for (int instructionIndex = 0; instructionIndex < instructions.Length; instructionIndex++)
         {
-            ref TmlxInstruction optimisedInstruction = ref instructions[instructionIndex];
-            if (optimisedInstruction.instructionType != TmlxInstructionType.nothing)
+            ref BtmlInstruction optimisedInstruction = ref instructions[instructionIndex];
+            if (optimisedInstruction.instructionType != BtmlInstructionType.nothing)
             {
-                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.whiteAction, TmlxRuntime.COLOR_PIXEL_WHITE);
-                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.colorAction, TmlxRuntime.COLOR_PIXEL_BLACK);
+                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.whiteAction, BtmlRuntime.COLOR_PIXEL_WHITE);
+                _ = Precompute(instructions, visitedBranches, ref optimisedInstruction.colorAction, BtmlRuntime.COLOR_PIXEL_BLACK);
             }
         }
 
@@ -219,9 +219,9 @@ public static class TmlxCompiler
     }
 
 
-    private static bool ParseAction(string[] lines, int lineIndex, List<string> tokens, ref int tokenIndex, bool loop, out TmlxAction action, out string error)
+    private static bool ParseAction(string[] lines, int lineIndex, List<string> tokens, ref int tokenIndex, bool loop, out BtmlAction action, out string error)
     {
-        action = new TmlxAction
+        action = new BtmlAction
         {
             gotoLineIndex = loop
                 ? lineIndex
@@ -243,7 +243,7 @@ public static class TmlxCompiler
         }
 
         // Parse up, down, left or right
-        if (tokenIndex < tokens.Count && Enum.TryParse(tokens[tokenIndex], out action.moveDirection) && action.moveDirection != TmlxDirection.nowhere)
+        if (tokenIndex < tokens.Count && Enum.TryParse(tokens[tokenIndex], out action.moveDirection) && action.moveDirection != BtmlDirection.nowhere)
         {
             tokenIndex++;
         }
@@ -346,9 +346,9 @@ public static class TmlxCompiler
         return false;
     }
 
-    private static bool Precompute(TmlxInstruction[] instructions, HashSet<TmlxBranch> visitedBranches, ref TmlxAction action, Color32 color)
+    private static bool Precompute(BtmlInstruction[] instructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action, Color32 color)
     {
-        if (action.moveDirection != TmlxDirection.nowhere || action.gotoLineIndex < 0)
+        if (action.moveDirection != BtmlDirection.nowhere || action.gotoLineIndex < 0)
         {
             return true;
         }
@@ -359,7 +359,7 @@ public static class TmlxCompiler
             color = writeColor;
         }
 
-        TmlxBranch branch = new()
+        BtmlBranch branch = new()
         {
             color = color,
             lineIndex = action.gotoLineIndex
@@ -369,8 +369,8 @@ public static class TmlxCompiler
             return false;
         }
 
-        ref TmlxInstruction instruction = ref instructions[action.gotoLineIndex];
-        ref TmlxAction newAction = ref (color.Equals(TmlxRuntime.COLOR_PIXEL_WHITE) ? ref instruction.whiteAction : ref instruction.colorAction);
+        ref BtmlInstruction instruction = ref instructions[action.gotoLineIndex];
+        ref BtmlAction newAction = ref (color.Equals(BtmlRuntime.COLOR_PIXEL_WHITE) ? ref instruction.whiteAction : ref instruction.colorAction);
         if (!Precompute(instructions, visitedBranches, ref newAction, color))
         {
             return false; // Keep looping branch
@@ -381,15 +381,15 @@ public static class TmlxCompiler
         return true;
     }
 
-    private static void Preoptimise(TmlxInstruction[] preoptimisedInstructions, HashSet<TmlxBranch> visitedBranches, ref TmlxAction action, Color32 color)
+    private static void Preoptimise(BtmlInstruction[] preoptimisedInstructions, HashSet<BtmlBranch> visitedBranches, ref BtmlAction action, Color32 color)
     {
         if (action.gotoLineIndex < 0)
         {
             return;
         }
 
-        ref TmlxInstruction preoptimisedInstruction = ref preoptimisedInstructions[action.gotoLineIndex];
-        if (preoptimisedInstruction.instructionType != TmlxInstructionType.nothing)
+        ref BtmlInstruction preoptimisedInstruction = ref preoptimisedInstructions[action.gotoLineIndex];
+        if (preoptimisedInstruction.instructionType != BtmlInstructionType.nothing)
         {
             return;
         }
@@ -400,30 +400,30 @@ public static class TmlxCompiler
             color = writeColor;
         }
 
-        TmlxBranch branch = new()
+        BtmlBranch branch = new()
         {
             color = color,
             lineIndex = action.gotoLineIndex
         };
         if (visitedBranches.Add(branch))
         {
-            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction, TmlxRuntime.COLOR_PIXEL_WHITE);
-            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.colorAction, TmlxRuntime.COLOR_PIXEL_BLACK);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.whiteAction, BtmlRuntime.COLOR_PIXEL_WHITE);
+            Preoptimise(preoptimisedInstructions, visitedBranches, ref preoptimisedInstruction.colorAction, BtmlRuntime.COLOR_PIXEL_BLACK);
         }
 
         action.gotoLineIndex = preoptimisedInstruction.whiteAction.gotoLineIndex;
     }
 
-    private static bool Process(string text, out TmlxInstruction[] instructions, out Dictionary<string, int> labelsDictionary, out int instructionCount, out string error)
+    private static bool Process(string text, out BtmlInstruction[] instructions, out Dictionary<string, int> labelsDictionary, out int instructionCount, out string error)
     {
-        List<TmlxInstruction> instructionList = new();
+        List<BtmlInstruction> instructionList = new();
         labelsDictionary = new Dictionary<string, int>();
         instructionCount = 0;
         int blockCommentStartIndex = -1;
         string[] lines = text.Split('\n');
         for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
         {
-            TmlxInstruction instruction = new();
+            BtmlInstruction instruction = new();
             List<string> tokens = Tokenize(lineIndex, lines[lineIndex], ref blockCommentStartIndex);
             int tokenIndex = 0;
             if (tokenIndex < tokens.Count && tokens[tokenIndex] == ":")
@@ -472,7 +472,7 @@ public static class TmlxCompiler
                 }
 
                 oldTokenIndex = tokenIndex;
-                if (!ParseAction(lines, lineIndex, tokens, ref tokenIndex, loop, out TmlxAction consequentAction, out string actionError))
+                if (!ParseAction(lines, lineIndex, tokens, ref tokenIndex, loop, out BtmlAction consequentAction, out string actionError))
                 {
                     instructions = null;
                     error = actionError;
@@ -486,10 +486,10 @@ public static class TmlxCompiler
                     return false;
                 }
 
-                TmlxAction alternativeAction;
+                BtmlAction alternativeAction;
                 if (tokenIndex >= tokens.Count || tokens[tokenIndex] != "else")
                 {
-                    alternativeAction = new TmlxAction
+                    alternativeAction = new BtmlAction
                     {
                         gotoLineIndex = lineIndex + 1 < lines.Length ? lineIndex + 1 : -1
                     };
@@ -518,16 +518,16 @@ public static class TmlxCompiler
                     }
                 }
 
-                instruction.colorAction = condition.Equals(TmlxRuntime.COLOR_PIXEL_BLACK) ? consequentAction : alternativeAction;
-                instruction.whiteAction = condition.Equals(TmlxRuntime.COLOR_PIXEL_WHITE) ? consequentAction : alternativeAction;
-                instruction.instructionType = TmlxInstructionType.conditional;
+                instruction.colorAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_BLACK) ? consequentAction : alternativeAction;
+                instruction.whiteAction = condition.Equals(BtmlRuntime.COLOR_PIXEL_WHITE) ? consequentAction : alternativeAction;
+                instruction.instructionType = BtmlInstructionType.conditional;
             }
-            else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, false, out TmlxAction action, out string actionError))
+            else if (ParseAction(lines, lineIndex, tokens, ref tokenIndex, false, out BtmlAction action, out string actionError))
             {
                 instruction.colorAction = instruction.whiteAction = action;
                 if (tokenIndex != oldTokenIndex)
                 {
-                    instruction.instructionType = TmlxInstructionType.unconditional;
+                    instruction.instructionType = BtmlInstructionType.unconditional;
                 }
             }
             else
@@ -545,7 +545,7 @@ public static class TmlxCompiler
                 return false;
             }
 
-            if (instruction.instructionType != TmlxInstructionType.nothing)
+            if (instruction.instructionType != BtmlInstructionType.nothing)
             {
                 instructionCount++;
             }
@@ -565,7 +565,7 @@ public static class TmlxCompiler
         return true;
     }
 
-    private static bool Resolve(int processedInstructionIndex, Dictionary<string, int> labelsDictionary, ref TmlxAction action, out string error)
+    private static bool Resolve(int processedInstructionIndex, Dictionary<string, int> labelsDictionary, ref BtmlAction action, out string error)
     {
         if (action.gotoLabel == null)
         {

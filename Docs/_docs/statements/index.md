@@ -10,7 +10,7 @@ title: Statements
 {: .example }
 > Write a black pixel and move right:
 >
-> ```tmlx
+> ```btml
 > write black right
 > ```
 
@@ -268,6 +268,6 @@ Here is a visual representation of all possible statements. Click on a word for 
 {: .example }
 > Statements can be conditional:
 >
-> ```tmlx
+> ```btml
 > if color right else exit 1
 > ```

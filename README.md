@@ -1,2 +1,2 @@
-# Tmlx
- The Turing Machine Language X-bit
+# Btml
+ The Binary Turing Machine Language

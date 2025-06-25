@@ -105,7 +105,7 @@ public class CodeEditor : MonoBehaviour
     private void UpdateLineNumbers()
     {
         StringBuilder lineNumberBuilder = new();
-        string text = inputField.text;
+        string text = inputField.textComponent.text;
 
         // Update width
         float maxChars = Mathf.Ceil(Mathf.Log10(text.Count(c => c == '\n') + 2));

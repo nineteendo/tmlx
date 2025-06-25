@@ -21,7 +21,7 @@ Comments can be used to explain code, and to make it more readable.
 ## Single Line Comments
 
 {: .example }
-> ```tmlx
+> ```btml
 > if white exit 1 // Reject the input if the first pixel is white
 > ```
 
@@ -34,7 +34,7 @@ Comments can be used to explain code, and to make it more readable.
 {: .note }
 > You can also add documentation to your program by using `///`:
 >
-> ```tmlx
+> ```btml
 > /// Reject the input if the first pixel is white
 > if white exit 1
 > ```
@@ -42,7 +42,7 @@ Comments can be used to explain code, and to make it more readable.
 ## Multi-line Comments
 
 {: .example }
-> ```tmlx
+> ```btml
 > /*
 > Reject the input if the first pixel is white
 > */
@@ -58,7 +58,7 @@ Comments can be used to explain code, and to make it more readable.
 {: .note }
 > You can also add documentation to your program by using `/**`:
 >
-> ```tmlx
+> ```btml
 > /**
 > Reject the input if the first pixel is white
 > */

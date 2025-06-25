@@ -30,9 +30,9 @@ public class Menu : MonoBehaviour
 
 #if UNITY_EDITOR
         // Add level 0 for debugging
-        nextButton.gameObject.SetActive((15 * pageIndex) + 15 <= TmlxRuntime.LEVEL_COUNT);
+        nextButton.gameObject.SetActive((15 * pageIndex) + 15 <= BtmlRuntime.LEVEL_COUNT);
 #else
-        nextButton.gameObject.SetActive((15 * pageIndex) + 15 < TmlxRuntime.LEVEL_COUNT);
+        nextButton.gameObject.SetActive((15 * pageIndex) + 15 < BtmlRuntime.LEVEL_COUNT);
 #endif
         nextButton.interactable = nextButton.gameObject.activeSelf && (15 * pageIndex) + 15 < save.levels.Count;
         nextButton.onClick.RemoveAllListeners();
@@ -47,9 +47,9 @@ public class Menu : MonoBehaviour
             LevelButton levelButton = levelButtons[levelButtonIndex];
 #if UNITY_EDITOR
             // Add level 0 for debugging
-            levelButton.gameObject.SetActive(levelIndex <= TmlxRuntime.LEVEL_COUNT);
+            levelButton.gameObject.SetActive(levelIndex <= BtmlRuntime.LEVEL_COUNT);
 #else
-            levelButton.gameObject.SetActive(levelIndex < TmlxRuntime.LEVEL_COUNT);
+            levelButton.gameObject.SetActive(levelIndex < BtmlRuntime.LEVEL_COUNT);
 #endif
             levelButton.Setup(levelIndex, levelIndex < save.levels.Count ? save.levels[levelIndex].starCount : 0, levelIndex < save.levels.Count);
         }

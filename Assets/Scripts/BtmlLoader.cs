@@ -1,21 +1,21 @@
 using System;
 using UnityEngine;
 
-public struct TmlxLevel
+public struct BtmlLevel
 {
-    public TmlxTest[] tests;
+    public BtmlTest[] tests;
 
     public string code;
     public string solution;
 }
 
 [Serializable]
-public struct TmlxLevelSettings
+public struct BtmlLevelSettings
 {
     public int testCount;
 }
 
-public struct TmlxTest
+public struct BtmlTest
 {
     public Texture2D inputTexture;
     public Texture2D outputTexture;
@@ -24,16 +24,16 @@ public struct TmlxTest
 }
 
 [Serializable]
-public struct TmlxTestSettings
+public struct BtmlTestSettings
 {
     public bool checkOutput;
     public int exitStatus;
 }
 
 
-public static class TmlxLoader
+public static class BtmlLoader
 {
-    public static TmlxLevel Load(int levelIndex)
+    public static BtmlLevel Load(int levelIndex)
     {
 #if UNITY_EDITOR
         // Add level 0 for debugging
@@ -41,16 +41,16 @@ public static class TmlxLoader
 #else
         string levelPath = $"Levels/level {levelIndex + 1}/";
 #endif
-        TmlxLevelSettings levelSettings = JsonUtility.FromJson<TmlxLevelSettings>(Resources.Load<TextAsset>(levelPath + "levelSettings").text);
+        BtmlLevelSettings levelSettings = JsonUtility.FromJson<BtmlLevelSettings>(Resources.Load<TextAsset>(levelPath + "levelSettings").text);
         string code = Resources.Load<TextAsset>(levelPath + "code").text;
         string solution = Resources.Load<TextAsset>(levelPath + "solution").text;
-        TmlxTest[] tests = new TmlxTest[levelSettings.testCount];
+        BtmlTest[] tests = new BtmlTest[levelSettings.testCount];
         string testsPath = levelPath + "tests/";
         for (int testIndex = 0; testIndex < tests.Length; testIndex++)
         {
             string testPath = testsPath + $"test {testIndex + 1}/";
-            TmlxTest test = new();
-            TmlxTestSettings testSettings = JsonUtility.FromJson<TmlxTestSettings>(Resources.Load<TextAsset>(testPath + "testSettings").text);
+            BtmlTest test = new();
+            BtmlTestSettings testSettings = JsonUtility.FromJson<BtmlTestSettings>(Resources.Load<TextAsset>(testPath + "testSettings").text);
             test.inputTexture = Resources.Load<Texture2D>(testPath + "inputTexture");
             if (testSettings.checkOutput)
             {
@@ -61,6 +61,6 @@ public static class TmlxLoader
             tests[testIndex] = test;
         }
 
-        return new TmlxLevel() { tests = tests, code = code, solution = solution };
+        return new BtmlLevel() { tests = tests, code = code, solution = solution };
     }
 }

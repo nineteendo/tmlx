@@ -24,15 +24,15 @@ export function activate(context: ExtensionContext) {
 	};
 
 	const clientOptions: LanguageClientOptions = {
-		documentSelector: [{ scheme: 'file', language: 'tmlx' }],
+		documentSelector: [{ scheme: 'file', language: 'btml' }],
 		synchronize: {
 			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
 		}
 	};
 
 	client = new LanguageClient(
-		'tmlxServer',
-		'Tmlx Server',
+		'btmlServer',
+		'Btml Server',
 		serverOptions,
 		clientOptions
 	);

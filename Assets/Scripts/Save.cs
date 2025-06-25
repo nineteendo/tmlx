@@ -31,7 +31,7 @@ public class SaveFunctions
     {
 #if !UNITY_EDITOR
         BinaryFormatter binaryFormatter = new();
-        FileStream fileStream = File.Create(Path.Combine(Application.persistentDataPath, "tmlx.sav"));
+        FileStream fileStream = File.Create(Path.Combine(Application.persistentDataPath, "btml.sav"));
         binaryFormatter.Serialize(fileStream, save);
         fileStream.Close();
 #endif
@@ -47,17 +47,17 @@ public class SaveFunctions
 
 #if UNITY_EDITOR
         // Unlock all levels for debugging
-        save.levels = Enumerable.Repeat(new SaveLevel(), TmlxRuntime.LEVEL_COUNT + 2).ToList();
+        save.levels = Enumerable.Repeat(new SaveLevel(), BtmlRuntime.LEVEL_COUNT + 2).ToList();
         return save;
 #else
-        if (!File.Exists(Path.Combine(Application.persistentDataPath, "tmlx.sav")))
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, "btml.sav")))
         {
             save.levels = new List<SaveLevel> { new() };
             return save;
         }
 
         BinaryFormatter binaryFormatter = new();
-        FileStream fileStream = File.Open(Path.Combine(Application.persistentDataPath, "tmlx.sav"), FileMode.Open);
+        FileStream fileStream = File.Open(Path.Combine(Application.persistentDataPath, "btml.sav"), FileMode.Open);
         save = (Save)binaryFormatter.Deserialize(fileStream);
         fileStream.Close();
         return save;

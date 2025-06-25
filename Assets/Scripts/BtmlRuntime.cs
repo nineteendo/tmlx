@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 
 [RequireComponent(typeof(Image), typeof(RectTransform))]
-public class TmlxRuntime : MonoBehaviour
+public class BtmlRuntime : MonoBehaviour
 {
     public static readonly Color32 COLOR_COVERED_ENTIRELY = new(0x00, 0xff, 0x00, 0x33);
     public static readonly Color32 COLOR_COVERED_HALF = new(0xff, 0xa5, 0x00, 0x33);
@@ -78,11 +78,11 @@ public class TmlxRuntime : MonoBehaviour
     public Toggle playToggle;
     public Toggle turboToggle;
 
-    private TmlxAction action;
-    private TmlxInstruction[] instructions;
-    private TmlxLevel level;
-    private TmlxTest test;
-    private TmlxTest[] tests;
+    private BtmlAction action;
+    private BtmlInstruction[] instructions;
+    private BtmlLevel level;
+    private BtmlTest test;
+    private BtmlTest[] tests;
     private Color32[] canvasColors;
     private HashSet<int> breakpoints;
     private List<SaveLevel> saveLevels;
@@ -167,7 +167,7 @@ public class TmlxRuntime : MonoBehaviour
             return;
         }
 
-        if (!TmlxCompiler.Compile(codeEditor.inputField.text, optimiseToggle.isOn, out instructions, out instructionCount, out string error))
+        if (!BtmlCompiler.Compile(codeEditor.inputField.text, optimiseToggle.isOn, out instructions, out instructionCount, out string error))
         {
             errorText.text = error;
             return;
@@ -212,7 +212,7 @@ public class TmlxRuntime : MonoBehaviour
 
     private void SetupInstructionIndex()
     {
-        int newInstructionIndex = instructions != null && instructions[0].instructionType == TmlxInstructionType.nothing ? instructions[0].whiteAction.gotoLineIndex : 0;
+        int newInstructionIndex = instructions != null && instructions[0].instructionType == BtmlInstructionType.nothing ? instructions[0].whiteAction.gotoLineIndex : 0;
         if (newInstructionIndex >= 0)
         {
             instructionIndex = newInstructionIndex;
@@ -273,7 +273,7 @@ public class TmlxRuntime : MonoBehaviour
         Save save = SaveFunctions.LoadGame();
         saveLevels = save.levels;
         saveLevel = saveLevels[levelIndex];
-        level = TmlxLoader.Load(levelIndex);
+        level = BtmlLoader.Load(levelIndex);
         codeEditor.inputField.text = saveLevel.autoSave ?? level.code;
 #if UNITY_EDITOR
         // Unlock author solution for debugging
@@ -326,7 +326,7 @@ public class TmlxRuntime : MonoBehaviour
         }
 
         UnSelectPixel();
-        ref TmlxAction action = ref this.action;
+        ref BtmlAction action = ref this.action;
         bool hasBreakpoints = breakpoints.Count > 0;
         int canvasColorsLength = canvasColors.Length;
         for (; executedInstructions < ipf; executedInstructions++)
@@ -352,9 +352,9 @@ public class TmlxRuntime : MonoBehaviour
 
             switch (action.moveDirection)
             {
-                case TmlxDirection.nowhere:
+                case BtmlDirection.nowhere:
                     break;
-                case TmlxDirection.up:
+                case BtmlDirection.up:
                     canvasTextureOffset += canvasWidth;
                     if (canvasTextureOffset >= canvasColorsLength)
                     {
@@ -362,7 +362,7 @@ public class TmlxRuntime : MonoBehaviour
                     }
 
                     break;
-                case TmlxDirection.down:
+                case BtmlDirection.down:
                     canvasTextureOffset -= canvasWidth;
                     if (canvasTextureOffset < 0)
                     {
@@ -370,14 +370,14 @@ public class TmlxRuntime : MonoBehaviour
                     }
 
                     break;
-                case TmlxDirection.left:
+                case BtmlDirection.left:
                     if (--canvasTextureX < 0)
                     {
                         goto default;
                     }
 
                     break;
-                case TmlxDirection.right:
+                case BtmlDirection.right:
                     if (++canvasTextureX >= canvasWidth)
                     {
                         goto default;
@@ -498,13 +498,13 @@ public class TmlxRuntime : MonoBehaviour
             Color32[] markedLines = new Color32[instructions.Length];
             for (int instructionIndex = 0; instructionIndex < instructions.Length; instructionIndex++)
             {
-                TmlxInstructionType instructionType = instructions[instructionIndex].instructionType;
-                if (instructionType == TmlxInstructionType.nothing)
+                BtmlInstructionType instructionType = instructions[instructionIndex].instructionType;
+                if (instructionType == BtmlInstructionType.nothing)
                 {
                     continue;
                 }
 
-                int coveredBranchesCount = instructionType != TmlxInstructionType.conditional
+                int coveredBranchesCount = instructionType != BtmlInstructionType.conditional
                     ? coveredBlackBranches[instructionIndex] || coveredWhiteBranches[instructionIndex] ? 2 : 0
                     : (coveredBlackBranches[instructionIndex] ? 1 : 0) + (coveredWhiteBranches[instructionIndex] ? 1 : 0);
 
@@ -520,7 +520,7 @@ public class TmlxRuntime : MonoBehaviour
             int coveragePercentage = instructionCount == 0 ? 100 : 100 * totalCoveredBranchesCount / (2 * instructionCount);
             levelEndedText.text = $"{coveragePercentage}% Coverage";
             codeEditor.MarkedLines = markedLines;
-            starCount = !TmlxCompiler.Compile(level.solution, false, out _, out int targetInstructionCount, out _) || instructionCount <= targetInstructionCount
+            starCount = !BtmlCompiler.Compile(level.solution, false, out _, out int targetInstructionCount, out _) || instructionCount <= targetInstructionCount
                 ? 3
                 : instructionCount <= targetInstructionCount * 1.5f
                     ? 2
@@ -541,7 +541,7 @@ public class TmlxRuntime : MonoBehaviour
                 saveLevels.Add(new SaveLevel());
             }
 
-            if (saveLevel.bestSave == null || !TmlxCompiler.Compile(level.solution, false, out _, out int bestInstructionCount, out _) || instructionCount < bestInstructionCount)
+            if (saveLevel.bestSave == null || !BtmlCompiler.Compile(level.solution, false, out _, out int bestInstructionCount, out _) || instructionCount < bestInstructionCount)
             {
                 saveLevel.bestSave = saveLevel.autoSave;
             }

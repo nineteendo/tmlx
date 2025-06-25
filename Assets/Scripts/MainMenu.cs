@@ -25,7 +25,7 @@ public class MainMenu : MonoBehaviour
 
     public void ViewDocs()
     {
-        Application.OpenURL("http://nineteendo.github.io/tmlx");
+        Application.OpenURL("http://nineteendo.github.io/btml");
     }
 
 

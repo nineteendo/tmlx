@@ -7,7 +7,7 @@
 	"dependencies": {
 		"vscode-languageclient": "^8.1.0"
 	},
-	"description": "Tmlx language server client",
+	"description": "Btml language server client",
 	"devDependencies": {
 		"@types/vscode": "^1.83.1",
 		"@vscode/test-electron": "^2.2.3"
@@ -16,11 +16,11 @@
 		"vscode": "^1.83.1"
 	},
 	"license": "AGPL-3.0",
-	"name": "tmlx-client",
+	"name": "btml-client",
 	"publisher": "nicezombies",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/nineteendo/tmlx"
+		"url": "https://github.com/nineteendo/btml"
 	},
 	"version": "0.0.2"
 }

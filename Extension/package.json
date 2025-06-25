@@ -6,14 +6,14 @@
 	},
 	"bugs": {
 		"email": "nineteendo19d0@gmail.com",
-		"url": "https://github.com/nineteendo/tmlx/issues"
+		"url": "https://github.com/nineteendo/btml/issues"
 	},
 	"categories": [
 		"Programming Languages"
 	],
 	"contributes": {
 		"configurationDefaults": {
-			"[tmlx]": {
+			"[btml]": {
 				"editor.insertSpaces": false,
 				"editor.rulers": [
 					78
@@ -29,9 +29,9 @@
 		},
 		"grammars": [
 			{
-				"language": "tmlx",
-				"path": "./syntaxes/tmlx.tmLanguage.json",
-				"scopeName": "source.tmlx"
+				"language": "btml",
+				"path": "./syntaxes/btml.tmLanguage.json",
+				"scopeName": "source.btml"
 			}
 		],
 		"keybindings": [
@@ -41,26 +41,24 @@
 				},
 				"command": "type",
 				"key": "shift+enter",
-				"when": "editorLangId == tmlx"
+				"when": "editorLangId == btml"
 			}
 		],
 		"languages": [
 			{
 				"aliases": [
-					"Tmlx",
-					"tmlx"
+					"Btml",
+					"btml"
 				],
 				"configuration": "./language-configuration.json",
 				"extensions": [
-					".tml1",
-					".tml3",
-					".tmlx"
+					".btml"
 				],
-				"id": "tmlx"
+				"id": "btml"
 			}
 		]
 	},
-	"description": "The Turing Machine Language X-bit",
+	"description": "The Binary Turing Machine Language",
 	"devDependencies": {
 		"@types/mocha": "^9.1.0",
 		"@types/node": "^16.18.34",
@@ -71,7 +69,7 @@
 		"mocha": "^9.2.1",
 		"typescript": "^5.2.2"
 	},
-	"displayName": "Tmlx",
+	"displayName": "Btml",
 	"engines": {
 		"vscode": "^1.83.1"
 	},
@@ -79,15 +77,15 @@
 		"type": "individual",
 		"url": "https://www.paypal.com/paypalme/nineteendo"
 	},
-	"homepage": "https://github.com/nineteendo/tmlx/tree/main/Extension#readme",
-	"icon": "images/TMLX0_Logo.png",
+	"homepage": "https://github.com/nineteendo/btml/tree/main/Extension#readme",
+	"icon": "images/BTML0_Logo.png",
 	"license": "AGPL-3.0",
 	"main": "./client/out/extension",
-	"name": "tmlx",
+	"name": "btml",
 	"publisher": "nicezombies",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/nineteendo/tmlx"
+		"url": "https://github.com/nineteendo/btml"
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run esbuild-client -- --minify && npm run esbuild-server -- --minify",
