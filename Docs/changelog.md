@@ -8,6 +8,8 @@ title: Changelog
 All notable changes to this project are documented in this file.
 {: .fs-6 .fw-300 }
 
+[View changelog of vscode extension](https://marketplace.visualstudio.com/items/nicezombies.btml/changelog){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+
 ## v0.7.0
 {: .d-inline-block }
 

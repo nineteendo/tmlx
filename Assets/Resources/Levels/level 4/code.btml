@@ -2,7 +2,7 @@
 You may have noticed that all the lines turn green when you beat a level.
 That means they have been fully executed, which is not always the case.
 Run the program and notice how line 9 is red, meaning it was never executed.
-That is because the compiler pre-calculated the missing else on line 1.
+That is because the compiler pre-calculated the missing else on line 8.
 */
 // TODO: combine line 8 and 9 to get 100% coverage instead of 75.
 if white exit
