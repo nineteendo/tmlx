@@ -1,1 +1,1 @@
-0:	while white write black else write white goto 0
+start:	while white write black else write white goto start

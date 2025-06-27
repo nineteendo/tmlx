@@ -1,4 +1,4 @@
 /// This program should reject all input of odd length, but does not compile.
 // TODO: fix the compilation error.
-		if white exit else right goto odd_length
-odd_length:	if white exit 1 else right goto even_length
+		if white exit else right goto odd_len
+odd_len:	if white exit 1 else right goto even_len

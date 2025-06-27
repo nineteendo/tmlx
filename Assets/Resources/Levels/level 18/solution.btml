@@ -1,12 +1,12 @@
 // Decrement first input
-dec_ini:	while black right else left
+dec_mov_end:	while black right else left
 dec_read_len:	if black down else exit
-		if 0 write 1 up else write 0 up goto add_ini
+		if 0 write 1 up else write 0 up goto add_mov_end
 		left goto dec_read_len
 
 // Add second input to output
-add_ini:	while black right else left
-add_read_len_0:	if black down else right goto dec_ini
+add_mov_end:	while black right else left
+add_read_len_0:	if black down else right goto dec_mov_end
 		down
 		if 1 down goto add_write_out else up goto add_mov_len_0
 add_read_len_1:	if black down else exit 2 // Overflow

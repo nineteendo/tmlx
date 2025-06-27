@@ -7,6 +7,6 @@ Here is the approach to accept even bit parity:
 */
 // TODO: finish implementation.
 // NOTE: you need one state per remainder.
-read_length_x:	if white exit 1 else down
-		if 0 up goto next_x else up goto next_x
-next_x:		right goto read_length_x
+read_len_x:	if white exit 1 else down
+		if 0 up goto mov_nxt_x else up goto mov_nxt_x
+mov_nxt_x:	right goto read_len_x

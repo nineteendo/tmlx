@@ -1,18 +1,18 @@
 		while black right else left
-read_length_0:	if white exit else down
-		if 1 down goto read_second_1 else down goto read_second_0
-read_length_1:	if white exit 2 else down
-		if 1 down goto read_second_2 else down goto read_second_1
-read_second_0:	if 1 down goto read_output_1 else down goto read_output_0
-read_second_1:	if 1 down goto read_output_2 else down goto read_output_1
-read_second_2:	if 1 down goto read_output_3 else down goto read_output_2
-read_output_0:	if 0 up goto move_first_0 else exit 1
-read_output_1:	if 1 up goto move_first_0 else exit 1
-read_output_2:	if 0 up goto move_first_1 else exit 1
-read_output_3:	if 1 up goto move_first_1 else exit 1
-move_first_0:	up
+read_len_0:	if white exit else down
+		if 1 down goto read_2nd_1 else down goto read_2nd_0
+read_len_1:	if white exit 2 else down
+		if 1 down goto read_2nd_2 else down goto read_2nd_1
+read_2nd_0:	if 1 down goto read_out_1 else down goto read_out_0
+read_2nd_1:	if 1 down goto read_out_2 else down goto read_out_1
+read_2nd_2:	if 1 down goto read_out_3 else down goto read_out_2
+read_out_0:	if 0 up goto mov_1st_0 else exit 1
+read_out_1:	if 1 up goto mov_1st_0 else exit 1
+read_out_2:	if 0 up goto mov_1st_1 else exit 1
+read_out_3:	if 1 up goto mov_1st_1 else exit 1
+mov_1st_0:	up
 		up
-		left goto read_length_0
-move_first_1:	up
+		left goto read_len_0
+mov_1st_1:	up
 		up
-		left goto read_length_1
+		left goto read_len_1
