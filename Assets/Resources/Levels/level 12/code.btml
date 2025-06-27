@@ -1,12 +1,13 @@
 /**
-Run the program and notice how line 11 is orange.
+Run the program and notice how line 10 is orange.
 That means only the if or (missing) else was executed.
 */
-// TODO: modify the program to get 100% coverage instead of 78.
+// TODO: modify the program to get 100% coverage instead of 93.
 read_length:	if black down else exit
 		if 1 down goto read_second_1 else down goto read_second_0
-read_second_0:	if 0 up goto move_length else exit 1
-read_second_1:	if 1 up goto move_length else exit 1
-move_length:	up
-		if black right goto read_length else down
-		if 1 exit 1
+read_second_0:	if 0 down goto move_length else exit 1
+read_second_1:	if 1 down goto move_length else exit 1
+move_length:	if 0 up else exit 1
+		up
+		up
+		right goto read_length
