@@ -1,8 +1,8 @@
-start:	if white exit else down
-	if 1 write 0 up else exit 1
+start:	if white exit 0 else down
+	if 0 exit 1 else write 0 up
 	write white right
 	while black right else left
 	if white exit 1 else down
-	if 0 up else exit 1
+	if 1 exit 1 else up
 	write white left
 	while black left else right goto start

@@ -1,2 +1,2 @@
-if black down else exit 2
+if white exit 2 else down
 if 1 exit 1

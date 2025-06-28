@@ -1,5 +1,8 @@
-even_len:	if white exit else right goto odd_len
-odd_len:	if white left else right goto even_len
-rem_0:		if white exit else left goto rem_1
+// Check if the length is divisable by 2
+even_len:	if white exit 0 else right goto odd_len
+odd_len:	if white left goto rem_0 else right goto even_len
+
+// Check if the length is divisable by 3
+rem_0:		if white exit 0 else left goto rem_1
 rem_1:		if white exit 1 else left goto rem_2
 rem_2:		if white exit 1 else left goto rem_0

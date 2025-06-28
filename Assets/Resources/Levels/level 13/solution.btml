@@ -1,6 +1,6 @@
-read_len:	if black down else exit 1
+read_len:	if white exit 1 else down
 		if 1 down goto read_2nd_1 else down goto read_2nd_0
-read_2nd_0:	if 0 up goto mov_len else exit
-read_2nd_1:	if 1 up goto mov_len else exit 1
+read_2nd_0:	if 1 exit 0 else up goto mov_len
+read_2nd_1:	if 0 exit 1 else up goto mov_len
 mov_len:	up
 		right goto read_len

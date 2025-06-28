@@ -3,11 +3,11 @@ Run the program and notice how line 10 is orange.
 That means only the if or (missing) else was executed.
 */
 // TODO: modify the program to get 100% coverage instead of 93.
-read_len:	if black down else exit
+read_len:	if white exit 0 else down
 		if 1 down goto read_2nd_1 else down goto read_2nd_0
-read_2nd_0:	if 0 down goto mov_len else exit 1
-read_2nd_1:	if 1 down goto mov_len else exit 1
-mov_len:	if 0 up else exit 1
+read_2nd_0:	if 1 exit 1 else down goto mov_len
+read_2nd_1:	if 0 exit 1 else down goto mov_len
+mov_len:	if 1 exit 1 else up
 		up
 		up
 		right goto read_len

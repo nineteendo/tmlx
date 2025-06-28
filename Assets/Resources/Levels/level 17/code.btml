@@ -1,6 +1,6 @@
 /// This program checks if the input starts with a 0 and moves to the end.
 // TODO: check if the input ends with a 1, move to the start and repeat.
-start:	if white exit else down
-	if 1 write 0 up else exit 1
+start:	if white exit 0 else down
+	if 0 exit 1 else write 0 up
 	write white right
 	while black right else left

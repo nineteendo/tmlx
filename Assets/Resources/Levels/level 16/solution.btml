@@ -1,15 +1,15 @@
 		while black right else left
-read_len_0:	if white exit else down
+read_len_0:	if white exit 0 else down
 		if 1 down goto read_2nd_1 else down goto read_2nd_0
 read_len_1:	if white exit 2 else down
 		if 1 down goto read_2nd_2 else down goto read_2nd_1
 read_2nd_0:	if 1 down goto read_out_1 else down goto read_out_0
 read_2nd_1:	if 1 down goto read_out_2 else down goto read_out_1
 read_2nd_2:	if 1 down goto read_out_3 else down goto read_out_2
-read_out_0:	if 0 up goto mov_1st_0 else exit 1
-read_out_1:	if 1 up goto mov_1st_0 else exit 1
-read_out_2:	if 0 up goto mov_1st_1 else exit 1
-read_out_3:	if 1 up goto mov_1st_1 else exit 1
+read_out_0:	if 1 exit 1 else up goto mov_1st_0
+read_out_1:	if 0 exit 1 else up goto mov_1st_0
+read_out_2:	if 1 exit 1 else up goto mov_1st_1
+read_out_3:	if 0 exit 1 else up goto mov_1st_1
 mov_1st_0:	up
 		up
 		left goto read_len_0

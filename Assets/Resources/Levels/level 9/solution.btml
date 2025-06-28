@@ -1,4 +1,4 @@
-read_len_0:	if white exit else down
+read_len_0:	if white exit 0 else down
 		if 0 up goto mov_nxt_0 else up goto mov_nxt_1
 read_len_1:	if white exit 1 else down
 		if 0 up goto mov_nxt_1 else up goto mov_nxt_0
