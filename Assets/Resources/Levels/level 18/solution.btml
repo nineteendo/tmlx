@@ -18,4 +18,4 @@ add_read_len_1:	if white exit 2 else down
 add_mov_1st_1:	up
 		up
 		left goto add_read_len_1
-add_write_out:	if 0 write 1 up goto add_mov_1st_0 else write 0 up goto add_mov_1st_1
+add_write_out:	if 1 write 0 up goto add_mov_1st_1 else write 1 up goto add_mov_1st_0

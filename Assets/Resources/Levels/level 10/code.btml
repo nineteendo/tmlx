@@ -12,11 +12,11 @@ We will try to find the bug on line 18 using debugging:
 // TODO: fix the bug.
 // NOTE: do not forget to undo step 1 and 2.
 read_len_0:	if white exit 0 else down
-		if 0 up goto mov_nxt_0 else up goto mov_nxt_1
+		if 1 up goto mov_nxt_1 else up goto mov_nxt_0
 read_len_1:	if white exit 1 else down
-		if 0 up goto mov_nxt_2 else up goto mov_nxt_0
+		if 1 up goto mov_nxt_0 else up goto mov_nxt_2
 read_len_2:	if white exit 1 else down
-		if 0 up goto mov_nxt_2 else up goto mov_nxt_2
+		if 1 up goto mov_nxt_2 else up goto mov_nxt_2
 mov_nxt_0:	right goto read_len_0
 mov_nxt_1:	right goto read_len_1
 mov_nxt_2:	right goto read_len_2
