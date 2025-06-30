@@ -8,14 +8,14 @@ dec_read_len:	if white exit 0 else down
 add_mov_end:	while black right else left
 add_read_len_0:	if white right goto dec_mov_end else down
 		down
-		if 1 down goto add_write_out else up goto add_mov_len_0
+		if 1 down goto add_write_out
+add_mov_1st_0:	up
+		up
+		left goto add_read_len_0
 add_read_len_1:	if white exit 2 else down
 		down
-		if 0 down goto add_write_out else up goto add_mov_len_1
-add_write_out:	if 0 write 1 up goto add_mov_1st_0 else write 0 up goto add_mov_1st_1
-add_mov_1st_0:	up
-add_mov_len_0:	up
-		left goto add_read_len_0
+		if 0 down goto add_write_out
 add_mov_1st_1:	up
-add_mov_len_1:	up
+		up
 		left goto add_read_len_1
+add_write_out:	if 0 write 1 up goto add_mov_1st_0 else write 0 up goto add_mov_1st_1

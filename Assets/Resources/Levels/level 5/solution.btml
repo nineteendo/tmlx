@@ -1,2 +1,2 @@
-even_len:	if white exit 0 else right goto odd_len
-odd_len:	if white exit 1 else right goto even_len
+start:	if white exit 0 else right
+	if white exit 1 else right goto start
